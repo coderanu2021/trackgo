@@ -15,10 +15,16 @@ class ProductPage extends Model
         'content',
         'hero_image',
         'is_published',
+        'category_id',
     ];
 
     protected $casts = [
         'content' => 'array',
         'is_published' => 'boolean',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

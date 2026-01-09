@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PageBuilderController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SettingsController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -19,6 +21,13 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     
+    // Settings Routes
+    Route::resource('settings', SettingsController::class)->only(['index', 'store']); // Using store for update mostly
+    Route::post('settings/update', [SettingsController::class, 'update'])->name('settings.update');
+
+    // Categories Routes
+    Route::resource('categories', CategoryController::class);
+
     // Builder Routes
     Route::get('builder', [PageBuilderController::class, 'index'])->name('builder.index');
     Route::get('builder/create', [PageBuilderController::class, 'create'])->name('builder.create');
@@ -30,4 +39,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 });
 
 // Front Routes
+Route::get('category/{slug}', [CategoryController::class, 'show'])->name('category.show');
+Route::view('about', 'front.about')->name('about');
+Route::view('contact', 'front.contact')->name('contact');
 Route::get('projects/{slug}', [PageBuilderController::class, 'show'])->name('projects.show');

@@ -43,6 +43,9 @@
                 <button type="button" onclick="addBlock('table')" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; border-radius: var(--radius-md); cursor: pointer;">+ Table</button>
                 <button type="button" onclick="addBlock('tabs')" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; border-radius: var(--radius-md); cursor: pointer;">+ Tabs</button>
                 <button type="button" onclick="addBlock('features')" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; border-radius: var(--radius-md); cursor: pointer;">+ Features</button>
+                <button type="button" onclick="addBlock('hero_stats')" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; border-radius: var(--radius-md); cursor: pointer; color: var(--primary-color); border-color: var(--primary-color);">+ Hero Stats</button>
+                <button type="button" onclick="addBlock('timeline')" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; border-radius: var(--radius-md); cursor: pointer; color: var(--primary-color); border-color: var(--primary-color);">+ Timeline</button>
+                <button type="button" onclick="addBlock('split_content')" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; border-radius: var(--radius-md); cursor: pointer; color: var(--primary-color); border-color: var(--primary-color);">+ Split Content</button>
             </div>
         </div>
 

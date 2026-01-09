@@ -24,160 +24,203 @@
             padding: 0 1.5rem;
         }
         
-        /* Hero */
-        .hero {
-            position: relative;
-            height: 70vh;
-            min-height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-        }
-        .hero::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(2px);
-        }
-        .hero-content {
-            position: relative;
-            z-index: 10;
-        }
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -0.05em;
-            text-transform: uppercase;
-        }
-
-        /* Content Blocks */
-        .block {
-            padding: 4rem 0;
-        }
-        
-        .block-text {
-            max-width: 800px;
-            margin: 0 auto;
-            font-size: 1.25rem;
-            color: #334155;
-        }
-        .block-text ul, .block-text ol {
-            margin-left: 1.5rem;
-        }
-
-        .block-image img {
-            width: 100%;
-            border-radius: 24px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        .block-button {
-            text-align: center;
-        }
-        .btn-awesome {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background-color: var(--primary);
-            color: white;
-            font-weight: 700;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.4);
-        }
-        .btn-awesome:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px rgba(79, 70, 229, 0.5);
-        }
-
-        .block-table {
-            overflow-x: auto;
-        }
-        .custom-table {
-            width: 100%;
-            border-collapse: collapse;
+        /* Hero Stats Block */
+        .hero-stats {
             background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .custom-table td, .custom-table th {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            text-align: left;
-        }
-        .custom-table tr:last-child td {
-            border-bottom: none;
-        }
-        .custom-table tr:first-child {
-            background-color: #f1f5f9;
-            font-weight: 600;
-        }
-
-        .features-grid {
+            padding: 4rem 2rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
         }
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-        .feature-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-        }
-
-        /* Tabs */
-        .tabs-header {
-            display: flex;
-            gap: 1rem;
-            border-bottom: 2px solid #e2e8f0;
+        .hero-stats-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
             margin-bottom: 1.5rem;
+            line-height: 1.2;
         }
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
+        .hero-stats-content p {
+            font-size: 1.25rem;
             color: #64748b;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            transition: all 0.2s;
+            margin-bottom: 2rem;
         }
-        .tab-btn:hover {
-            color: var(--primary);
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
         }
-        .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
+        .stat-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
         }
-        .tab-pane {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .tab-pane.active {
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark);
             display: block;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .hero-stats-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Timeline Block */
+        .timeline-section {
+            padding: 4rem 2rem;
+            background: #f8fafc;
+        }
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: #e2e8f0;
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            padding: 1rem 0;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 3rem;
+            text-align: right;
+        }
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 3rem;
+        }
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 1.5rem;
+            z-index: 10;
+        }
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -12px;
+        }
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -12px;
+        }
+        .timeline-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .timeline-year {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .timeline-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+        }
+        .timeline-badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Split Content Block */
+        .split-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+        .split-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+        .split-container.reverse {
+            flex-direction: row-reverse;
+        }
+        .split-content {
+            flex: 1;
+        }
+        .split-image {
+            flex: 1;
+        }
+        .split-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .split-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .split-desc {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+        .split-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        .split-stat-item strong {
+            display: block;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        .split-stat-item span {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .hero-stats, .split-container {
+                grid-template-columns: 1fr;
+                flex-direction: column !important;
+                gap: 2rem;
+            }
+            .timeline::before {
+                left: 20px;
+            }
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding-left: 3rem !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+            }
+            .timeline-item:nth-child(odd) .timeline-dot,
+            .timeline-item:nth-child(even) .timeline-dot {
+                left: 10px;
+                right: auto;
+            }
         }
     </style>
     <script>
@@ -211,25 +254,26 @@
     </div>
     @endif
 
-    <main class="container">
+    <main>
         @if($page->content)
             @foreach($page->content as $block)
-                <div class="block">
+                <div> <!-- Wrapper for spacing control if needed -->
+                    
                     <!-- Text Block -->
                     @if($block['type'] === 'text')
-                        <div class="block-text">
+                        <div class="block block-text">
                             {!! $block['data']['content'] ?? '' !!}
                         </div>
                     
                     <!-- Image Block -->
                     @elseif($block['type'] === 'image')
-                        <div class="block-image">
+                        <div class="block block-image container">
                             <img src="{{ $block['data']['url'] ?? '' }}" alt="Project Image">
                         </div>
                     
                     <!-- Button Block -->
                     @elseif($block['type'] === 'button')
-                        <div class="block-button">
+                        <div class="block block-button">
                             <a href="{{ $block['data']['url'] ?? '#' }}" class="btn-awesome">
                                 {{ $block['data']['text'] ?? 'Click Here' }}
                             </a>
@@ -237,7 +281,7 @@
 
                     <!-- Table Block -->
                     @elseif($block['type'] === 'table')
-                        <div class="block-table">
+                        <div class="block block-table container">
                             <table class="custom-table">
                                 @foreach($block['data']['rows'] ?? [] as $row)
                                 <tr>
@@ -251,7 +295,7 @@
 
                     <!-- Tabs Block -->
                     @elseif($block['type'] === 'tabs')
-                        <div class="block-tabs">
+                        <div class="block block-tabs container">
                             <div class="tabs-header">
                                 @foreach($block['data']['tabs'] ?? [] as $index => $tab)
                                     <button class="tab-btn {{ $index === 0 ? 'active' : '' }}" onclick="switchTab(this, 'tab-{{ $loop->parent->index }}-{{ $index }}')">
@@ -268,20 +312,75 @@
                             </div>
                         </div>
 
-                    <!-- Features Block -->
+                    <!-- Features Block (Refactored) -->
                     @elseif($block['type'] === 'features')
-                        <div class="features-grid">
-                            <div class="feature-card">
-                                <div class="feature-title">{{ $block['data']['title1'] ?? 'Feature 1' }}</div>
-                                <p>Lorem ipsum dolor sit amet.</p>
+                        <div class="block container">
+                            <div class="features-grid">
+                                @foreach($block['data']['items'] ?? [] as $feature)
+                                <div class="feature-card">
+                                    <div class="feature-title">{{ $feature['title'] ?? 'Feature Title' }}</div>
+                                    <p>{{ $feature['description'] ?? '' }}</p>
+                                </div>
+                                @endforeach
                             </div>
-                            <div class="feature-card">
-                                <div class="feature-title">{{ $block['data']['title2'] ?? 'Feature 2' }}</div>
-                                <p>Consectetur adipiscing elit.</p>
+                        </div>
+
+                    <!-- Hero Stats Block -->
+                    @elseif($block['type'] === 'hero_stats')
+                        <div class="hero-stats container">
+                            <div class="hero-stats-content">
+                                <h2>{{ $block['data']['title'] ?? '' }}</h2>
+                                <p>{{ $block['data']['description'] ?? '' }}</p>
+                                <div class="stats-grid">
+                                    @foreach($block['data']['stats'] ?? [] as $stat)
+                                    <div class="stat-card">
+                                        <span class="stat-value">{{ $stat['value'] }}</span>
+                                        <span class="stat-label">{{ $stat['label'] }}</span>
+                                    </div>
+                                    @endforeach
+                                </div>
                             </div>
-                            <div class="feature-card">
-                                <div class="feature-title">{{ $block['data']['title3'] ?? 'Feature 3' }}</div>
-                                <p>Sed do eiusmod tempor incididunt.</p>
+                            <div class="hero-stats-image">
+                                <img src="{{ $block['data']['image'] ?? '' }}" alt="Hero Stats Image">
+                            </div>
+                        </div>
+
+                    <!-- Timeline Block -->
+                    @elseif($block['type'] === 'timeline')
+                        <div class="timeline-section">
+                            <div class="timeline">
+                                @foreach($block['data']['events'] ?? [] as $event)
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-year">{{ $event['year'] }}</div>
+                                        <h3 class="timeline-title">{{ $event['title'] }}</h3>
+                                        <span class="timeline-badge">{{ $event['badge'] }}</span>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                    <!-- Split Content Block -->
+                    @elseif($block['type'] === 'split_content')
+                        <div class="split-section">
+                            <div class="split-container {{ ($block['data']['position'] ?? 'left') === 'right' ? 'reverse' : '' }}">
+                                <div class="split-image">
+                                    <img src="{{ $block['data']['image'] ?? '' }}" alt="Split Image">
+                                </div>
+                                <div class="split-content">
+                                    <h2 class="split-title">{{ $block['data']['title'] ?? '' }}</h2>
+                                    <p class="split-desc">{{ $block['data']['description'] ?? '' }}</p>
+                                    <div class="split-stats">
+                                        @foreach($block['data']['stats'] ?? [] as $stat)
+                                        <div class="split-stat-item">
+                                            <strong>{{ $stat['value'] }}</strong>
+                                            <span>{{ $stat['label'] }}</span>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @endif

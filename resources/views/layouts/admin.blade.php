@@ -20,6 +20,12 @@
                 <a href="{{ route('admin.builder.index') }}" class="nav-link {{ request()->routeIs('admin.builder.*') ? 'active' : '' }}">
                     Page Builder
                 </a>
+                <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                    Categories
+                </a>
+                <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    Global Settings
+                </a>
             </nav>
         </aside>
 

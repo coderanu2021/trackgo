@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use App\Models\Setting;
+use App\Models\Category;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (Schema::hasTable('settings') && Schema::hasTable('categories')) {
+            $settings = Setting::all()->pluck('value', 'key')->toArray();
+            $categories_global = Category::where('is_active', true)->get();
+            
+            View::share('settings', $settings);
+            View::share('categories_global', $categories_global);
+        }
         \Illuminate\Support\Facades\Schema::defaultStringLength(191);
     }
 }
