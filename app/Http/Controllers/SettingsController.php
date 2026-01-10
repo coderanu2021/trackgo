@@ -49,15 +49,49 @@ class SettingsController extends Controller
             $menuItems = [];
             foreach ($labels as $index => $label) {
                 if(!empty($label)) {
-                    $menuItems[] = [
-                        'label' => $label,
-                        'url' => $urls[$index] ?? '#',
-                        'type' => 'link'
-                    ];
+                    $menuItems[] = ['label' => $label, 'url' => $urls[$index] ?? '#', 'type' => 'link'];
                 }
             }
             Setting::updateOrCreate(['key' => 'main_menu'], ['value' => json_encode($menuItems), 'type' => 'json']);
         }
+
+        // Footer Quick Links
+        if ($request->has('footer_quick_label')) {
+            $labels = $request->input('footer_quick_label');
+            $urls = $request->input('footer_quick_url');
+            $links = [];
+            foreach ($labels as $index => $label) {
+                if(!empty($label)) {
+                    $links[] = ['label' => $label, 'url' => $urls[$index] ?? '#'];
+                }
+            }
+            Setting::updateOrCreate(['key' => 'footer_quick_links'], ['value' => json_encode($links), 'type' => 'json']);
+        }
+
+        // Footer Company Links
+        if ($request->has('footer_company_label')) {
+            $labels = $request->input('footer_company_label');
+            $urls = $request->input('footer_company_url');
+            $links = [];
+            foreach ($labels as $index => $label) {
+                if ($label && $urls[$index]) {
+                    $links[] = ['label' => $label, 'url' => $urls[$index]];
+                }
+            }
+            Setting::updateOrCreate(['key' => 'footer_company_links'], ['value' => json_encode($links), 'type' => 'json']);
+        }
+
+        // Branding Assets
+        foreach (['site_logo', 'site_favicon'] as $field) {
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                $filename = 'branding_' . time() . '_' . $field . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/branding'), $filename);
+                Setting::updateOrCreate(['key' => $field], ['value' => 'uploads/branding/' . $filename]);
+            }
+        }
+
+        Setting::updateOrCreate(['key' => 'site_footer_about'], ['value' => $request->input('site_footer_about')]);
 
         return redirect()->back()->with('success', 'Settings updated successfully!');
     }

@@ -16,6 +16,11 @@ class ProductPage extends Model
         'hero_image',
         'is_published',
         'category_id',
+        'price',
+        'stock',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [

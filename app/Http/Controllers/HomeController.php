@@ -9,7 +9,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $projects = ProductPage::where('is_published', true)->latest()->get();
-        return view('front.home', compact('projects'));
+        $products = ProductPage::where('is_published', true)->latest()->get();
+        $categories = \App\Models\Category::where('is_active', true)->get();
+        return view('front.home', compact('products', 'categories'));
     }
 }

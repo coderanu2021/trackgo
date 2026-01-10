@@ -3,148 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Zenis - eCommerce')</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>@yield('title', $settings['site_name'] ?? 'TrackGo')</title>
+    @if(isset($settings['site_favicon']))
+        <link rel="icon" type="image/x-icon" href="{{ asset($settings['site_favicon']) }}">
+    @endif
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #ff6b00; /* Zenis Orange */
-            --secondary: #2b3445; /* Dark Blue/Black */
-            --text: #7d879c;
-            --light: #f3f5f9;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #0f172a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-light: #f8fafc;
             --white: #ffffff;
-            --border: #e3e9ef;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --radius-md: 12px;
+            --radius-lg: 20px;
         }
+        
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            color: var(--secondary);
+            color: var(--text-main);
             background-color: var(--white);
+            overflow-x: hidden;
         }
-        a { text-decoration: none; color: inherit; transition: color 0.3s; }
+
+        h1, h2, h3, .logo { font-family: 'Outfit', sans-serif; }
+        
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
         ul { list-style: none; padding: 0; margin: 0; }
         
-        /* Utility */
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 0 2rem;
         }
+
         .flex { display: flex; }
         .items-center { align-items: center; }
         .justify-between { justify-content: space-between; }
         .gap-4 { gap: 1rem; }
-        .text-primary { color: var(--primary); }
-        .bg-primary { background-color: var(--primary); color: white; }
+
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--radius-md);
             font-weight: 600;
             cursor: pointer;
             border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); }
 
-        /* Top Bar */
+        /* Navigation */
         .top-bar {
             background: var(--secondary);
-            color: white;
-            padding: 0.5rem 0;
-            font-size: 0.875rem;
-        }
-        .top-bar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            color: rgba(255,255,255,0.7);
+            padding: 0.65rem 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Header */
         .header-main {
-            padding: 1.5rem 0;
+            padding: 1.25rem 0;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             border-bottom: 1px solid var(--border);
         }
+
         .logo {
-            font-size: 2rem;
+            font-size: 1.75rem;
             font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: -0.03em;
+        }
+        .logo span { color: var(--primary); }
+
+        .search-container {
+            flex: 1;
+            max-width: 550px;
+            margin: 0 3rem;
+            position: relative;
         }
         .search-bar {
-            flex: 1;
-            max-width: 600px;
-            margin: 0 2rem;
             display: flex;
-            border: 2px solid var(--primary);
-            border-radius: 4px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
             overflow: hidden;
+            transition: border-color 0.3s;
         }
+        .search-bar:focus-within { border-color: var(--primary); }
         .search-bar input {
             flex: 1;
-            padding: 0.75rem;
+            padding: 0.75rem 1.25rem;
             border: none;
+            background: transparent;
             outline: none;
+            font-size: 0.95rem;
         }
         .search-bar button {
             background: var(--primary);
             color: white;
             border: none;
             padding: 0 1.5rem;
-            font-weight: 600;
-        }
-        .header-icons {
-            display: flex;
-            gap: 1.5rem;
-        }
-        .icon-btn {
-            position: relative;
-            font-size: 1.5rem;
-        }
-        .icon-badge {
-            position: absolute;
-            top: -5px;
-            right: -10px;
-            background: var(--primary);
-            color: white;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
         }
 
-        /* Navbar */
-        .navbar {
-            background: white;
-            border-bottom: 1px solid var(--border);
-            padding: 0;
-        }
-        .nav-menu {
+        .header-actions {
             display: flex;
-            gap: 2rem;
+            align-items: center;
+            gap: 1.75rem;
         }
-        .nav-link {
-            padding: 1rem 0;
+        .action-link {
+            position: relative;
+            font-size: 1.25rem;
+            color: var(--secondary);
+        }
+        .action-link:hover { color: var(--primary); }
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 700;
+        }
+
+        /* Navbar Links */
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .nav-item {
+            font-size: 0.95rem;
             font-weight: 600;
-            display: block;
+            color: var(--secondary);
+            padding: 1rem 0;
+            position: relative;
         }
-        .nav-link:hover { color: var(--primary); }
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        .nav-item:hover::after { width: 100%; }
 
         /* Footer */
         footer {
             background: var(--secondary);
-            color: #aeb4be;
-            padding: 4rem 0 2rem;
-            margin-top: 4rem;
+            color: #94a3b8;
+            padding: 6rem 0 3rem;
+            margin-top: 6rem;
         }
         .footer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 3rem;
-            margin-bottom: 3rem;
+            grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
         }
         .footer-title {
-            color: white;
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
             font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
         }
-        .footer-links li { margin-bottom: 0.75rem; }
-        .footer-links a:hover { color: var(--primary); }
+        .footer-links li { margin-bottom: 1rem; transition: transform 0.3s; }
+        .footer-links li:hover { transform: translateX(5px); }
+        .footer-links a:hover { color: var(--white); }
+        
+        .social-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .social-icon:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -164,43 +236,52 @@
     </div>
 
     <!-- Header Main -->
-    <div class="header-main">
+    <header class="header-main">
         <div class="container flex items-center justify-between">
-            <a href="{{ url('/') }}" class="logo">{{ $settings['site_name'] ?? 'Zenis' }}<span class="text-primary">.</span></a>
+            <a href="{{ url('/') }}" class="logo">
+                @if(isset($settings['site_logo']))
+                    <img src="{{ asset($settings['site_logo']) }}" alt="{{ $settings['site_name'] }}" style="height: 40px;">
+                @else
+                    {{ $settings['site_name'] ?? 'TrackGo' }}<span>.</span>
+                @endif
+            </a>
             
-            <div class="search-bar">
-                <select style="border:none; padding: 0 1rem; border-right:1px solid #ddd; outline:none; background:#f5f5f5;">
-                    <option>All Categories</option>
-                </select>
-                <input type="text" placeholder="Search for products...">
-                <button>Search</button>
+            <div class="search-container">
+                <form action="#" class="search-bar">
+                    <input type="text" placeholder="Search premium projects & products...">
+                    <button><i class="fas fa-search"></i></button>
+                </form>
             </div>
 
-            <div class="header-icons">
-                <a href="#" class="icon-btn">♡ <span class="icon-badge">2</span></a>
-                <a href="#" class="icon-btn">🛒 <span class="icon-badge">3</span></a>
+            <div class="header-actions">
+                <a href="{{ route('cart.index') }}" class="action-link">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="badge">{{ count(session()->get('cart', [])) }}</span>
+                </a>
                 @auth
-                    <a href="{{ route('admin.dashboard') }}" class="icon-btn">👤</a>
+                    <a href="{{ route('admin.dashboard') }}" class="action-link" title="Dashboard">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </a>
                 @else
-                    <a href="{{ route('login') }}" class="icon-btn">👤</a>
+                    <a href="{{ route('login') }}" class="action-link" title="Sign In">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
                 @endauth
             </div>
         </div>
-    </div>
+    </header>
 
     <!-- Navbar -->
-    <nav class="navbar">
+    <nav style="background: white; border-bottom: 1px solid var(--border);">
         <div class="container">
-            <ul class="nav-menu">
-                @php
-                    $menu = json_decode($settings['main_menu'] ?? '[]', true);
-                @endphp
+            <ul class="nav-links">
+                @php $menu = json_decode($settings['main_menu'] ?? '[]', true); @endphp
                 @forelse($menu as $item)
-                    <li><a href="{{ $item['url'] }}" class="nav-link">{{ $item['label'] }}</a></li>
+                    <li><a href="{{ $item['url'] }}" class="nav-item">{{ $item['label'] }}</a></li>
                 @empty
-                    <li><a href="{{ url('/') }}" class="nav-link">Home</a></li>
-                    <li><a href="{{ route('about') }}" class="nav-link">About</a></li>
-                    <li><a href="{{ route('contact') }}" class="nav-link">Contact</a></li>
+                    <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
+                    <li><a href="{{ route('about') }}" class="nav-item">About Us</a></li>
+                    <li><a href="{{ route('contact') }}" class="nav-item">Contact</a></li>
                 @endforelse
             </ul>
         </div>
@@ -214,46 +295,54 @@
         <div class="container">
             <div class="footer-grid">
                 <div>
-                    <div class="footer-title">{{ $settings['site_name'] ?? 'Zenis' }}</div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor libero id et, in gravida.</p>
-                    <div class="flex gap-4" style="margin-top:1rem;">
-                        @php
-                            $socials = json_decode($settings['social_links'] ?? '[]', true);
-                        @endphp
+                    <div class="footer-title">{{ $settings['site_name'] ?? 'TrackGo' }}</div>
+                    <p style="line-height: 1.8;">{{ $settings['site_footer_about'] ?? 'Your premium business companion for project and order management tracking.' }}</p>
+                    <div class="flex gap-4" style="margin-top:2.5rem;">
+                        @php $socials = json_decode($settings['social_links'] ?? '[]', true); @endphp
                         @foreach($socials as $social)
-                            <a href="{{ $social['url'] }}" target="_blank" style="color:white; font-size:1.2rem;">{{ $social['platform'] }}</a>
+                            <a href="{{ $social['url'] }}" target="_blank" class="social-icon" title="{{ $social['platform'] }}">
+                                <i class="fab fa-{{ strtolower($social['platform']) }}"></i>
+                            </a>
                         @endforeach
                     </div>
                 </div>
                 <div>
-                    <div class="footer-title">About Us</div>
+                    <div class="footer-title">Quick Explore</div>
                     <ul class="footer-links">
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Our Stores</a></li>
-                        <li><a href="#">Our Cares</a></li>
-                        <li><a href="#">Terms & Conditions</a></li>
+                        @php $quickLinks = json_decode($settings['footer_quick_links'] ?? '[]', true); @endphp
+                        @forelse($quickLinks as $link)
+                            <li><a href="{{ $link['url'] }}">{{ $link['label'] }}</a></li>
+                        @empty
+                            <li><a href="{{ url('/') }}">Home Portal</a></li>
+                            <li><a href="{{ route('about') }}">Who We Are</a></li>
+                            <li><a href="{{ route('contact') }}">Support Center</a></li>
+                        @endforelse
                     </ul>
                 </div>
                 <div>
-                    <div class="footer-title">Customer Care</div>
+                    <div class="footer-title">Company</div>
                     <ul class="footer-links">
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">How to Buy</a></li>
-                        <li><a href="#">Track Your Order</a></li>
-                        <li><a href="#">Returns & Refunds</a></li>
+                        @php $companyLinks = json_decode($settings['footer_company_links'] ?? '[]', true); @endphp
+                        @forelse($companyLinks as $link)
+                            <li><a href="{{ $link['url'] }}">{{ $link['label'] }}</a></li>
+                        @empty
+                            <li><a href="#">Career Opportunities</a></li>
+                            <li><a href="#">Privacy Framework</a></li>
+                            <li><a href="#">Legal Terms</a></li>
+                        @endforelse
                     </ul>
                 </div>
                 <div>
-                    <div class="footer-title">Contact Us</div>
+                    <div class="footer-title">Contact</div>
                     <ul class="footer-links">
-                        <li>{{ $settings['site_address'] ?? 'Address Here' }}</li>
-                        <li>Email: {{ $settings['site_email'] ?? 'support@example.com' }}</li>
-                        <li>Phone: {{ $settings['site_phone'] ?? '+1 234 567 890' }}</li>
+                        <li style="display:flex; gap:1rem;"><i class="fas fa-location-dot" style="margin-top:0.4rem; color: var(--primary);"></i> {{ $settings['site_address'] ?? '123 Business St, Suite 100' }}</li>
+                        <li style="display:flex; gap:1rem;"><i class="fas fa-envelope" style="margin-top:0.4rem; color: var(--primary);"></i> {{ $settings['site_email'] ?? 'support@trackgo.com' }}</li>
+                        <li style="display:flex; gap:1rem;"><i class="fas fa-phone" style="margin-top:0.4rem; color: var(--primary);"></i> {{ $settings['site_phone'] ?? '+1 234 567 890' }}</li>
                     </ul>
                 </div>
             </div>
-            <div style="text-align:center; padding-top:2rem; border-top:1px solid #3d4a5e;">
-                &copy; {{ date('Y') }} Zenis. All Rights Reserved.
+            <div style="text-align:center; padding-top:2.5rem; border-top:1px solid rgba(255,255,255,0.1); font-size:0.9rem; letter-spacing: 0.02em;">
+                &copy; {{ date('Y') }} {{ $settings['site_name'] ?? 'TrackGo' }}. Crafted with Precision in the Digital Forge.
             </div>
         </div>
     </footer>

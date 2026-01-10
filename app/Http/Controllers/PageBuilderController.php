@@ -46,6 +46,9 @@ class PageBuilderController extends Controller
             'hero_image' => $request->hero_image,
             'content' => json_decode($request->blocks, true),
             'is_published' => true,
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'meta_keywords' => $request->meta_keywords,
         ]);
 
         return redirect()->route('admin.builder.index')->with('success', 'Page created successfully!');
@@ -77,6 +80,9 @@ class PageBuilderController extends Controller
             'slug' => $slug,
             'hero_image' => $request->hero_image,
             'content' => json_decode($request->blocks, true),
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'meta_keywords' => $request->meta_keywords,
         ]);
 
         return redirect()->route('admin.builder.index')->with('success', 'Page updated successfully!');

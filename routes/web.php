@@ -8,6 +8,8 @@ use App\Http\Controllers\PageBuilderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -36,6 +38,15 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('builder/{id}', [PageBuilderController::class, 'update'])->name('builder.update');
     Route::delete('builder/{id}', [PageBuilderController::class, 'destroy'])->name('builder.destroy');
     Route::post('builder/upload', [PageBuilderController::class, 'upload'])->name('builder.upload');
+
+    // Orders Routes
+    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'update']);
+
+    // Users Routes
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'destroy']);
+
+    // Blogs Routes
+    Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
 });
 
 // Front Routes
@@ -43,3 +54,13 @@ Route::get('category/{slug}', [CategoryController::class, 'show'])->name('catego
 Route::view('about', 'front.about')->name('about');
 Route::view('contact', 'front.contact')->name('contact');
 Route::get('projects/{slug}', [PageBuilderController::class, 'show'])->name('projects.show');
+
+// Cart Routes
+Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::patch('cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::delete('cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+// Checkout Routes
+Route::get('checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('checkout', [CheckoutController::class, 'process'])->name('checkout.process');

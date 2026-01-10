@@ -1,56 +1,81 @@
 @extends('layouts.admin')
 
 @section('content')
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h1 style="font-size: 1.875rem; font-weight: 700; color: #111827;">All Projects</h1>
-    <a href="{{ route('admin.builder.create') }}" class="btn-primary" style="width: auto; padding: 0.75rem 2rem;">Create New Page</a>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+    <div>
+        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Landing Page Repository</h1>
+        <p style="color: var(--text-muted); font-size: 1rem;">Design and deploy high-conversion project pages.</p>
+    </div>
+    <a href="{{ route('admin.builder.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">
+        <i class="fas fa-sparkles"></i> Create Experience
+    </a>
 </div>
 
-<div class="glass" style="border-radius: var(--radius-lg); overflow: hidden;">
-    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+<div class="table-container">
+    <table id="builder-table">
         <thead>
-            <tr style="background: rgba(0,0,0,0.02); border-bottom: 1px solid rgba(0,0,0,0.05);">
-                <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-light);">Title</th>
-                <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-light);">Slug</th>
-                <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-light);">Public URL</th>
-                <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-light);">Last Updated</th>
-                <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-light); text-align: right;">Actions</th>
+            <tr>
+                <th>Page Identity</th>
+                <th>Public Link</th>
+                <th>System Status</th>
+                <th>Last Update</th>
+                <th style="text-align: right;">Operations</th>
             </tr>
         </thead>
         <tbody>
             @foreach($projects as $project)
-            <tr style="border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.2s;">
-                <td style="padding: 1rem 1.5rem; font-weight: 500;">
-                    {{ $project->title }}
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 42px; height: 42px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-soft);">
+                            <i class="fas fa-window-maximize" style="color: var(--accent); font-size: 1rem;"></i>
+                        </div>
+                        <div style="font-weight: 700; color: var(--text-main);">{{ $project->title }}</div>
+                    </div>
                 </td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-light);">
-                    {{ $project->slug }}
+                <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">/projects/{{ $project->slug }}</td>
+                <td>
+                    <a href="{{ route('projects.show', $project->slug) }}" target="_blank" class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); text-decoration: none; border: 1px solid rgba(99, 102, 241, 0.2);">
+                        PREVIEW <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.65rem; margin-left: 0.4rem;"></i>
+                    </a>
                 </td>
-                <td style="padding: 1rem 1.5rem;">
-                    <a href="{{ route('projects.show', $project->slug) }}" target="_blank" style="color: var(--primary-color); text-decoration: none;">View Live &nearr;</a>
-                </td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-light);">
-                    {{ $project->updated_at->diffForHumans() }}
-                </td>
-                <td style="padding: 1rem 1.5rem; text-align: right;">
-                    <a href="{{ route('admin.builder.edit', $project->id) }}" style="color: var(--primary-color); text-decoration: none; margin-right: 1rem; font-weight: 500;">Edit</a>
-                    
-                    <form action="{{ route('admin.builder.destroy', $project->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this page?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" style="background: none; border: none; color: #ef4444; font-weight: 500; cursor: pointer;">Delete</button>
-                    </form>
+                <td style="color: var(--text-light); font-weight: 500;">{{ $project->updated_at->diffForHumans() }}</td>
+                <td style="text-align: right;">
+                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                        <a href="{{ route('admin.builder.edit', $project->id) }}" class="btn" style="background: var(--bg-main); color: var(--accent); width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
+                            <i class="fas fa-layer-group"></i>
+                        </a>
+                        <form action="{{ route('admin.builder.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Delete this landing page?')" style="display: inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.05); color: #ef4444; width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
+                                <i class="fas fa-trash-can"></i>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             @endforeach
-            @if($projects->isEmpty())
-            <tr>
-                <td colspan="5" style="padding: 3rem; text-align: center; color: var(--text-light);">
-                    No projects found. <a href="{{ route('admin.builder.create') }}" style="color: var(--primary-color);">Create one now</a>.
-                </td>
-            </tr>
-            @endif
         </tbody>
     </table>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#builder-table').DataTable({
+        "pageLength": 10,
+        "ordering": true,
+        "info": true,
+        "order": [[3, "desc"]],
+        "language": {
+            "search": "",
+            "searchPlaceholder": "Search repository...",
+            "paginate": {
+                "previous": "<i class='fas fa-chevron-left'></i>",
+                "next": "<i class='fas fa-chevron-right'></i>"
+            }
+        }
+    });
+});
+</script>
 @endsection
