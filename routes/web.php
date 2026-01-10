@@ -12,6 +12,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('pricing', [HomeController::class, 'pricing'])->name('pricing');
+Route::get('faqs', [HomeController::class, 'faqs'])->name('faqs');
 
 
 // Auth Routes
@@ -47,13 +49,24 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Blogs Routes
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
+
+    // Plans & FAQs
+    Route::resource('plans', \App\Http\Controllers\Admin\PlanController::class);
+    Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
+    Route::resource('newsletters', \App\Http\Controllers\Admin\NewsletterController::class)->only(['index', 'destroy']);
+    Route::post('newsletters/{newsletter}/toggle', [\App\Http\Controllers\Admin\NewsletterController::class, 'toggle'])->name('newsletters.toggle');
 });
+
+// Newsletter Route
+Route::post('newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 // Front Routes
 Route::get('category/{slug}', [CategoryController::class, 'show'])->name('category.show');
 Route::view('about', 'front.about')->name('about');
 Route::view('contact', 'front.contact')->name('contact');
 Route::get('projects/{slug}', [PageBuilderController::class, 'show'])->name('projects.show');
+Route::get('blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
+Route::get('blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blogs.show');
 
 // Cart Routes
 Route::get('cart', [CartController::class, 'index'])->name('cart.index');

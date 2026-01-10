@@ -15,6 +15,7 @@ class AdminController extends Controller
             'products' => \App\Models\ProductPage::count(),
             'categories' => \App\Models\Category::count(),
             'blogs' => \App\Models\Blog::count(),
+            'subscribers' => \App\Models\Newsletter::count(),
         ];
 
         $recent_orders = \App\Models\Order::latest()->take(5)->get();

@@ -45,6 +45,15 @@
                 <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                     <i class="fas fa-tags"></i> Categories
                 </a>
+                <a href="{{ route('admin.plans.index') }}" class="nav-link {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}">
+                    <i class="fas fa-layer-group"></i> Pricing Plans
+                </a>
+                <a href="{{ route('admin.faqs.index') }}" class="nav-link {{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
+                    <i class="fas fa-question-circle"></i> FAQs
+                </a>
+                <a href="{{ route('admin.newsletters.index') }}" class="nav-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
+                    <i class="fas fa-paper-plane"></i> Newsletter
+                </a>
 
                 <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;">Management</div>
                 

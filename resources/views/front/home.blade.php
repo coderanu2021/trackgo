@@ -1,286 +1,361 @@
 @extends('layouts.front')
 
-@section('title', 'Zenis - Home')
-
 @section('content')
 <style>
-    /* Hero Section */
+    /* Hero */
     .hero-section {
-        padding: 3rem 0;
-        position: relative;
+        background: var(--white);
+        padding: 2rem 0;
     }
-    .hero-banner {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        border-radius: var(--radius-lg);
-        min-height: 550px;
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        gap: 2rem;
+    }
+    .hero-slider {
+        background: #f6f9fc;
+        border-radius: 8px;
+        padding: 4rem;
         display: flex;
         align-items: center;
-        overflow: hidden;
         position: relative;
+        overflow: hidden;
     }
-    .hero-content {
-        padding: 5rem;
-        z-index: 10;
-        max-width: 650px;
-    }
-    .hero-sub {
-        color: var(--primary);
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
+    .hero-content h1 {
+        font-size: 3rem;
         margin-bottom: 1rem;
-        display: block;
+        line-height: 1.2;
     }
-    .hero-title {
-        color: white;
-        font-size: 4rem;
-        font-weight: 800;
-        line-height: 1.1;
+    .hero-content p {
+        font-size: 1.25rem;
+        color: var(--text);
         margin-bottom: 2rem;
-        letter-spacing: -0.03em;
     }
-    .hero-image {
-        position: absolute;
-        right: 0;
-        top: 0;
-        height: 100%;
-        width: 50%;
-        object-fit: cover;
-        opacity: 0.9;
-        mask-image: linear-gradient(to left, black 60%, transparent 100%);
+    .btn-shop {
+        background: var(--primary);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        display: inline-block;
     }
 
     /* Features */
+    .features-section {
+        padding: 3rem 0;
+    }
     .features-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
-        margin-top: -3rem;
-        position: relative;
-        z-index: 20;
+        gap: 2rem;
     }
-    .feature-card {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 2rem;
-        border-radius: var(--radius-md);
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-        transition: transform 0.3s;
-    }
-    .feature-card:hover { transform: translateY(-5px); }
-    .feature-icon-box {
-        width: 50px;
-        height: 50px;
-        background: rgba(99, 102, 241, 0.1);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--primary);
-        font-size: 1.25rem;
-    }
-
-    /* Product Cards */
-    .section-label {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 3rem;
+    .feature-item {
         display: flex;
         align-items: center;
         gap: 1rem;
+        padding: 1.5rem;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        transition: box-shadow 0.3s;
     }
-    .section-label::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--border);
+    .feature-item:hover {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    .feature-icon {
+        font-size: 2rem;
+        color: var(--primary);
     }
 
+    /* Section Headers */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .section-title::before {
+        content: '';
+        display: block;
+        width: 4px;
+        height: 24px;
+        background: var(--primary);
+        border-radius: 2px;
+    }
+
+    /* Product Grid */
     .product-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 2.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
     }
-    .p-card {
-        background: var(--white);
-        border-radius: var(--radius-md);
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    .product-card {
+        background: white;
         border: 1px solid var(--border);
-        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s;
     }
-    .p-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    .product-card:hover {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         border-color: transparent;
     }
-    .p-img-box {
-        aspect-ratio: 4/5;
-        background: var(--bg-light);
+    .product-img {
+        height: 250px;
+        background: #f9f9f9;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 2rem;
-        overflow: hidden;
+        position: relative;
     }
-    .p-img-box img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        transition: transform 0.6s;
+    .product-img img {
+        max-width: 80%;
+        max-height: 80%;
     }
-    .p-card:hover .p-img-box img { transform: scale(1.1); }
-    
-    .p-info { padding: 1.5rem; }
-    .p-cat {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        font-weight: 700;
+    .product-info {
+        padding: 1.5rem;
+    }
+    .product-category {
+        font-size: 0.85rem;
+        color: var(--text);
         margin-bottom: 0.5rem;
     }
-    .p-name {
-        font-weight: 700;
-        font-size: 1.15rem;
-        margin-bottom: 0.75rem;
-        color: var(--secondary);
+    .product-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
     }
-    .p-price {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 800;
+    .product-price {
         color: var(--primary);
+        font-weight: 700;
+        font-size: 1.1rem;
     }
-    .p-action {
-        position: absolute;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.3s;
+    .product-rating {
+        color: #ffc107;
+        font-size: 0.9rem;
     }
-    .p-card:hover .p-action { opacity: 1; transform: translateY(0); }
 </style>
 
 <!-- Hero -->
 <section class="hero-section container">
-    <div class="hero-banner">
-        <div class="hero-content">
-            <span class="hero-sub">Summer Collection 2026</span>
-            <h1 class="hero-title">Elevate Your<br>Creative Style<span>.</span></h1>
-            <p style="color: rgba(255,255,255,0.7); font-size: 1.15rem; margin-bottom: 3rem; line-height: 1.7;">
-                Discover a curated collection of premium products and innovative projects designed for the modern creator.
-            </p>
-            <a href="#shop" class="btn btn-primary" style="padding: 1.15rem 2.5rem; font-size: 1.05rem;">
-                Explore Collection <i class="fas fa-arrow-right"></i>
-            </a>
+    <style>
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr 250px; /* Sidebar | Slider | Banners */
+            gap: 2rem;
+        }
+        /* Mobile responsive fix */
+        @media (max-width: 1024px) {
+            .hero-grid { grid-template-columns: 1fr; }
+            .category-sidebar { display: none; }
+        }
+        .category-sidebar {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .cat-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            transition: 0.3s;
+        }
+        .cat-link:hover { padding-left: 1.5rem; color: var(--primary); }
+    </style>
+
+    <div class="hero-grid">
+        <!-- Sidebar -->
+        <div class="category-sidebar">
+            <div style="background:var(--secondary); color:white; padding:1rem; font-weight:600;">Browse Categories</div>
+            @if(isset($categories))
+                @foreach($categories as $cat)
+                <a href="{{ route('category.show', $cat->slug) }}" class="cat-link">
+                    @if($cat->icon) <i class="{{ $cat->icon }}"></i> @endif
+                    {{ $cat->name }}
+                </a>
+                @endforeach
+            @endif
         </div>
-        <img src="{{ asset('brain/39b36ce9-2dd6-4117-8634-bcaf44d5170d/hero_fashion_creative_1768026224591.png') }}" class="hero-image" alt="Luxury Fashion">
+
+        <!-- Slider -->
+        <div class="hero-slider">
+            <div class="hero-content">
+                <p class="text-primary" style="font-weight:600;">Trending Item</p>
+                <h1>Women's Latest<br>Fashion Sale</h1>
+                <p>Starting at $20.00</p>
+                <a href="#" class="btn-shop">Shop Now</a>
+            </div>
+            <div style="flex:1; text-align:right;">
+                <!-- Placeholder for Hero Image -->
+                <div style="width:300px; height:300px; background:#ddd; display:inline-block; border-radius:50%;"></div>
+            </div>
+        </div>
+
+        <!-- Banners -->
+        <div style="display:flex; flex-direction:column; gap:2rem;">
+            <div style="flex:1; background:#edf2f7; border-radius:8px; padding:2rem; display:flex; flex-direction:column; justify-content:center;">
+                <h3>Summer Offer</h3>
+                <p class="text-primary">New Arraival</p>
+            </div>
+            <div style="flex:1; background:#2b3445; color:white; border-radius:8px; padding:2rem; display:flex; flex-direction:column; justify-content:center;">
+                <h3>AMLED Sound</h3>
+                <p>Headphone</p>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- Features Bar -->
-<section class="container">
+<!-- Features -->
+<section class="features-section container">
     <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon-box"><i class="fas fa-truck-fast"></i></div>
+        <div class="feature-item">
+            <div class="feature-icon">🚚</div>
             <div>
-                <div style="font-weight: 700;">Global Express</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">Secure worldwide shipping</div>
+                <div style="font-weight:600;">Free Shipping</div>
+                <div style="font-size:0.85rem; color:var(--text);">From all orders over $100</div>
             </div>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon-box"><i class="fas fa-shield-halved"></i></div>
+        <div class="feature-item">
+            <div class="feature-icon">💳</div>
             <div>
-                <div style="font-weight: 700;">Safe Transact</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">End-to-end encryption</div>
+                <div style="font-weight:600;">Secure Payment</div>
+                <div style="font-size:0.85rem; color:var(--text);">100% secure payment</div>
             </div>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon-box"><i class="fas fa-headset"></i></div>
+        <div class="feature-item">
+            <div class="feature-icon">🎧</div>
             <div>
-                <div style="font-weight: 700;">Expert Support</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">24/7 technical assistance</div>
+                <div style="font-weight:600;">24/7 Support</div>
+                <div style="font-size:0.85rem; color:var(--text);">Ready support</div>
             </div>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon-box"><i class="fas fa-arrows-rotate"></i></div>
+        <div class="feature-item">
+            <div class="feature-icon">🎁</div>
             <div>
-                <div style="font-weight: 700;">Easy Returns</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">30-day seamless process</div>
+                <div style="font-weight:600;">Gift Service</div>
+                <div style="font-size:0.85rem; color:var(--text);">Support gift box</div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Taxonomy & Shop -->
-<section id="shop" class="container" style="padding: 8rem 0;">
-    <div style="display: flex; gap: 4rem;">
-        <!-- Left Sidebar: Categorization -->
-        <aside style="width: 300px; flex-shrink: 0;">
-            <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">Categories</h3>
-            <div style="background: var(--bg-light); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border);">
-                @if(isset($categories))
-                    @foreach($categories as $cat)
-                    <a href="{{ route('category.show', $cat->slug) }}" 
-                       style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.95rem; transition: 0.3s; transition: all 0.3s ease;"
-                       onmouseover="this.style.background='white'; this.style.color='var(--primary)';"
-                       onmouseout="this.style.background='transparent'; this.style.color='inherit';">
-                        <span style="display: flex; align-items: center; gap: 0.75rem;">
-                            <i class="{{ $cat->icon ?? 'fas fa-chevron-right' }}" style="font-size: 0.85rem; width: 20px;"></i>
-                            {{ $cat->name }}
-                        </span>
-                        <i class="fas fa-angle-right" style="font-size: 0.75rem; opacity: 0.5;"></i>
-                    </a>
+<!-- Projects / Products -->
+<section class="container" style="padding: 4rem 0;">
+    <div class="section-header">
+        <h2 class="section-title">New Arrivals</h2>
+        <a href="#" class="text-primary">View All</a>
+    </div>
+
+    <div class="product-grid">
+        @forelse($products as $product)
+        <div class="product-card">
+            <div class="product-img">
+                @if($product->hero_image)
+                    <img src="{{ $product->hero_image }}" alt="{{ $product->title }}">
+                @else
+                    <span>No Image</span>
+                @endif
+            </div>
+            <div class="product-info">
+                <div class="product-category">{{ $product->category->name ?? 'General' }}</div>
+                <h3 class="product-title">
+                    <a href="{{ route('projects.show', $product->slug) }}">{{ $product->title }}</a>
+                </h3>
+                <div class="flex justify-between items-center">
+                    <span class="product-price">${{ number_format($product->price, 2) }}</span>
+                    <a href="{{ route('cart.add', $product->id) }}" class="btn-shop" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div style="grid-column: 1/-1; text-align:center;">No items found.</div>
+        @endforelse
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="container" style="padding: 6rem 0;">
+    <div style="text-align: center; margin-bottom: 5rem;">
+        <h2 class="section-title">Strategic Pricing</h2>
+        <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            Choose a plan that fits your vision. Risk-free commitment with world-class support.
+        </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
+        @php $plans = \App\Models\Plan::where('is_active', true)->get(); @endphp
+        @foreach($plans as $plan)
+        <div style="background: white; border: 1px solid {{ $plan->is_featured ? 'var(--primary)' : 'var(--border)' }}; border-radius: 20px; padding: 3rem 2rem; display: flex; flex-direction: column; transition: 0.3s; {{ $plan->is_featured ? 'box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);' : '' }}">
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--secondary);">{{ $plan->name }}</h3>
+            <div style="display: flex; align-items: baseline; gap: 0.25rem; margin-bottom: 1.5rem;">
+                <span style="font-size: 2.5rem; font-weight: 800; color: var(--secondary); font-family: 'Outfit', sans-serif;">${{ number_format($plan->price, 0) }}</span>
+                <span style="color: var(--text-muted); font-weight: 600;">/{{ $plan->cycle }}</span>
+            </div>
+            <div style="margin-bottom: 2rem; flex: 1;">
+                @php $features = json_decode($plan->features) @endphp
+                @if($features)
+                    @foreach(array_slice($features, 0, 4) as $feature)
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; font-size: 0.95rem;">
+                        <i class="fas fa-check" style="color: var(--primary); font-size: 0.8rem;"></i>
+                        <span>{{ $feature }}</span>
+                    </div>
                     @endforeach
                 @endif
             </div>
-            
-            <!-- Banner Ad -->
-            <div style="margin-top: 3rem; background: var(--secondary); border-radius: var(--radius-md); padding: 2.5rem; color: white;">
-                <h4 style="font-size: 1.25rem; margin-bottom: 1rem;">Newsletter</h4>
-                <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem;">Get exclusive offers and product updates.</p>
-                <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" placeholder="Email" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); padding: 0.75rem; border-radius: 8px; color: white; width: 100%;">
-                    <button class="btn btn-primary" style="padding: 0 1rem;"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Right Content: Products -->
-        <div style="flex: 1;">
-            <div class="section-label">Featured Collections</div>
-            <div class="product-grid">
-                @forelse($products as $product)
-                <div class="p-card">
-                    <div class="p-img-box">
-                        <img src="{{ $product->hero_image ?? 'https://via.placeholder.com/400x500?text=Premium+Item' }}" alt="{{ $product->title }}">
-                    </div>
-                    <div class="p-info">
-                        <div class="p-cat">{{ $product->category->name ?? 'Premium' }}</div>
-                        <h3 class="p-name">{{ $product->title }}</h3>
-                        <div class="p-price">${{ number_format($product->price, 2) }}</div>
-                    </div>
-                    <div class="p-action">
-                        <a href="{{ route('cart.add', $product->id) }}" class="btn btn-primary" style="width: 45px; height: 45px; justify-content: center; padding: 0; border-radius: 50%;">
-                            <i class="fas fa-cart-plus"></i>
-                        </a>
-                    </div>
-                    <a href="{{ route('projects.show', $product->slug) }}" style="position: absolute; inset: 0; z-index: 1;"></a>
-                </div>
-                @empty
-                    <div style="text-align: center; padding: 5rem; grid-column: 1/-1;">
-                        <i class="fas fa-magnifying-glass" style="font-size: 3rem; color: var(--border); margin-bottom: 1.5rem;"></i>
-                        <p style="color: var(--text-muted);">No products found in our collection.</p>
-                    </div>
-                @endforelse
-            </div>
+            <a href="{{ route('pricing') }}" class="btn {{ $plan->is_featured ? 'btn-primary' : '' }}" style="width: 100%; justify-content: center; font-size: 0.9rem; font-weight: 800; background: {{ $plan->is_featured ? 'var(--primary)' : '#f8fafc' }}; color: {{ $plan->is_featured ? 'white' : 'var(--secondary)' }};">
+                Select Plan
+            </a>
         </div>
+        @endforeach
+    </div>
+</section>
+
+<!-- Blog Section -->
+<section class="container" style="padding: 4rem 0; background: #f9f9f9; border-radius: 12px; margin-bottom: 4rem;">
+    <div class="section-header">
+        <h2 class="section-title">Latest Articles</h2>
+        <a href="{{ route('blogs.index') }}" class="text-primary">View All Posts</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2.5rem;">
+        @forelse($blogs as $blog)
+        <article style="background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s;" 
+                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.05)';"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+            @if($blog->image)
+                <div style="height: 200px; overflow: hidden;">
+                    <img src="{{ $blog->image }}" alt="{{ $blog->title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            @endif
+            <div style="padding: 2rem;">
+                <div style="font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                    {{ $blog->created_at->format('M d, Y') }}
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; color: var(--secondary); line-height: 1.4;">
+                    <a href="{{ route('blogs.show', $blog->slug) }}">{{ $blog->title }}</a>
+                </h3>
+                <p style="color: var(--text); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                    {{ Str::limit(strip_tags($blog->content), 120) }}
+                </p>
+                <a href="{{ route('blogs.show', $blog->slug) }}" style="font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+                    READ ARTICLE <i class="fas fa-arrow-right" style="font-size: 0.75rem;"></i>
+                </a>
+            </div>
+        </article>
+        @empty
+        <div style="grid-column: 1/-1; text-align:center;">No blog posts available.</div>
+        @endforelse
     </div>
 </section>
 @endsection

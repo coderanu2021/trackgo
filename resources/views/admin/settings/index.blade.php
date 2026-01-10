@@ -146,6 +146,36 @@
         </div>
     </div>
 
+    <div class="card" style="margin-top: 2rem;">
+        <h3 style="margin-top: 0; margin-bottom: 1.5rem;">
+            <i class="fas fa-file-invoice" style="color:var(--primary); margin-right: 0.5rem;"></i> Dynamic Page Content
+        </h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+                <h4>About Page</h4>
+                <div class="form-group">
+                    <label class="form-label">About Page Title</label>
+                    <input type="text" name="site_about_title" class="form-control" value="{{ $settings['site_about_title'] ?? 'Crafting Tomorrow\'s Technology' }}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Our Narrative (About Content)</label>
+                    <textarea name="site_about_content" class="form-control" rows="8">{{ $settings['site_about_content'] ?? '' }}</textarea>
+                </div>
+            </div>
+            <div>
+                <h4>Contact Page</h4>
+                <div class="form-group">
+                    <label class="form-label">Google Maps Embed URL / Iframe Code</label>
+                    <textarea name="site_contact_map" class="form-control" rows="4">{{ $settings['site_contact_map'] ?? '' }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Footer Tagline</label>
+                    <textarea name="site_footer_about" class="form-control" rows="4" placeholder="Brief elevator pitch for footer...">{{ $settings['site_footer_about'] ?? '' }}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
         <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem; font-size: 1rem;">
             <i class="fas fa-save"></i> Save Global Settings

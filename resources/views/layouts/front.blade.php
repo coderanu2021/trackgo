@@ -280,6 +280,9 @@
                     <li><a href="{{ $item['url'] }}" class="nav-item">{{ $item['label'] }}</a></li>
                 @empty
                     <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
+                    <li><a href="{{ route('blogs.index') }}" class="nav-item">Blog</a></li>
+                    <li><a href="{{ route('pricing') }}" class="nav-item">Pricing</a></li>
+                    <li><a href="{{ route('faqs') }}" class="nav-item">FAQs</a></li>
                     <li><a href="{{ route('about') }}" class="nav-item">About Us</a></li>
                     <li><a href="{{ route('contact') }}" class="nav-item">Contact</a></li>
                 @endforelse
@@ -289,6 +292,33 @@
 
     <!-- Main Content -->
     @yield('content')
+
+    <!-- Newsletter Banner -->
+    <section style="background: var(--primary); padding: 5rem 0; position: relative; overflow: hidden;">
+        <div class="container" style="position: relative; z-index: 2;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+                <div style="color: white;">
+                    <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; font-family: 'Outfit', sans-serif;">Join the Pulse.</h2>
+                    <p style="font-size: 1.15rem; color: rgba(255,255,255,0.8); line-height: 1.6;">
+                        Subscribe to our premium newsletter for exclusive insights, early access to projects, and strategic industry updates.
+                    </p>
+                </div>
+                <div>
+                    <form id="newsletter-form" style="display: flex; gap: 1rem; background: white; padding: 0.5rem; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+                        @csrf
+                        <input type="email" name="email" placeholder="Enter your professional email..." 
+                               style="flex: 1; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-size: 1rem; outline: none;" required>
+                        <button type="submit" class="btn btn-primary" style="padding: 1rem 2rem; border-radius: 12px; font-weight: 800; display: flex; align-items: center; gap: 0.75rem;">
+                            SUBSCRIBE <i class="fas fa-paper-plane" style="font-size: 0.85rem;"></i>
+                        </button>
+                    </form>
+                    <div id="newsletter-message" style="margin-top: 1rem; font-weight: 600; display: none;"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Decorative Circle -->
+        <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -314,6 +344,8 @@
                             <li><a href="{{ $link['url'] }}">{{ $link['label'] }}</a></li>
                         @empty
                             <li><a href="{{ url('/') }}">Home Portal</a></li>
+                            <li><a href="{{ route('pricing') }}">Strategic Pricing</a></li>
+                            <li><a href="{{ route('faqs') }}">Knowledge Base</a></li>
                             <li><a href="{{ route('about') }}">Who We Are</a></li>
                             <li><a href="{{ route('contact') }}">Support Center</a></li>
                         @endforelse
@@ -347,5 +379,37 @@
         </div>
     </footer>
 
+    <script>
+        $(document).ready(function() {
+            $('#newsletter-form').on('submit', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const btn = form.find('button');
+                const msg = $('#newsletter-message');
+                
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> PROCESSING...');
+                msg.hide();
+
+                $.ajax({
+                    url: "{{ route('newsletter.subscribe') }}",
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if(response.success) {
+                            form.slideUp();
+                            msg.html(response.message).css('color', '#fff').fadeIn();
+                        } else {
+                            msg.html(response.message).css('color', '#fee2e2').fadeIn();
+                            btn.prop('disabled', false).html('SUBSCRIBE <i class="fas fa-paper-plane"></i>');
+                        }
+                    },
+                    error: function() {
+                        msg.html('An unexpected error occurred. Please try again.').css('color', '#fee2e2').fadeIn();
+                        btn.prop('disabled', false).html('SUBSCRIBE <i class="fas fa-paper-plane"></i>');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -67,6 +67,17 @@
                 <div class="stat-value">{{ $stats['blogs'] + $stats['products'] }} Items</div>
             </div>
         </div>
+        <div class="stat-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div class="stat-icon" style="background: var(--primary-soft); color: var(--primary);">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+            </div>
+            <div>
+                <div class="stat-label">Subscribers</div>
+                <div class="stat-value">{{ number_format($stats['subscribers']) }}</div>
+            </div>
+        </div>
     </div>
 
     <div style="display: grid; grid-template-columns: 1.8fr 1fr; gap: 2rem; align-items: start;">

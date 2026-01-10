@@ -91,7 +91,13 @@ class SettingsController extends Controller
             }
         }
 
-        Setting::updateOrCreate(['key' => 'site_footer_about'], ['value' => $request->input('site_footer_about')]);
+        // Simple text fields
+        $fields = ['site_phone', 'site_email', 'site_address', 'site_name', 'site_currency', 'site_footer_about', 'site_about_title', 'site_about_content', 'site_contact_map'];
+        foreach($fields as $field) {
+            if ($request->has($field)) {
+                Setting::updateOrCreate(['key' => $field], ['value' => $request->input($field)]);
+            }
+        }
 
         return redirect()->back()->with('success', 'Settings updated successfully!');
     }
