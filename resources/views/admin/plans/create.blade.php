@@ -17,7 +17,7 @@
             <input type="text" name="name" class="form-control" placeholder="e.g. Professional" required>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="form-row">
             <div class="form-group">
                 <label>Price</label>
                 <input type="number" step="0.01" name="price" class="form-control" placeholder="79.00" required>
@@ -37,13 +37,15 @@
             <textarea name="features" class="form-control" rows="6" placeholder="Unlimited Products&#10;Priority Support&#10;API Access"></textarea>
         </div>
 
-        <div style="display: flex; gap: 2rem; margin-top: 1rem;">
-            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                <input type="checkbox" name="is_featured" value="1"> Featured Plan
-            </label>
-            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                <input type="checkbox" name="is_active" value="1" checked> Active
-            </label>
+        <div class="flex gap-4 mt-2">
+            <div class="form-check">
+                <input type="checkbox" name="is_featured" id="is_featured" value="1">
+                <label for="is_featured">Featured Plan</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="is_active" id="is_active" value="1" checked>
+                <label for="is_active">Active</label>
+            </div>
         </div>
 
         <div style="margin-top: 2rem;">

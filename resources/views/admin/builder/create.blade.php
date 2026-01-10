@@ -14,60 +14,68 @@
 <form id="page-form" action="{{ route('admin.builder.store') }}" method="POST">
     @csrf
     
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
-        <div style="display: grid; gap: 1.5rem; align-content: start;">
+    <div class="form-row" style="grid-template-columns: 2fr 1fr;">
+        <div class="flex flex-col gap-4">
             <!-- Block Editor -->
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.25rem; font-weight: 600; margin: 0;">Content Blocks</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 style="font-size: 1.1rem; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Content Blocks</h2>
                     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button type="button" onclick="addBlock('text')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">+ Text</button>
-                        <button type="button" onclick="addBlock('image')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">+ Image</button>
-                        <button type="button" onclick="addBlock('button')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">+ Button</button>
+                        <button type="button" onclick="addBlock('text')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                            <i class="fas fa-font" style="font-size: 0.8rem;"></i> Text
+                        </button>
+                        <button type="button" onclick="addBlock('image')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                            <i class="fas fa-image" style="font-size: 0.8rem;"></i> Image
+                        </button>
+                        <button type="button" onclick="addBlock('button')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                            <i class="fas fa-link" style="font-size: 0.8rem;"></i> Button
+                        </button>
                     </div>
                 </div>
 
-                <div id="blocks-container" style="display: flex; flex-direction: column; gap: 1rem;">
-                    <p id="empty-state" style="text-align: center; color: var(--text-light); padding: 3rem; border: 2px dashed var(--border); border-radius: var(--radius-md);">
-                        <i class="fas fa-cubes" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.3;"></i><br>
-                        No content blocks added yet. Start building your page!
+                <div id="blocks-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <p id="empty-state" style="text-align: center; color: var(--text-light); padding: 4rem 2rem; border: 2px dashed var(--border-soft); border-radius: var(--radius-lg); background: var(--bg-main);">
+                        <i class="fas fa-cubes" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.2;"></i><br>
+                        <span style="font-size: 0.95rem; font-weight: 500;">No content blocks added yet. Start building your page!</span>
                     </p>
                 </div>
             </div>
 
             <div class="card">
-                <h3 style="margin-top: 0; margin-bottom: 1.5rem;"><i class="fas fa-search" style="color:var(--primary)"></i> SEO Optimization</h3>
+                <h3 style="margin-top: 0; margin-bottom: 1.5rem;"><i class="fas fa-search" style="color:var(--primary); margin-right: 0.5rem;"></i> SEO Optimization</h3>
                 <div class="form-group">
-                    <label class="form-label">Meta Title</label>
+                    <label>Meta Title</label>
                     <input type="text" name="meta_title" class="form-control" placeholder="SEO Title">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Meta Keywords</label>
-                    <input type="text" name="meta_keywords" class="form-control" placeholder="keyword1, keyword2...">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Meta Keywords</label>
+                        <input type="text" name="meta_keywords" class="form-control" placeholder="keyword1, keyword2...">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Meta Description</label>
+                <div class="form-group mb-0">
+                    <label>Meta Description</label>
                     <textarea name="meta_description" rows="3" class="form-control" placeholder="Brief summary for search engines..."></textarea>
                 </div>
             </div>
         </div>
 
-        <div style="display: grid; gap: 1.5rem; align-content: start;">
+        <div class="flex flex-col gap-4">
             <div class="card">
-                <h2 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">Page Details</h2>
+                <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Page Details</h2>
                 
                 <div class="form-group">
-                    <label class="form-label">Page Title</label>
+                    <label>Page Title</label>
                     <input type="text" name="title" class="form-control" placeholder="e.g. Summer Collection" required>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">URL Slug (Optional)</label>
+                    <label>URL Slug (Optional)</label>
                     <input type="text" name="slug" class="form-control" placeholder="summer-collection">
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Hero Image URL</label>
+                <div class="form-group mb-0">
+                    <label>Hero Image URL</label>
                     <input type="url" name="hero_image" class="form-control" placeholder="https://...">
                 </div>
             </div>

@@ -27,64 +27,74 @@
             const el = document.createElement('div');
             el.className = 'card';
             el.style.position = 'relative';
-            el.style.marginBottom = '1.5rem';
-            el.style.borderLeft = '4px solid var(--primary)';
+            el.style.borderLeft = '4px solid var(--primary-soft)';
+            el.style.transition = 'all 0.3s ease';
 
             let contentHtml = '';
             
             // --- TEXT BLOCK ---
             if (block.type === 'text') {
                 contentHtml = `
-                    <div style="margin-bottom:1rem; font-weight:700; color:var(--primary); font-size:0.8rem; text-transform:uppercase;">
-                        <i class="fas fa-align-left"></i> Text Content
+                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-align-left"></i> Text Narrative Block
                     </div>
-                    <textarea id="editor-${index}">${block.data.content || ''}</textarea>
+                    <div class="form-group mb-0">
+                        <textarea id="editor-${index}">${block.data.content || ''}</textarea>
+                    </div>
                 `;
             } 
             // --- IMAGE BLOCK ---
             else if (block.type === 'image') {
                 contentHtml = `
-                    <div style="margin-bottom:1rem; font-weight:700; color:var(--primary); font-size:0.8rem; text-transform:uppercase;">
-                        <i class="fas fa-image"></i> Image Block
+                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-image"></i> Visual Media Block
                     </div>
-                    <div style="display:grid; gap:1rem;">
-                        <div style="display:flex; gap:0.5rem;">
-                            <input type="url" onchange="updateBlock(${index}, 'url', this.value)" value="${block.data.url || ''}" class="form-control" style="flex:1;" placeholder="Image URL">
-                            <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0.75rem;">
-                                <i class="fas fa-upload"></i> <input type="file" onchange="uploadImage(this, ${index})" accept="image/*" style="display:none;">
-                            </label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Source URL</label>
+                            <div class="flex gap-2">
+                                <input type="url" onchange="updateBlock(${index}, 'url', this.value)" value="${block.data.url || ''}" class="form-control" style="flex:1;" placeholder="https://...">
+                                <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0 1rem; height:48px; display:flex; align-items:center; border-radius:12px;">
+                                    <i class="fas fa-upload"></i> <input type="file" onchange="uploadImage(this, ${index})" accept="image/*" style="display:none;">
+                                </label>
+                            </div>
                         </div>
-                        <input type="text" onchange="updateBlock(${index}, 'alt', this.value)" value="${block.data.alt || ''}" class="form-control" placeholder="Alt Text (SEO)">
+                        <div class="form-group">
+                            <label>Alternative Text (SEO)</label>
+                            <input type="text" onchange="updateBlock(${index}, 'alt', this.value)" value="${block.data.alt || ''}" class="form-control" placeholder="Describe this image...">
+                        </div>
                     </div>
                 `;
             }
             // --- BUTTON BLOCK ---
             else if (block.type === 'button') {
                 contentHtml = `
-                    <div style="margin-bottom:1rem; font-weight:700; color:var(--primary); font-size:0.8rem; text-transform:uppercase;">
-                        <i class="fas fa-link"></i> Button / Call to Action
+                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-link"></i> Call to Action Block
                     </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Button Text</label>
-                            <input value="${block.data.text || ''}" onchange="updateBlock(${index}, 'text', this.value)" class="form-control">
+                            <label>Button Label</label>
+                            <input value="${block.data.text || ''}" onchange="updateBlock(${index}, 'text', this.value)" class="form-control" placeholder="e.g. Get Started">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Target URL</label>
-                            <input value="${block.data.url || ''}" onchange="updateBlock(${index}, 'url', this.value)" class="form-control">
+                            <label>Destination URL</label>
+                            <input value="${block.data.url || ''}" onchange="updateBlock(${index}, 'url', this.value)" class="form-control" placeholder="https://...">
                         </div>
                     </div>
-                    <div style="background:var(--bg-main); padding:0.75rem; border-radius:var(--radius-md); margin-top:0.5rem;">
-                        <div style="font-size:0.7rem; font-weight:700; color:var(--text-muted); margin-bottom:0.5rem; text-transform:uppercase;">
-                            <i class="fas fa-globe"></i> Meta Link Options
+                    <div style="background:var(--bg-main); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-soft); margin-top:0.5rem;">
+                        <div style="font-size:0.7rem; font-weight:700; color:var(--text-muted); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">
+                            <i class="fas fa-cog"></i> Interaction Settings
                         </div>
-                        <div style="display:flex; gap:1.5rem;">
-                            <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.8rem; cursor:pointer;">
-                                <input type="checkbox" ${block.data.rel_nofollow ? 'checked' : ''} onchange="updateBlock(${index}, 'rel_nofollow', this.checked)"> No-Follow
-                            </label>
-                            <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.8rem; cursor:pointer;">
-                                <input type="checkbox" ${block.data.target_blank ? 'checked' : ''} onchange="updateBlock(${index}, 'target_blank', this.checked)"> New Tab
-                            </label>
+                        <div class="flex gap-6">
+                            <div class="form-check">
+                                <input type="checkbox" id="nofollow-${index}" ${block.data.rel_nofollow ? 'checked' : ''} onchange="updateBlock(${index}, 'rel_nofollow', this.checked)">
+                                <label for="nofollow-${index}">No-Follow</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="newtab-${index}" ${block.data.target_blank ? 'checked' : ''} onchange="updateBlock(${index}, 'target_blank', this.checked)">
+                                <label for="newtab-${index}">Open in New Tab</label>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -93,14 +103,14 @@
             // --- CONTROLS ---
             const controls = document.createElement('div');
             controls.style.position = 'absolute';
-            controls.style.top = '1rem';
-            controls.style.right = '1rem';
+            controls.style.top = '1.25rem';
+            controls.style.right = '1.25rem';
             controls.style.display = 'flex';
-            controls.style.gap = '0.4rem';
+            controls.style.gap = '0.5rem';
             
-            const moveUpBtn = `<button type="button" onclick="moveBlock(${index}, -1)" class="btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.7rem;"><i class="fas fa-arrow-up"></i></button>`;
-            const moveDownBtn = `<button type="button" onclick="moveBlock(${index}, 1)" class="btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.7rem;"><i class="fas fa-arrow-down"></i></button>`;
-            const deleteBtn = `<button type="button" onclick="removeBlock(${index})" class="btn btn-danger" style="padding:0.25rem 0.5rem; font-size:0.7rem;"><i class="fas fa-times"></i></button>`;
+            const moveUpBtn = `<button type="button" onclick="moveBlock(${index}, -1)" class="btn btn-secondary" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px;"><i class="fas fa-chevron-up" style="font-size:0.7rem;"></i></button>`;
+            const moveDownBtn = `<button type="button" onclick="moveBlock(${index}, 1)" class="btn btn-secondary" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px;"><i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></button>`;
+            const deleteBtn = `<button type="button" onclick="removeBlock(${index})" class="btn" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px; background:rgba(239, 68, 68, 0.05); color:#ef4444;"><i class="fas fa-trash-can" style="font-size:0.7rem;"></i></button>`;
             
             controls.innerHTML = moveUpBtn + moveDownBtn + deleteBtn;
 

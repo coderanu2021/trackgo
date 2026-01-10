@@ -77,25 +77,25 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-body" style="padding: 2rem;">
-                    <div class="form-group" style="margin-bottom: 1.5rem;">
-                        <label class="form-label">Category Name</label>
+                    <div class="form-group">
+                        <label>Category Name</label>
                         <input type="text" name="name" id="edit_name" class="form-control" required>
                     </div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Image URL</label>
+                            <label>Image URL</label>
                             <input type="text" name="image" id="edit_image" class="form-control" placeholder="https://...">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Icon Class</label>
+                            <label>Icon Class</label>
                             <input type="text" name="icon" id="edit_icon" class="form-control" placeholder="fas fa-tag">
                         </div>
                     </div>
 
-                    <div class="form-check form-switch" style="padding-left: 3rem;">
-                        <input class="form-check-input" type="checkbox" name="is_active" id="edit_is_active" value="1" style="width: 2.5rem; height: 1.25rem; margin-left: -3rem; cursor: pointer;">
-                        <label class="form-check-label" for="edit_is_active" style="font-weight: 600; cursor: pointer; margin-left: 0.5rem; padding-top: 0.15rem;">Category is Active</label>
+                    <div class="form-check">
+                        <input type="checkbox" name="is_active" id="edit_is_active" value="1">
+                        <label for="edit_is_active">Category is Active</label>
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid var(--border-soft); padding: 1.5rem 2rem; gap: 1rem;">

@@ -27,15 +27,16 @@
             <textarea name="answer" class="form-control" rows="6" required>{{ $faq->answer }}</textarea>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="form-row">
             <div class="form-group">
                 <label>Sort Order</label>
                 <input type="number" name="sort_order" class="form-control" value="{{ $faq->sort_order }}">
             </div>
-            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 0.75rem;">
-                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                    <input type="checkbox" name="is_active" value="1" {{ $faq->is_active ? 'checked' : '' }}> Active
-                </label>
+            <div class="form-group flex items-end">
+                <div class="form-check" style="margin-bottom: 0.75rem;">
+                    <input type="checkbox" name="is_active" id="is_active" value="1" {{ $faq->is_active ? 'checked' : '' }}>
+                    <label for="is_active">Active</label>
+                </div>
             </div>
         </div>
 

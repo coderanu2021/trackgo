@@ -17,7 +17,7 @@
             <input type="text" name="name" class="form-control" value="{{ $plan->name }}" required>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="form-row">
             <div class="form-group">
                 <label>Price</label>
                 <input type="number" step="0.01" name="price" class="form-control" value="{{ $plan->price }}" required>
@@ -37,13 +37,15 @@
             <textarea name="features" class="form-control" rows="6">{{ $plan->features_text }}</textarea>
         </div>
 
-        <div style="display: flex; gap: 2rem; margin-top: 1rem;">
-            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                <input type="checkbox" name="is_featured" value="1" {{ $plan->is_featured ? 'checked' : '' }}> Featured Plan
-            </label>
-            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                <input type="checkbox" name="is_active" value="1" {{ $plan->is_active ? 'checked' : '' }}> Active
-            </label>
+        <div class="flex gap-4 mt-2">
+            <div class="form-check">
+                <input type="checkbox" name="is_featured" id="is_featured" value="1" {{ $plan->is_featured ? 'checked' : '' }}>
+                <label for="is_featured">Featured Plan</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="is_active" id="is_active" value="1" {{ $plan->is_active ? 'checked' : '' }}>
+                <label for="is_active">Active</label>
+            </div>
         </div>
 
         <div style="margin-top: 2rem;">
