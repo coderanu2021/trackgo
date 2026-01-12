@@ -3,8 +3,8 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <div>
-        <h1>Create Page</h1>
-        <p style="color: var(--text-muted);">Build a dynamic landing page with ease.</p>
+        <h1>Create Landing Page</h1>
+        <p style="color: var(--text-muted);">Build a dynamic landing page with a structure of your own choice.</p>
     </div>
     <button form="page-form" type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem;">
         <i class="fas fa-paper-plane"></i> Publish Page
@@ -19,16 +19,35 @@
             <!-- Block Editor -->
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2 style="font-size: 1.1rem; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Content Blocks</h2>
+                    <div>
+                        <h2 style="font-size: 1.1rem; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Section Builder</h2>
+                        <p style="font-size: 0.75rem; color: var(--text-light); margin: 0.25rem 0 0;">Add and arrange any block to build your custom structure.</p>
+                    </div>
                     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button type="button" onclick="addBlock('text')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
-                            <i class="fas fa-font" style="font-size: 0.8rem;"></i> Text
+                        <button type="button" onclick="addBlock('text')" class="btn btn-secondary" title="Add Text Area">
+                            <i class="fas fa-font"></i> Text
                         </button>
-                        <button type="button" onclick="addBlock('image')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
-                            <i class="fas fa-image" style="font-size: 0.8rem;"></i> Image
+                        <button type="button" onclick="addBlock('image')" class="btn btn-secondary" title="Add Image">
+                            <i class="fas fa-image"></i> Image
                         </button>
-                        <button type="button" onclick="addBlock('button')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
-                            <i class="fas fa-link" style="font-size: 0.8rem;"></i> Button
+                        <button type="button" onclick="addBlock('button')" class="btn btn-secondary" title="Add Call to Action">
+                            <i class="fas fa-link"></i> Button
+                        </button>
+                        <div style="border-left: 1px solid var(--border-soft); margin: 0 0.5rem;"></div>
+                        <button type="button" onclick="addBlock('hero_stats')" class="btn btn-secondary" title="Add Hero with Stats">
+                            <i class="fas fa-chart-line"></i> Hero Stats
+                        </button>
+                        <button type="button" onclick="addBlock('timeline')" class="btn btn-secondary" title="Add Timeline">
+                            <i class="fas fa-clock-rotate-left"></i> Timeline
+                        </button>
+                        <button type="button" onclick="addBlock('split_content')" class="btn btn-secondary" title="Add Media & Text Split">
+                            <i class="fas fa-columns"></i> Split Content
+                        </button>
+                        <button type="button" onclick="addBlock('features')" class="btn btn-secondary" title="Add Feature Grid">
+                            <i class="fas fa-list-check"></i> Features
+                        </button>
+                        <button type="button" onclick="addBlock('tabs')" class="btn btn-secondary" title="Add Interactive Tabs">
+                            <i class="fas fa-folder-tree"></i> Tabs
                         </button>
                     </div>
                 </div>

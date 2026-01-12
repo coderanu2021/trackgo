@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #0f172a;
+            --primary: {{ $settings['site_primary_color'] ?? '#f37021' }};
+            --primary-dark: {{ $settings['site_primary_color_dark'] ?? '#d45e12' }};
+            --secondary: {{ $settings['site_secondary_color'] ?? '#2d2e32' }};
             --text-main: #1e293b;
             --text-muted: #64748b;
             --bg-light: #f8fafc;
@@ -240,9 +240,9 @@
         <div class="container flex items-center justify-between">
             <a href="{{ url('/') }}" class="logo">
                 @if(isset($settings['site_logo']))
-                    <img src="{{ asset($settings['site_logo']) }}" alt="{{ $settings['site_name'] }}" style="height: 40px;">
+                    <img src="{{ asset($settings['site_logo']) }}" alt="{{ $settings['site_name'] }}" style="height: 55px; width: auto; object-fit: contain;">
                 @else
-                    {{ $settings['site_name'] ?? 'TrackGo' }}<span>.</span>
+                    {{ $settings['site_name'] ?? 'eTrack GO' }}<span>.</span>
                 @endif
             </a>
             

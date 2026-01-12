@@ -16,7 +16,7 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         // Handle standard simple fields
-        $fields = ['site_phone', 'site_email', 'site_address', 'site_name', 'site_currency'];
+        $fields = ['site_phone', 'site_email', 'site_address', 'site_name', 'site_currency', 'site_primary_color', 'site_secondary_color'];
         foreach($fields as $field) {
             Setting::updateOrCreate(['key' => $field], ['value' => $request->input($field)]);
         }
@@ -92,7 +92,7 @@ class SettingsController extends Controller
         }
 
         // Simple text fields
-        $fields = ['site_phone', 'site_email', 'site_address', 'site_name', 'site_currency', 'site_footer_about', 'site_about_title', 'site_about_content', 'site_contact_map'];
+        $fields = ['site_phone', 'site_email', 'site_address', 'site_name', 'site_currency', 'site_footer_about', 'site_about_title', 'site_about_content', 'site_contact_map', 'site_primary_color', 'site_secondary_color'];
         foreach($fields as $field) {
             if ($request->has($field)) {
                 Setting::updateOrCreate(['key' => $field], ['value' => $request->input($field)]);

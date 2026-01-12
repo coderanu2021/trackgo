@@ -99,6 +99,140 @@
                     </div>
                 `;
             }
+            // --- HERO STATS BLOCK ---
+            else if (block.type === 'hero_stats') {
+                let statsHtml = (block.data.stats || []).map((s, si) => `
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" placeholder="Value (e.g. 10k+)" onchange="updateNestedBlock(${index}, 'stats', ${si}, 'value', this.value)" value="${s.value || ''}" class="form-control form-control-sm">
+                        <input type="text" placeholder="Label" onchange="updateNestedBlock(${index}, 'stats', ${si}, 'label', this.value)" value="${s.label || ''}" class="form-control form-control-sm">
+                        <button type="button" onclick="removeNestedItem(${index}, 'stats', ${si})" class="btn btn-secondary btn-sm" style="padding:0 0.5rem;"><i class="fas fa-times"></i></button>
+                    </div>
+                `).join('');
+
+                contentHtml = `
+                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-chart-line"></i> Hero Stats Block
+                    </div>
+                    <div class="form-group"><label>Title</label><input type="text" onchange="updateBlock(${index}, 'title', this.value)" value="${block.data.title || ''}" class="form-control"></div>
+                    <div class="form-group"><label>Description</label><textarea onchange="updateBlock(${index}, 'description', this.value)" class="form-control" rows="2">${block.data.description || ''}</textarea></div>
+                    <div class="form-group">
+                        <label>Hero Image URL</label>
+                        <div class="flex gap-2">
+                            <input type="url" onchange="updateBlock(${index}, 'image', this.value)" value="${block.data.image || ''}" class="form-control" placeholder="https://...">
+                            <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0 1rem; height:48px; display:flex; align-items:center; border-radius:12px;">
+                                <i class="fas fa-upload"></i> <input type="file" onchange="uploadImage(this, ${index}, 'image')" accept="image/*" style="display:none;">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex; justify-content:space-between; align-items:center;">Stats <button type="button" onclick="addNestedItem(${index}, 'stats')" class="btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.7rem;"><i class="fas fa-plus"></i></button></label>
+                        <div id="stats-container-${index}">${statsHtml}</div>
+                    </div>
+                `;
+            }
+            // --- TIMELINE BLOCK ---
+            else if (block.type === 'timeline') {
+                let eventsHtml = (block.data.events || []).map((e, ei) => `
+                    <div class="card mb-2 p-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                         <div class="form-row mb-2">
+                            <input type="text" placeholder="Year/Date" onchange="updateNestedBlock(${index}, 'events', ${ei}, 'year', this.value)" value="${e.year || ''}" class="form-control">
+                            <input type="text" placeholder="Badge/Status" onchange="updateNestedBlock(${index}, 'events', ${ei}, 'badge', this.value)" value="${e.badge || ''}" class="form-control">
+                         </div>
+                         <input type="text" placeholder="Event Title" onchange="updateNestedBlock(${index}, 'events', ${ei}, 'title', this.value)" value="${e.title || ''}" class="form-control mb-2">
+                         <div class="flex justify-end"><button type="button" onclick="removeNestedItem(${index}, 'events', ${ei})" class="btn btn-secondary btn-sm" style="color:#ef4444;"><i class="fas fa-trash"></i> Remove Event</button></div>
+                    </div>
+                `).join('');
+
+                contentHtml = `
+                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-clock-rotate-left"></i> Timeline Block
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex; justify-content:space-between; align-items:center;">Timeline Events <button type="button" onclick="addNestedItem(${index}, 'events', {year:'', title:'', badge:''})" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Event</button></label>
+                        <div id="events-container-${index}">${eventsHtml}</div>
+                    </div>
+                `;
+            }
+            // --- SPLIT CONTENT BLOCK ---
+            else if (block.type === 'split_content') {
+                 let statsHtml = (block.data.stats || []).map((s, si) => `
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" placeholder="Value" onchange="updateNestedBlock(${index}, 'stats', ${si}, 'value', this.value)" value="${s.value || ''}" class="form-control form-control-sm">
+                        <input type="text" placeholder="Label" onchange="updateNestedBlock(${index}, 'stats', ${si}, 'label', this.value)" value="${s.label || ''}" class="form-control form-control-sm">
+                        <button type="button" onclick="removeNestedItem(${index}, 'stats', ${si})" class="btn btn-secondary btn-sm" style="padding:0 0.5rem;"><i class="fas fa-times"></i></button>
+                    </div>
+                `).join('');
+
+                contentHtml = `
+                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-columns"></i> Split Content Block
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Title</label><input type="text" onchange="updateBlock(${index}, 'title', this.value)" value="${block.data.title || ''}" class="form-control"></div>
+                        <div class="form-group">
+                            <label>Image Position</label>
+                            <select onchange="updateBlock(${index}, 'position', this.value)" class="form-control">
+                                <option value="left" ${block.data.position === 'left' ? 'selected' : ''}>Image Left</option>
+                                <option value="right" ${block.data.position === 'right' ? 'selected' : ''}>Image Right</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Description</label><textarea onchange="updateBlock(${index}, 'description', this.value)" class="form-control" rows="2">${block.data.description || ''}</textarea></div>
+                    <div class="form-group">
+                        <label>Feature Image URL</label>
+                        <div class="flex gap-2">
+                            <input type="url" onchange="updateBlock(${index}, 'image', this.value)" value="${block.data.image || ''}" class="form-control" placeholder="https://...">
+                            <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0 1rem; height:48px; display:flex; align-items:center; border-radius:12px;">
+                                <i class="fas fa-upload"></i> <input type="file" onchange="uploadImage(this, ${index}, 'image')" accept="image/*" style="display:none;">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                         <label style="display:flex; justify-content:space-between; align-items:center;">Mini Stats <button type="button" onclick="addNestedItem(${index}, 'stats')" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i></button></label>
+                         <div id="stats-container-${index}">${statsHtml}</div>
+                    </div>
+                `;
+            }
+            // --- FEATURES BLOCK ---
+            else if (block.type === 'features') {
+                let itemsHtml = (block.data.items || []).map((it, iti) => `
+                    <div class="card mb-2 p-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                         <input type="text" placeholder="Feature Title" onchange="updateNestedBlock(${index}, 'items', ${iti}, 'title', this.value)" value="${it.title || ''}" class="form-control mb-2">
+                         <textarea placeholder="Feature Description" onchange="updateNestedBlock(${index}, 'items', ${iti}, 'description', this.value)" class="form-control mb-2" rows="2">${it.description || ''}</textarea>
+                         <div class="flex justify-end"><button type="button" onclick="removeNestedItem(${index}, 'items', ${iti})" class="btn btn-secondary btn-sm" style="color:#ef4444;"><i class="fas fa-trash"></i> Remove</button></div>
+                    </div>
+                `).join('');
+
+                contentHtml = `
+                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-list-check"></i> Features Grid Block
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex; justify-content:space-between; align-items:center;">Features <button type="button" onclick="addNestedItem(${index}, 'items', {title:'', description:''})" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Feature</button></label>
+                        <div id="items-container-${index}">${itemsHtml}</div>
+                    </div>
+                `;
+            }
+            // --- TABS BLOCK ---
+            else if (block.type === 'tabs') {
+                 let tabsHtml = (block.data.tabs || []).map((t, ti) => `
+                    <div class="card mb-2 p-3" style="background:#f8fafc;">
+                         <input type="text" placeholder="Tab Title" onchange="updateNestedBlock(${index}, 'tabs', ${ti}, 'title', this.value)" value="${t.title || ''}" class="form-control mb-2">
+                         <textarea placeholder="Tab Content" onchange="updateNestedBlock(${index}, 'tabs', ${ti}, 'content', this.value)" class="form-control mb-2" rows="3">${t.content || ''}</textarea>
+                        <div class="flex justify-end"><button type="button" onclick="removeNestedItem(${index}, 'tabs', ${ti})" class="btn btn-secondary btn-sm" style="color:#ef4444;"><i class="fas fa-trash"></i> Remove Tab</button></div>
+                    </div>
+                `).join('');
+
+                contentHtml = `
+                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <i class="fas fa-folder-tree"></i> Interactive Tabs Block
+                    </div>
+                    <div class="form-group">
+                         <label style="display:flex; justify-content:space-between; align-items:center;">Tabs <button type="button" onclick="addNestedItem(${index}, 'tabs', {title:'', content:''})" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Tab</button></label>
+                         <div id="tabs-container-${index}">${tabsHtml}</div>
+                    </div>
+                `;
+            }
 
             // --- CONTROLS ---
             const controls = document.createElement('div');
@@ -142,9 +276,30 @@
         if (type === 'text') data = { content: 'Enter your content here...' };
         else if (type === 'image') data = { url: '', alt: '' };
         else if (type === 'button') data = { text: 'Learn More', url: '#', rel_nofollow: false, target_blank: false };
+        else if (type === 'hero_stats') data = { title: '', description: '', image: '', stats: [] };
+        else if (type === 'timeline') data = { events: [] };
+        else if (type === 'split_content') data = { title: '', description: '', image: '', position: 'left', stats: [] };
+        else if (type === 'features') data = { items: [] };
+        else if (type === 'tabs') data = { tabs: [] };
         
         blocks.push({ type: type, data: data });
         renderBlocks();
+    }
+
+    function addNestedItem(blockIndex, key, defaultData = {value: '', label: ''}) {
+        if(!blocks[blockIndex].data[key]) blocks[blockIndex].data[key] = [];
+        blocks[blockIndex].data[key].push(defaultData);
+        renderBlocks();
+    }
+
+    function removeNestedItem(blockIndex, key, itemIndex) {
+        blocks[blockIndex].data[key].splice(itemIndex, 1);
+        renderBlocks();
+    }
+
+    function updateNestedBlock(blockIndex, key, itemIndex, field, value) {
+        blocks[blockIndex].data[key][itemIndex][field] = value;
+        document.getElementById('blocks-input').value = JSON.stringify(blocks);
     }
 
     function removeBlock(index) {
@@ -168,7 +323,7 @@
     }
 
     // Image Upload
-    async function uploadImage(input, index) {
+    async function uploadImage(input, index, key = 'url') {
         const file = input.files[0];
         if (!file) return;
 
@@ -181,7 +336,7 @@
             const data = await res.json();
             
             if (data.url) {
-                blocks[index].data.url = data.url;
+                blocks[index].data[key] = data.url;
                 renderBlocks();
             }
         } catch(e) { console.error(e); alert('Upload failed'); }

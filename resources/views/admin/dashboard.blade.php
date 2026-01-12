@@ -146,9 +146,12 @@
                     </div>
                 </div>
                 <div class="card">
-                    <h2 style="font-size: 1.1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-puzzle-piece" style="color: var(--accent)"></i> Active Pages
-                    </h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-rocket" style="color: var(--accent)"></i> Landing Pages
+                        </h2>
+                        <a href="{{ route('admin.builder.create') }}" class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;"><i class="fas fa-plus"></i> New</a>
+                    </div>
                     <div style="display: grid; gap: 1rem;">
                         @foreach($projects as $project)
                         <div style="display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0;">

@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     
+    <style>
+        :root {
+            --primary: {{ $settings['site_primary_color'] ?? '#6366f1' }};
+            --accent: {{ $settings['site_secondary_color'] ?? '#8b5cf6' }};
+            --shadow-primary: 0 4px 14px 0 {{ $settings['site_primary_color'] ?? '#6366F1' }}4D; /* 30% opacity hex suffix 4D */
+        }
+    </style>
+    
     <script>
         // Sidebar Theme initialization
         const currentSidebar = localStorage.getItem('sidebar-theme') || 'light';
@@ -25,8 +33,12 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <i class="fas fa-bolt"></i>
-                <span>TrackGo</span>
+                @if(isset($settings['site_logo']))
+                    <img src="{{ asset($settings['site_logo']) }}" alt="Logo" style="height: 40px; width: auto; object-fit: contain;">
+                @else
+                    <i class="fas fa-bolt"></i>
+                @endif
+                <span>{{ $settings['site_name'] ?? 'TrackGo' }}</span>
             </div>
             
             <nav class="sidebar-nav">
@@ -36,14 +48,20 @@
                 
                 <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;">Content</div>
                 
+                <a href="{{ route('admin.pages.index') }}" class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+                    <i class="fas fa-file-invoice"></i> Page Builder
+                </a>
                 <a href="{{ route('admin.builder.index') }}" class="nav-link {{ request()->routeIs('admin.builder.*') ? 'active' : '' }}">
-                    <i class="fas fa-wand-magic-sparkles"></i> Page Builder
+                    <i class="fas fa-rocket"></i> Landing Pages
                 </a>
                 <a href="{{ route('admin.blogs.index') }}" class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
                     <i class="fas fa-pen-nib"></i> Blog Posts
                 </a>
                 <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                     <i class="fas fa-tags"></i> Categories
+                </a>
+                <a href="{{ route('admin.banners.index') }}" class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
+                    <i class="fas fa-flag"></i> Home Banners
                 </a>
                 <a href="{{ route('admin.plans.index') }}" class="nav-link {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}">
                     <i class="fas fa-layer-group"></i> Pricing Plans
