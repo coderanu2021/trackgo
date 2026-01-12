@@ -89,7 +89,9 @@ body {
     padding: 1.5rem;
     border-right: 1px solid var(--sidebar-border);
     transition: background 0.3s ease, color 0.3s ease;
+    overflow-y: scroll;
 }
+
 
 .sidebar-header {
     height: var(--header-height);
