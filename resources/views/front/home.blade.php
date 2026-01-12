@@ -189,17 +189,45 @@
         </div>
 
         <!-- Slider -->
-        <div class="hero-slider">
-            <div class="hero-content">
-                <p class="text-primary" style="font-weight:600;">Trending Item</p>
-                <h1>Women's Latest<br>Fashion Sale</h1>
-                <p>Starting at $20.00</p>
-                <a href="#" class="btn-shop">Shop Now</a>
+        <!-- Slider -->
+        <div class="hero-slider" style="position: relative;">
+            @forelse($hero_slides as $index => $banner)
+            <div class="hero-slide" style="display: {{ $index == 0 ? 'flex' : 'none' }}; width: 100%; align-items: center; justify-content: space-between; animation: fadeEffect 1s;">
+                <div class="hero-content" style="flex: 1;">
+                    <p class="text-primary" style="font-weight:600;">{{ $banner->subtitle ?? 'Trending' }}</p>
+                    <h1>{!! nl2br(e($banner->title)) !!}</h1>
+                    @if($banner->link)
+                    <a href="{{ $banner->link }}" class="btn-shop">Shop Now</a>
+                    @endif
+                </div>
+                <div style="flex:1; text-align:right; display: flex; justify-content: flex-end;">
+                    @if($banner->image)
+                    <img src="{{ $banner->image }}" alt="{{ $banner->title }}" style="max-width: 100%; max-height: 350px; object-fit: contain;">
+                    @else
+                    <div style="width:300px; height:300px; background:#ddd; display:inline-block; border-radius:50%;"></div>
+                    @endif
+                </div>
             </div>
-            <div style="flex:1; text-align:right;">
-                <!-- Placeholder for Hero Image -->
-                <div style="width:300px; height:300px; background:#ddd; display:inline-block; border-radius:50%;"></div>
+            @empty
+            <div class="hero-slide" style="width: 100%; display: flex; align-items: center;">
+                <div class="hero-content">
+                    <p class="text-primary" style="font-weight:600;">Welcome</p>
+                    <h1>Welcome to<br>Our Store</h1>
+                    <p>Discover best products.</p>
+                </div>
+                <div style="flex:1; text-align:right;">
+                    <div style="width:300px; height:300px; background:#ddd; display:inline-block; border-radius:50%;"></div>
+                </div>
             </div>
+            @endforelse
+            
+            @if($hero_slides->count() > 1)
+            <div style="position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem;">
+                @foreach($hero_slides as $index => $banner)
+                <span class="dot" onclick="currentSlide({{ $index }})" style="height: 10px; width: 10px; background-color: #bbb; border-radius: 50%; display: inline-block; cursor: pointer;"></span>
+                @endforeach
+            </div>
+            @endif
         </div>
 
         <!-- Banners -->
@@ -358,4 +386,63 @@
         @endforelse
     </div>
 </section>
+
+<style>
+    @keyframes fadeEffect {
+        from {opacity: 0.4;} 
+        to {opacity: 1;}
+    }
+</style>
+
+<script>
+    let slideIndex = 0;
+    const slides = document.querySelectorAll(".hero-slide");
+    const dots = document.querySelectorAll(".dot");
+
+    function showSlides() {
+        if (slides.length === 0) return;
+        
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";  
+        }
+        
+        slideIndex++;
+        if (slideIndex > slides.length) {slideIndex = 1}    
+        
+        for (let i = 0; i < dots.length; i++) {
+            dots[i].style.backgroundColor = "#bbb";
+        }
+        
+        slides[slideIndex-1].style.display = "flex";  
+        if (dots.length > 0) {
+            dots[slideIndex-1].style.backgroundColor = "#717171";
+        }
+        
+        setTimeout(showSlides, 5000); // Change image every 5 seconds
+    }
+
+    function currentSlide(n) {
+        // Reset timer? For simplicity, just show.
+        // To do this properly requires clearing timeout, but simple implementation:
+        // Just setting styles manually.
+        if (slides.length === 0) return;
+        
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";  
+        }
+        for (let i = 0; i < dots.length; i++) {
+            dots[i].style.backgroundColor = "#bbb";
+        }
+        
+        slides[n].style.display = "flex";
+        if (dots.length > 0) {
+            dots[n].style.backgroundColor = "#717171";
+        }
+        slideIndex = n + 1; // Sync auto-advance
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showSlides();
+    });
+</script>
 @endsection

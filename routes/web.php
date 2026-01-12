@@ -66,6 +66,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Plans & FAQs
     Route::resource('plans', \App\Http\Controllers\Admin\PlanController::class);
     Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
+    Route::post('subscriptions/{subscription}/notify', [\App\Http\Controllers\Admin\SubscriptionController::class, 'notify'])->name('subscriptions.notify');
+    Route::resource('subscriptions', \App\Http\Controllers\Admin\SubscriptionController::class);
     Route::resource('newsletters', \App\Http\Controllers\Admin\NewsletterController::class)->only(['index', 'destroy']);
     Route::post('newsletters/{newsletter}/toggle', [\App\Http\Controllers\Admin\NewsletterController::class, 'toggle'])->name('newsletters.toggle');
 });

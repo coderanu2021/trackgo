@@ -286,6 +286,11 @@
                     <li><a href="{{ route('about') }}" class="nav-item">About Us</a></li>
                     <li><a href="{{ route('contact') }}" class="nav-item">Contact</a></li>
                 @endforelse
+
+                {{-- Ensure FAQ link is present if using custom menu but forgot to add it --}}
+                @if(!empty($menu) && !collect($menu)->contains(function($item) { return str_contains($item['url'] ?? '', 'faqs'); }))
+                    <li><a href="{{ route('faqs') }}" class="nav-item">FAQs</a></li>
+                @endif
             </ul>
         </div>
     </nav>

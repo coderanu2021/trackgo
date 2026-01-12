@@ -12,7 +12,8 @@ class HomeController extends Controller
         $products = ProductPage::where('is_published', true)->latest()->get();
         $categories = \App\Models\Category::where('is_active', true)->get();
         $blogs = \App\Models\Blog::where('is_published', true)->latest()->take(3)->get();
-        return view('front.home', compact('products', 'categories', 'blogs'));
+        $hero_slides = \App\Models\Banner::where('type', 'main')->orderBy('order')->get();
+        return view('front.home', compact('products', 'categories', 'blogs', 'hero_slides'));
     }
 
     public function pricing()
