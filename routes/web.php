@@ -37,13 +37,13 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Banners
     Route::resource('banners', BannerController::class);
 
-    // General Page Builder
-    Route::get('pages', [GeneralPageController::class, 'index'])->name('pages.index');
-    Route::get('pages/create', [GeneralPageController::class, 'create'])->name('pages.create');
-    Route::post('pages/store', [GeneralPageController::class, 'store'])->name('pages.store');
-    Route::get('pages/{id}/edit', [GeneralPageController::class, 'edit'])->name('pages.edit');
-    Route::put('pages/{id}', [GeneralPageController::class, 'update'])->name('pages.update');
-    Route::delete('pages/{id}', [GeneralPageController::class, 'destroy'])->name('pages.destroy');
+    // Product Detail Builder (Formerly General Page Builder)
+    Route::get('products', [GeneralPageController::class, 'index'])->name('products.index');
+    Route::get('products/create', [GeneralPageController::class, 'create'])->name('products.create');
+    Route::post('products/store', [GeneralPageController::class, 'store'])->name('products.store');
+    Route::get('products/{id}/edit', [GeneralPageController::class, 'edit'])->name('products.edit');
+    Route::put('products/{id}', [GeneralPageController::class, 'update'])->name('products.update');
+    Route::delete('products/{id}', [GeneralPageController::class, 'destroy'])->name('products.destroy');
 
     // Builder Routes
     Route::get('builder', [PageBuilderController::class, 'index'])->name('builder.index');
@@ -77,7 +77,7 @@ Route::post('newsletter/subscribe', [App\Http\Controllers\NewsletterController::
 
 // Front Routes
 Route::get('category/{slug}', [CategoryController::class, 'show'])->name('category.show');
-Route::get('page/{slug}', [GeneralPageController::class, 'show'])->name('pages.show');
+Route::get('product/{slug}', [GeneralPageController::class, 'show'])->name('products.show');
 Route::view('about', 'front.about')->name('about');
 Route::view('contact', 'front.contact')->name('contact');
 Route::get('projects/{slug}', [PageBuilderController::class, 'show'])->name('projects.show');

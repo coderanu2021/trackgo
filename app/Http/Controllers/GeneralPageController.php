@@ -11,12 +11,12 @@ class GeneralPageController extends Controller
     public function index()
     {
         $pages = Page::latest()->get();
-        return view('admin.pages.index', compact('pages'));
+        return view('admin.products.index', compact('pages'));
     }
 
     public function create()
     {
-        return view('admin.pages.create');
+        return view('admin.products.create');
     }
 
     public function store(Request $request)
@@ -32,6 +32,11 @@ class GeneralPageController extends Controller
         Page::create([
             'title' => $request->title,
             'slug' => $slug,
+            'price' => $request->price ?? 0,
+            'discount' => $request->discount ?? 0,
+            'stock' => $request->stock ?? 0,
+            'thumbnail' => $request->thumbnail,
+            'gallery' => $request->gallery ? json_decode($request->gallery, true) : [],
             'content' => json_decode($request->blocks, true),
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
@@ -39,13 +44,13 @@ class GeneralPageController extends Controller
             'is_active' => true,
         ]);
 
-        return redirect()->route('admin.pages.index')->with('success', 'General page created successfully!');
+        return redirect()->route('admin.products.index')->with('success', 'Product detail created successfully!');
     }
 
     public function edit($id)
     {
         $page = Page::findOrFail($id);
-        return view('admin.pages.edit', compact('page'));
+        return view('admin.products.edit', compact('page'));
     }
 
     public function update(Request $request, $id)
@@ -63,20 +68,25 @@ class GeneralPageController extends Controller
         $page->update([
             'title' => $request->title,
             'slug' => $slug,
+            'price' => $request->price ?? 0,
+            'discount' => $request->discount ?? 0,
+            'stock' => $request->stock ?? 0,
+            'thumbnail' => $request->thumbnail,
+            'gallery' => $request->gallery ? json_decode($request->gallery, true) : [],
             'content' => json_decode($request->blocks, true),
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
         ]);
 
-        return redirect()->route('admin.pages.index')->with('success', 'General page updated successfully!');
+        return redirect()->route('admin.products.index')->with('success', 'Product detail updated successfully!');
     }
 
     public function destroy($id)
     {
         $page = Page::findOrFail($id);
         $page->delete();
-        return redirect()->route('admin.pages.index')->with('success', 'General page deleted successfully!');
+        return redirect()->route('admin.products.index')->with('success', 'Product detail deleted successfully!');
     }
 
     public function show($slug)

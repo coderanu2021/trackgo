@@ -1,5 +1,6 @@
 <script>
     let editors = {}; // Store CKEditor instances
+    let sortable = null;
 
     function renderBlocks() {
         const container = document.getElementById('blocks-container');
@@ -7,7 +8,11 @@
         const input = document.getElementById('blocks-input');
         
         // Destroy existing editors before re-rendering
-        Object.values(editors).forEach(editor => editor.destroy());
+        Object.values(editors).forEach(editor => {
+            if (editor && typeof editor.destroy === 'function') {
+                editor.destroy();
+            }
+        });
         editors = {};
 
         if (!blocks || blocks.length === 0) {
@@ -25,10 +30,35 @@
 
         blocks.forEach((block, index) => {
             const el = document.createElement('div');
-            el.className = 'card';
+            el.className = 'card block-item';
+            el.dataset.index = index;
             el.style.position = 'relative';
             el.style.borderLeft = '4px solid var(--primary-soft)';
             el.style.transition = 'all 0.3s ease';
+            el.style.paddingLeft = '3rem'; // Space for drag handle
+
+            // Apply block-specific styles if any (from settings)
+            if (block.settings) {
+                if (block.settings.bg_color) el.style.backgroundColor = block.settings.bg_color;
+                if (block.settings.text_color) el.style.color = block.settings.text_color;
+            }
+
+            // Drag Handle
+            const dragHandle = document.createElement('div');
+            dragHandle.className = 'drag-handle';
+            dragHandle.style.position = 'absolute';
+            dragHandle.style.left = '0';
+            dragHandle.style.top = '0';
+            dragHandle.style.bottom = '0';
+            dragHandle.style.width = '2.5rem';
+            dragHandle.style.display = 'flex';
+            dragHandle.style.alignItems = 'center';
+            dragHandle.style.justifyContent = 'center';
+            dragHandle.style.cursor = 'grab';
+            dragHandle.style.background = 'var(--bg-main)';
+            dragHandle.style.borderRight = '1px solid var(--border-soft)';
+            dragHandle.innerHTML = '<i class="fas fa-grip-vertical" style="opacity: 0.3;"></i>';
+            el.appendChild(dragHandle);
 
             let contentHtml = '';
             
@@ -236,26 +266,26 @@
 
             // --- CONTROLS ---
             const controls = document.createElement('div');
+            controls.className = 'block-controls';
             controls.style.position = 'absolute';
             controls.style.top = '1.25rem';
             controls.style.right = '1.25rem';
             controls.style.display = 'flex';
             controls.style.gap = '0.5rem';
             
-            const moveUpBtn = `<button type="button" onclick="moveBlock(${index}, -1)" class="btn btn-secondary" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px;"><i class="fas fa-chevron-up" style="font-size:0.7rem;"></i></button>`;
-            const moveDownBtn = `<button type="button" onclick="moveBlock(${index}, 1)" class="btn btn-secondary" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px;"><i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></button>`;
-            const deleteBtn = `<button type="button" onclick="removeBlock(${index})" class="btn" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px; background:rgba(239, 68, 68, 0.05); color:#ef4444;"><i class="fas fa-trash-can" style="font-size:0.7rem;"></i></button>`;
+            const settingsBtn = `<button type="button" onclick="openSettings(${index})" class="btn btn-secondary" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px;" title="Block Settings"><i class="fas fa-cog" style="font-size:0.7rem;"></i></button>`;
+            const deleteBtn = `<button type="button" onclick="removeBlock(${index})" class="btn" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px; background:rgba(239, 68, 68, 0.05); color:#ef4444;" title="Delete Block"><i class="fas fa-trash-can" style="font-size:0.7rem;"></i></button>`;
             
-            controls.innerHTML = moveUpBtn + moveDownBtn + deleteBtn;
+            controls.innerHTML = settingsBtn + deleteBtn;
 
-            el.innerHTML = contentHtml;
+            el.innerHTML += contentHtml;
             el.appendChild(controls);
             container.appendChild(el);
 
             // Initialize CKEditor for text blocks
             if (block.type === 'text') {
                 ClassicEditor
-                    .create(document.querySelector(`#editor-${index}`))
+                    .create(el.querySelector(`#editor-${index}`))
                     .then(editor => {
                         editors[index] = editor;
                         editor.model.document.on('change:data', () => {
@@ -267,6 +297,68 @@
         });
 
         input.value = JSON.stringify(blocks);
+        initSortable();
+    }
+
+    function initSortable() {
+        const container = document.getElementById('blocks-container');
+        if (sortable) sortable.destroy();
+        
+        sortable = new Sortable(container, {
+            animation: 150,
+            handle: '.drag-handle',
+            ghostClass: 'sortable-ghost',
+            onEnd: function (evt) {
+                const oldIndex = evt.oldIndex;
+                const newIndex = evt.newIndex;
+                if (oldIndex === newIndex) return;
+                
+                // Need to account for empty state if it's there
+                const blockList = Array.from(container.querySelectorAll('.block-item'));
+                const newBlocks = [];
+                
+                blockList.forEach((item) => {
+                    const originalIndex = parseInt(item.dataset.index);
+                    newBlocks.push(blocks[originalIndex]);
+                });
+                
+                blocks = newBlocks;
+                renderBlocks(); // Re-render to update indices and editors
+            }
+        });
+    }
+
+    // Modal logic for settings
+    let activeSettingsIndex = null;
+    function openSettings(index) {
+        activeSettingsIndex = index;
+        const block = blocks[index];
+        const settings = block.settings || {};
+        
+        document.getElementById('set-bg-color').value = settings.bg_color || '#ffffff';
+        document.getElementById('set-text-color').value = settings.text_color || '#334155';
+        document.getElementById('set-padding-top').value = settings.padding_top || '4';
+        document.getElementById('set-padding-bottom').value = settings.padding_bottom || '4';
+        
+        const modal = new bootstrap.Modal(document.getElementById('settingsModal'));
+        modal.show();
+    }
+
+    function saveSettings() {
+        if (activeSettingsIndex === null) return;
+        
+        const settings = {
+            bg_color: document.getElementById('set-bg-color').value,
+            text_color: document.getElementById('set-text-color').value,
+            padding_top: document.getElementById('set-padding-top').value,
+            padding_bottom: document.getElementById('set-padding-bottom').value
+        };
+        
+        blocks[activeSettingsIndex].settings = settings;
+        renderBlocks();
+        
+        const modal = bootstrap.Modal.getInstance(document.getElementById('settingsModal'));
+        modal.hide();
     }
 
     function addBlock(type) {
@@ -282,7 +374,11 @@
         else if (type === 'features') data = { items: [] };
         else if (type === 'tabs') data = { tabs: [] };
         
-        blocks.push({ type: type, data: data });
+        blocks.push({ 
+            type: type, 
+            data: data, 
+            settings: { bg_color: '#ffffff', text_color: '#334155', padding_top: '4', padding_bottom: '4' } 
+        });
         renderBlocks();
     }
 
@@ -307,14 +403,6 @@
             blocks.splice(index, 1);
             renderBlocks();
         }
-    }
-
-    function moveBlock(index, direction) {
-        if (index + direction < 0 || index + direction >= blocks.length) return;
-        const temp = blocks[index];
-        blocks[index] = blocks[index + direction];
-        blocks[index + direction] = temp;
-        renderBlocks();
     }
 
     function updateBlock(index, key, value) {
@@ -342,3 +430,18 @@
         } catch(e) { console.error(e); alert('Upload failed'); }
     }
 </script>
+
+<style>
+    .sortable-ghost {
+        opacity: 0.4;
+        background-color: var(--primary-soft) !important;
+        border: 2px dashed var(--primary) !important;
+    }
+    .drag-handle:hover {
+        background: var(--border-soft) !important;
+    }
+    .drag-handle:hover i {
+        opacity: 1 !important;
+        color: var(--primary);
+    }
+</style>

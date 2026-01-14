@@ -200,6 +200,86 @@
             color: #64748b;
         }
 
+        /* Purchase Box */
+        .purchase-section {
+            padding: 4rem 1.5rem;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+        .purchase-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f1f5f9;
+            text-align: center;
+        }
+        .price-tag {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .price-label {
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+        .purchase-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .btn-purchase {
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-cart {
+            background: #f1f5f9;
+            color: var(--dark);
+        }
+        .btn-cart:hover {
+            background: #e2e8f0;
+        }
+        .btn-buynow {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
+        .btn-buynow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #10b981;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .hero-stats, .split-container {
                 grid-template-columns: 1fr;
@@ -255,9 +335,26 @@
     @endif
 
     <main>
+        @if(session('success'))
+            <div class="container" style="margin-top: 2rem;">
+                <div class="alert-success">
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
         @if($page->content)
             @foreach($page->content as $block)
-                <div> <!-- Wrapper for spacing control if needed -->
+                @php
+                    $settings = $block['settings'] ?? [];
+                    $styles = [];
+                    if (!empty($settings['bg_color'])) $styles[] = "background-color: {$settings['bg_color']}";
+                    if (!empty($settings['text_color'])) $styles[] = "color: {$settings['text_color']}";
+                    if (isset($settings['padding_top'])) $styles[] = "padding-top: {$settings['padding_top']}rem";
+                    if (isset($settings['padding_bottom'])) $styles[] = "padding-bottom: {$settings['padding_bottom']}rem";
+                    $styleAttr = !empty($styles) ? 'style="' . implode('; ', $styles) . '"' : '';
+                @endphp
+                <div {!! $styleAttr !!}> <!-- Wrapper for spacing control if needed -->
                     
                     <!-- Text Block -->
                     @if($block['type'] === 'text')
@@ -387,6 +484,7 @@
                 </div>
             @endforeach
         @endif
+
     </main>
 </body>
 </html>

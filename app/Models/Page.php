@@ -13,11 +13,17 @@ class Page extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
-        'is_active'
+        'is_active',
+        'price',
+        'discount',
+        'stock',
+        'thumbnail',
+        'gallery'
     ];
 
     protected $casts = [
         'content' => 'json',
+        'gallery' => 'json',
         'is_active' => 'boolean'
     ];
 }

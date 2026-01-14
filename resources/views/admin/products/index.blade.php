@@ -3,11 +3,11 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
     <div>
-        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Page Builder</h1>
-        <p style="color: var(--text-muted); font-size: 1rem;">Create and manage standard content pages for your website.</p>
+        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Product Detail Builder</h1>
+        <p style="color: var(--text-muted); font-size: 1rem;">Design custom detail pages for your specific products.</p>
     </div>
-    <a href="{{ route('admin.pages.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">
-        <i class="fas fa-plus"></i> Create New Page
+    <a href="{{ route('admin.products.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">
+        <i class="fas fa-plus"></i> Create New Product Detail
     </a>
 </div>
 
@@ -15,8 +15,9 @@
     <table id="pages-table">
         <thead>
             <tr>
-                <th>Page Title</th>
+                <th>Product Name</th>
                 <th>Slug</th>
+                <th>Preview</th>
                 <th>Status</th>
                 <th>Last Update</th>
                 <th style="text-align: right;">Operations</th>
@@ -33,7 +34,12 @@
                         <div style="font-weight: 700; color: var(--text-main);">{{ $page->title }}</div>
                     </div>
                 </td>
-                <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">/{{ $page->slug }}</td>
+                <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">/product/{{ $page->slug }}</td>
+                <td>
+                    <a href="{{ route('products.show', $page->slug) }}" target="_blank" class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); text-decoration: none; border: 1px solid rgba(99, 102, 241, 0.2);">
+                        PREVIEW <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.65rem; margin-left: 0.4rem;"></i>
+                    </a>
+                </td>
                 <td>
                     <span class="badge {{ $page->is_active ? 'badge-success' : 'badge-danger' }}" 
                           style="background: {{ $page->is_active ? 'rgba(16,185,129,0.1)' : 'rgba(239, 68, 68, 0.1)' }};
@@ -44,10 +50,10 @@
                 <td style="color: var(--text-light); font-weight: 500;">{{ $page->updated_at->diffForHumans() }}</td>
                 <td style="text-align: right;">
                     <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
-                        <a href="{{ route('admin.pages.edit', $page->id) }}" class="btn" style="background: var(--bg-main); color: var(--accent); width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
+                        <a href="{{ route('admin.products.edit', $page->id) }}" class="btn" style="background: var(--bg-main); color: var(--accent); width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form action="{{ route('admin.pages.destroy', $page->id) }}" method="POST" onsubmit="return confirm('Delete this page?')" style="display: inline-block;">
+                        <form action="{{ route('admin.products.destroy', $page->id) }}" method="POST" onsubmit="return confirm('Delete this product detail?')" style="display: inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.05); color: #ef4444; width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
@@ -71,7 +77,7 @@ $(document).ready(function() {
         "order": [[3, "desc"]],
         "language": {
             "search": "",
-            "searchPlaceholder": "Search pages...",
+            "searchPlaceholder": "Search products...",
             "paginate": {
                 "previous": "<i class='fas fa-chevron-left'></i>",
                 "next": "<i class='fas fa-chevron-right'></i>"

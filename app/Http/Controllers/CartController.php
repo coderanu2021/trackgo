@@ -12,9 +12,9 @@ class CartController extends Controller
         return view('front.cart', compact('cart'));
     }
 
-    public function add($id)
+    public function add(Request $request, $id)
     {
-        $product = \App\Models\ProductPage::findOrFail($id);
+        $product = \App\Models\Page::findOrFail($id);
         $cart = session()->get('cart', []);
 
         if(isset($cart[$id])) {
@@ -29,6 +29,11 @@ class CartController extends Controller
         }
 
         session()->put('cart', $cart);
+
+        if ($request->has('redirect') && $request->redirect == 'checkout') {
+            return redirect()->route('checkout.index')->with('success', 'Product added to cart successfully!');
+        }
+
         return redirect()->back()->with('success', 'Product added to cart successfully!');
     }
 
