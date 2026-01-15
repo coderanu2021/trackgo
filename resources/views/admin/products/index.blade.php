@@ -3,7 +3,7 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
     <div>
-        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Product Detail Builder</h1>
+        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">General Page Builder</h1>
         <p style="color: var(--text-muted); font-size: 1rem;">Design custom detail pages for your specific products.</p>
     </div>
     <a href="{{ route('admin.products.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">

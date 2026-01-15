@@ -374,7 +374,19 @@
                     <a href="{{ route('blogs.show', $blog->slug) }}">{{ $blog->title }}</a>
                 </h3>
                 <p style="color: var(--text); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
-                    {{ Str::limit(strip_tags($blog->content), 120) }}
+                    @php
+                        $summary = '';
+                        if (is_array($blog->content)) {
+                            foreach($blog->content as $block) {
+                                if ($block['type'] === 'text') {
+                                    $summary .= ($block['data']['content'] ?? '') . ' ';
+                                }
+                            }
+                        } else {
+                            $summary = $blog->content;
+                        }
+                    @endphp
+                    {{ Str::limit(strip_tags($summary), 120) }}
                 </p>
                 <a href="{{ route('blogs.show', $blog->slug) }}" style="font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
                     READ ARTICLE <i class="fas fa-arrow-right" style="font-size: 0.75rem;"></i>

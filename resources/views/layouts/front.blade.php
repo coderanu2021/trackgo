@@ -218,6 +218,7 @@
             box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
         }
     </style>
+    @stack('styles')
 </head>
 <body>
 
@@ -416,5 +417,6 @@
             });
         });
     </script>
+    @stack('scripts')
 </body>
 </html>

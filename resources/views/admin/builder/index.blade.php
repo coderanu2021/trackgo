@@ -3,11 +3,11 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
     <div>
-        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Landing Pages</h1>
+        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Landing Page Builder</h1>
         <p style="color: var(--text-muted); font-size: 1rem;">Design and deploy high-conversion landing pages.</p>
     </div>
     <a href="{{ route('admin.builder.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">
-        <i class="fas fa-sparkles"></i> Create Experience
+        <i class="fas fa-sparkles"></i> Create New Page
     </a>
 </div>
 

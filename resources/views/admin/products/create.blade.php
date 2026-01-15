@@ -23,19 +23,33 @@
                 <p style="font-size: 0.75rem; color: var(--text-light); margin: 0.25rem 0 0;">Select and arrange sections to design your page.</p>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" onclick="addBlock('columns')" class="btn btn-secondary" title="Add Multi-Column Layout">
+                    <i class="fas fa-columns"></i> Columns
+                </button>
+                <div style="border-left: 1px solid var(--border-soft); margin: 0 0.5rem;"></div>
                 <button type="button" onclick="addBlock('text')" class="btn btn-secondary" title="Add Text Area">
                     <i class="fas fa-font"></i> Text
                 </button>
                 <button type="button" onclick="addBlock('image')" class="btn btn-secondary" title="Add Image">
                     <i class="fas fa-image"></i> Image
                 </button>
-                <button type="button" onclick="addBlock('button')" class="btn btn-secondary" title="Add Button">
+                <button type="button" onclick="addBlock('button')" class="btn btn-secondary" title="Add Call to Action">
                     <i class="fas fa-link"></i> Button
                 </button>
-                <button type="button" onclick="addBlock('features')" class="btn btn-secondary" title="Add Feature List">
+                <div style="border-left: 1px solid var(--border-soft); margin: 0 0.5rem;"></div>
+                <button type="button" onclick="addBlock('hero_stats')" class="btn btn-secondary" title="Add Hero with Stats">
+                    <i class="fas fa-chart-line"></i> Hero Stats
+                </button>
+                <button type="button" onclick="addBlock('timeline')" class="btn btn-secondary" title="Add Timeline">
+                    <i class="fas fa-clock-rotate-left"></i> Timeline
+                </button>
+                <button type="button" onclick="addBlock('split_content')" class="btn btn-secondary" title="Add Media & Text Split">
+                    <i class="fas fa-columns"></i> Split Content
+                </button>
+                <button type="button" onclick="addBlock('features')" class="btn btn-secondary" title="Add Feature Grid">
                     <i class="fas fa-list-check"></i> Features
                 </button>
-                <button type="button" onclick="addBlock('tabs')" class="btn btn-secondary" title="Add Tabs">
+                <button type="button" onclick="addBlock('tabs')" class="btn btn-secondary" title="Add Interactive Tabs">
                     <i class="fas fa-folder-tree"></i> Tabs
                 </button>
             </div>
@@ -147,13 +161,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="padding: 2rem;">
-                <div class="form-group">
-                    <label>Background Color</label>
-                    <input type="color" id="set-bg-color" class="form-control" style="height: 50px; padding: 5px;">
-                </div>
-                <div class="form-group">
-                    <label>Text Color</label>
-                    <input type="color" id="set-text-color" class="form-control" style="height: 50px; padding: 5px;">
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Background Color</label>
+                        <input type="color" id="set-bg-color" class="form-control" style="height: 50px; padding: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Text Color</label>
+                        <input type="color" id="set-text-color" class="form-control" style="height: 50px; padding: 5px;">
+                    </div>
                 </div>
                 <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
@@ -163,6 +179,26 @@
                     <div class="form-group">
                         <label>Padding Bottom (rem)</label>
                         <input type="number" id="set-padding-bottom" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Margin Top (rem)</label>
+                        <input type="number" id="set-margin-top" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Margin Bottom (rem)</label>
+                        <input type="number" id="set-margin-bottom" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Font Size (px)</label>
+                        <input type="number" id="set-font-size" class="form-control" min="8" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Border Radius (px)</label>
+                        <input type="number" id="set-border-radius" class="form-control" min="0" max="100">
                     </div>
                 </div>
             </div>

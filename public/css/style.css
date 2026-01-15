@@ -494,6 +494,10 @@ input[type="radio"] {
     display: flex;
 }
 
+.flex-col {
+    flex-direction: column;
+}
+
 .gap-2 {
     gap: 0.5rem;
 }

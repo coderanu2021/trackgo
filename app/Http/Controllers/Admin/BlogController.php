@@ -24,13 +24,13 @@ class BlogController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required',
+            'blocks' => 'required|json',
         ]);
 
         Blog::create([
             'title' => $request->title,
             'slug' => Str::slug($request->title),
-            'content' => $request->content,
+            'content' => json_decode($request->blocks, true),
             'image' => $request->image,
             'is_published' => $request->has('is_published'),
             'user_id' => auth()->id(),
@@ -51,13 +51,13 @@ class BlogController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required',
+            'blocks' => 'required|json',
         ]);
 
         $blog->update([
             'title' => $request->title,
             'slug' => Str::slug($request->title),
-            'content' => $request->content,
+            'content' => json_decode($request->blocks, true),
             'image' => $request->image,
             'is_published' => $request->has('is_published'),
             'meta_title' => $request->meta_title,

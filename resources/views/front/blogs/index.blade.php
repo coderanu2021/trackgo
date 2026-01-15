@@ -35,7 +35,19 @@
                     <a href="{{ route('blogs.show', $blog->slug) }}" style="color: inherit;">{{ $blog->title }}</a>
                 </h3>
                 <p style="color: var(--text); font-size: 1rem; line-height: 1.7; margin-bottom: 2rem; flex: 1;">
-                    {{ Str::limit(strip_tags($blog->content), 140) }}
+                    @php
+                        $summary = '';
+                        if (is_array($blog->content)) {
+                            foreach($blog->content as $block) {
+                                if ($block['type'] === 'text') {
+                                    $summary .= ($block['data']['content'] ?? '') . ' ';
+                                }
+                            }
+                        } else {
+                            $summary = $blog->content;
+                        }
+                    @endphp
+                    {{ Str::limit(strip_tags($summary), 140) }}
                 </p>
                 <div style="padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
                     <span style="font-weight: 700; color: var(--secondary); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">

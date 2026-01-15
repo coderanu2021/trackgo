@@ -15,12 +15,63 @@
             --accent: {{ $settings['site_secondary_color'] ?? '#8b5cf6' }};
             --shadow-primary: 0 4px 14px 0 {{ $settings['site_primary_color'] ?? '#6366F1' }}4D; /* 30% opacity hex suffix 4D */
         }
+
+        /* Sidebar Collapse Overrides */
+        .sidebar.collapsed {
+            width: 80px !important;
+            padding: 1.5rem 0.75rem !important;
+        }
+        .sidebar.collapsed .sidebar-header span,
+        .sidebar.collapsed .sidebar-nav div,
+        .sidebar.collapsed .nav-link span {
+            display: none !important;
+        }
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center !important;
+            gap: 0 !important;
+        }
+        .sidebar.collapsed .nav-link {
+            justify-content: center !important;
+            padding: 0.875rem !important;
+        }
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0 !important;
+            font-size: 1.25rem !important;
+        }
+        .sidebar.collapsed + .main-content {
+            margin-left: 80px !important;
+        }
+        .sidebar, .main-content {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .collapse-toggle {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+            color: var(--sidebar-text);
+        }
+        .collapse-toggle:hover {
+            background: var(--sidebar-nav-hover);
+            color: var(--sidebar-header-text);
+        }
     </style>
     
     <script>
-        // Sidebar Theme initialization
+        // Sidebar Theme & Collapse initialization
         const currentSidebar = localStorage.getItem('sidebar-theme') || 'light';
         document.documentElement.setAttribute('data-sidebar', currentSidebar);
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+            if (isCollapsed) {
+                document.querySelector('.sidebar').classList.add('collapsed');
+            }
+        });
     </script>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -34,59 +85,66 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                @if(isset($settings['site_logo']))
-                    <img src="{{ asset($settings['site_logo']) }}" alt="Logo" style="height: 40px; width: auto; object-fit: contain;">
-                @else
-                    <i class="fas fa-bolt"></i>
-                @endif
-                <span>{{ $settings['site_name'] ?? 'TrackGo' }}</span>
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; overflow: hidden;">
+                    @if(isset($settings['site_logo']))
+                        <img src="{{ asset($settings['site_logo']) }}" alt="Logo" style="height: 35px; width: auto; object-fit: contain;">
+                    @else
+                        <i class="fas fa-bolt"></i>
+                    @endif
+                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $settings['site_name'] ?? 'TrackGo' }}</span>
+                </div>
+                <div id="sidebar-collapse-btn" class="collapse-toggle" title="Toggle Sidebar">
+                    <i class="fas fa-bars-staggered"></i>
+                </div>
             </div>
             
             <nav class="sidebar-nav">
                 <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-grid-2"></i> Dashboard
+                    <i class="fas fa-grid-2"></i> <span>Dashboard</span>
                 </a>
                 
-                <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;">Content</div>
+                <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;">Page Builders</div>
                 
-                <a href="{{ route('admin.products.index') }}" class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                    <i class="fas fa-file-invoice"></i> Product Detail Builder
-                </a>
                 <a href="{{ route('admin.builder.index') }}" class="nav-link {{ request()->routeIs('admin.builder.*') ? 'active' : '' }}">
-                    <i class="fas fa-rocket"></i> Landing Pages
+                    <i class="fas fa-rocket"></i> <span>Landing Page Builder</span>
+                </a>
+                <a href="{{ route('admin.products.index') }}" class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+                    <i class="fas fa-file-invoice"></i> <span>General Page Builder</span>
                 </a>
                 <a href="{{ route('admin.blogs.index') }}" class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
-                    <i class="fas fa-pen-nib"></i> Blog Posts
+                    <i class="fas fa-pen-nib"></i> <span>Blog Post Builder</span>
                 </a>
+                
+                <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;"><span>Content</span></div>
                 <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                    <i class="fas fa-tags"></i> Categories
+                    <i class="fas fa-tags"></i> <span>Categories</span>
                 </a>
                 <a href="{{ route('admin.banners.index') }}" class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
-                    <i class="fas fa-flag"></i> Home Banners
+                    <i class="fas fa-flag"></i> <span>Home Banners</span>
                 </a>
                 <a href="{{ route('admin.plans.index') }}" class="nav-link {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}">
-                    <i class="fas fa-layer-group"></i> Pricing Plans
+                    <i class="fas fa-layer-group"></i> <span>Pricing Plans</span>
                 </a>
                 <a href="{{ route('admin.faqs.index') }}" class="nav-link {{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
-                    <i class="fas fa-question-circle"></i> FAQs
+                    <i class="fas fa-question-circle"></i> <span>FAQs</span>
                 </a>
                 <a href="{{ route('admin.newsletters.index') }}" class="nav-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
-                    <i class="fas fa-paper-plane"></i> Newsletter
+                    <i class="fas fa-paper-plane"></i> <span>Newsletter</span>
                 </a>
 
-                <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;">Management</div>
+                <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;"><span>Management</span></div>
                 
                 <a href="{{ route('admin.orders.index') }}" class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                    <i class="fas fa-bag-shopping"></i> Orders
+                    <i class="fas fa-bag-shopping"></i> <span>Orders</span>
                 </a>
                 <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <i class="fas fa-user-group"></i> Customers
+                    <i class="fas fa-user-group"></i> <span>Customers</span>
                 </a>
                 <a href="{{ route('admin.subscriptions.index') }}" class="nav-link {{ request()->routeIs('admin.subscriptions.*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-check"></i> Users Subscription Manager
+                    <i class="fas fa-calendar-check"></i> <span>Subscription Manager</span>
                 </a>
                 <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-                    <i class="fas fa-sliders"></i> Settings
+                    <i class="fas fa-sliders"></i> <span>Settings</span>
                 </a>
             </nav>
 
@@ -94,7 +152,7 @@
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="nav-link" style="width: 100%; background: none; border: none; cursor: pointer; color: #ef4444;">
-                        <i class="fas fa-arrow-right-from-bracket"></i> Logout
+                        <i class="fas fa-arrow-right-from-bracket"></i> <span>Logout</span>
                     </button>
                 </form>
             </div>
@@ -147,6 +205,8 @@
         $(document).ready(function() {
             const themeToggle = document.getElementById('theme-toggle');
             const themeIcon = document.getElementById('theme-icon');
+            const sidebarBtn = document.getElementById('sidebar-collapse-btn');
+            const sidebar = document.querySelector('.sidebar');
             const html = document.documentElement;
 
             themeToggle.addEventListener('click', () => {
@@ -155,6 +215,11 @@
                 
                 html.setAttribute('data-sidebar', newTheme);
                 localStorage.setItem('sidebar-theme', newTheme);
+            });
+
+            sidebarBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
             });
         });
     </script>

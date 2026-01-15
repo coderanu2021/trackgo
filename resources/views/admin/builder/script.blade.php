@@ -1,433 +1,434 @@
 <script>
-    let editors = {}; // Store CKEditor instances
-    let sortable = null;
+    let editors = {};
+    let allBlocks = new Map(); // Flat map for ID-based lookup
 
-    function renderBlocks() {
-        const container = document.getElementById('blocks-container');
-        const emptyState = document.getElementById('empty-state');
-        const input = document.getElementById('blocks-input');
-        
-        // Destroy existing editors before re-rendering
-        Object.values(editors).forEach(editor => {
-            if (editor && typeof editor.destroy === 'function') {
-                editor.destroy();
+    function generateId() {
+        return 'b-' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function ensureIds(blockList) {
+        blockList.forEach(block => {
+            if (!block._id) block._id = generateId();
+            allBlocks.set(block._id, block);
+            if (block.type === 'columns' && block.data.columns) {
+                block.data.columns.forEach(col => ensureIds(col.blocks || []));
             }
         });
-        editors = {};
+    }
 
-        if (!blocks || blocks.length === 0) {
-            container.innerHTML = '';
-            if(emptyState) {
-                container.appendChild(emptyState);
-                emptyState.style.display = 'block';
-            }
-            input.value = '[]';
-            return;
-        }
+    function renderBlocks(container = document.getElementById('blocks-container'), blockList = blocks, isTopLevel = true) {
+        if (!container) return;
         
-        if(emptyState) emptyState.style.display = 'none';
-        container.innerHTML = '';
+        if (isTopLevel) {
+            ensureIds(blocks);
+            const emptyState = document.getElementById('empty-state');
+            // Destroy existing editors before re-rendering
+            Object.values(editors).forEach(editor => {
+                if (editor && typeof editor.destroy === 'function') {
+                    editor.destroy();
+                }
+            });
+            editors = {};
+            
+            container.innerHTML = '';
+            if (!blockList || blockList.length === 0) {
+                if(emptyState) {
+                    container.appendChild(emptyState);
+                    emptyState.style.display = 'block';
+                }
+                document.getElementById('blocks-input').value = '[]';
+                return;
+            }
+            if(emptyState) emptyState.style.display = 'none';
+        } else {
+            container.innerHTML = '';
+        }
 
-        blocks.forEach((block, index) => {
+        blockList.forEach((block, index) => {
+            const blockId = block._id;
+            
             const el = document.createElement('div');
             el.className = 'card block-item';
-            el.dataset.index = index;
+            el.dataset.id = blockId;
             el.style.position = 'relative';
             el.style.borderLeft = '4px solid var(--primary-soft)';
             el.style.transition = 'all 0.3s ease';
-            el.style.paddingLeft = '3rem'; // Space for drag handle
+            el.style.paddingLeft = '3rem';
 
-            // Apply block-specific styles if any (from settings)
+            // Apply block-specific styles
             if (block.settings) {
-                if (block.settings.bg_color) el.style.backgroundColor = block.settings.bg_color;
-                if (block.settings.text_color) el.style.color = block.settings.text_color;
+                const s = block.settings;
+                if (s.bg_color) el.style.backgroundColor = s.bg_color;
+                if (s.text_color) el.style.color = s.text_color;
+                if (s.padding_top) el.style.paddingTop = s.padding_top + 'rem';
+                if (s.padding_bottom) el.style.paddingBottom = s.padding_bottom + 'rem';
+                if (s.margin_top) el.style.marginTop = s.margin_top + 'rem';
+                if (s.margin_bottom) el.style.marginBottom = s.margin_bottom + 'rem';
+                if (s.font_size) el.style.fontSize = s.font_size + 'px';
+                if (s.border_radius) el.style.borderRadius = s.border_radius + 'px';
             }
 
             // Drag Handle
             const dragHandle = document.createElement('div');
             dragHandle.className = 'drag-handle';
-            dragHandle.style.position = 'absolute';
-            dragHandle.style.left = '0';
-            dragHandle.style.top = '0';
-            dragHandle.style.bottom = '0';
-            dragHandle.style.width = '2.5rem';
-            dragHandle.style.display = 'flex';
-            dragHandle.style.alignItems = 'center';
-            dragHandle.style.justifyContent = 'center';
-            dragHandle.style.cursor = 'grab';
-            dragHandle.style.background = 'var(--bg-main)';
-            dragHandle.style.borderRight = '1px solid var(--border-soft)';
             dragHandle.innerHTML = '<i class="fas fa-grip-vertical" style="opacity: 0.3;"></i>';
             el.appendChild(dragHandle);
 
             let contentHtml = '';
             
-            // --- TEXT BLOCK ---
             if (block.type === 'text') {
                 contentHtml = `
-                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
-                        <i class="fas fa-align-left"></i> Text Narrative Block
-                    </div>
-                    <div class="form-group mb-0">
-                        <textarea id="editor-${index}">${block.data.content || ''}</textarea>
-                    </div>
+                    <div class="block-label"><i class="fas fa-align-left"></i> Text Block</div>
+                    <div class="form-group mb-0"><textarea id="editor-${blockId}">${block.data.content || ''}</textarea></div>
                 `;
             } 
-            // --- IMAGE BLOCK ---
             else if (block.type === 'image') {
                 contentHtml = `
-                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
-                        <i class="fas fa-image"></i> Visual Media Block
-                    </div>
+                    <div class="block-label"><i class="fas fa-image"></i> Image Block</div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Source URL</label>
-                            <div class="flex gap-2">
-                                <input type="url" onchange="updateBlock(${index}, 'url', this.value)" value="${block.data.url || ''}" class="form-control" style="flex:1;" placeholder="https://...">
-                                <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0 1rem; height:48px; display:flex; align-items:center; border-radius:12px;">
-                                    <i class="fas fa-upload"></i> <input type="file" onchange="uploadImage(this, ${index})" accept="image/*" style="display:none;">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Alternative Text (SEO)</label>
-                            <input type="text" onchange="updateBlock(${index}, 'alt', this.value)" value="${block.data.alt || ''}" class="form-control" placeholder="Describe this image...">
-                        </div>
+                        <div class="form-group"><label>Source URL</label><div class="flex gap-2">
+                            <input type="url" onchange="updateBlockById('${blockId}', 'url', this.value)" value="${block.data.url || ''}" class="form-control" style="flex:1;">
+                            <label class="btn btn-secondary m-0 cursor-pointer p-0 h-10 w-10 flex items-center justify-center rounded-xl">
+                                <i class="fas fa-upload"></i> <input type="file" onchange="uploadImageByPath(this, '${blockId}')" accept="image/*" style="display:none;">
+                            </label>
+                        </div></div>
+                        <div class="form-group"><label>Alt Text</label><input type="text" onchange="updateBlockById('${blockId}', 'alt', this.value)" value="${block.data.alt || ''}" class="form-control"></div>
                     </div>
                 `;
             }
-            // --- BUTTON BLOCK ---
             else if (block.type === 'button') {
                 contentHtml = `
-                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
-                        <i class="fas fa-link"></i> Call to Action Block
-                    </div>
+                    <div class="block-label"><i class="fas fa-link"></i> Button Block</div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Button Label</label>
-                            <input value="${block.data.text || ''}" onchange="updateBlock(${index}, 'text', this.value)" class="form-control" placeholder="e.g. Get Started">
-                        </div>
-                        <div class="form-group">
-                            <label>Destination URL</label>
-                            <input value="${block.data.url || ''}" onchange="updateBlock(${index}, 'url', this.value)" class="form-control" placeholder="https://...">
-                        </div>
-                    </div>
-                    <div style="background:var(--bg-main); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-soft); margin-top:0.5rem;">
-                        <div style="font-size:0.7rem; font-weight:700; color:var(--text-muted); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">
-                            <i class="fas fa-cog"></i> Interaction Settings
-                        </div>
-                        <div class="flex gap-6">
-                            <div class="form-check">
-                                <input type="checkbox" id="nofollow-${index}" ${block.data.rel_nofollow ? 'checked' : ''} onchange="updateBlock(${index}, 'rel_nofollow', this.checked)">
-                                <label for="nofollow-${index}">No-Follow</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" id="newtab-${index}" ${block.data.target_blank ? 'checked' : ''} onchange="updateBlock(${index}, 'target_blank', this.checked)">
-                                <label for="newtab-${index}">Open in New Tab</label>
-                            </div>
-                        </div>
+                        <div class="form-group"><label>Label</label><input value="${block.data.text || ''}" onchange="updateBlockById('${blockId}', 'text', this.value)" class="form-control"></div>
+                        <div class="form-group"><label>URL</label><input value="${block.data.url || ''}" onchange="updateBlockById('${blockId}', 'url', this.value)" class="form-control"></div>
                     </div>
                 `;
             }
-            // --- HERO STATS BLOCK ---
+            else if (block.type === 'columns') {
+                contentHtml = `
+                    <div class="block-label"><i class="fas fa-columns"></i> Multi-Column Layout</div>
+                    <div class="columns-grid" style="display: grid; grid-template-columns: repeat(${block.data.columns.length}, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                        ${block.data.columns.map((col, colIndex) => `
+                            <div class="column-container" style="border: 1px dashed var(--border-soft); border-radius: var(--radius-md); padding: 1rem; min-height: 100px; background: rgba(0,0,0,0.02);">
+                                <div class="column-header" style="font-size: 0.65rem; font-weight: 800; color: var(--text-light); margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                                    COLUMN ${colIndex + 1}
+                                    <button type="button" onclick="addNestedBlock('${blockId}', ${colIndex})" class="btn-icon-sm" title="Add Block to Column"><i class="fas fa-plus"></i></button>
+                                </div>
+                                <div id="container-${blockId}-${colIndex}" class="nested-container" data-id="${blockId}" data-col="${colIndex}"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            else if (block.type === 'tabs') {
+                contentHtml = `
+                    <div class="block-label"><i class="fas fa-folder"></i> Tabs Block</div>
+                    <div class="form-group"><label>Tabs</label>
+                        <div class="mb-2">
+                            ${(block.data.tabs || []).map((tab, idx) => `
+                                <div class="card p-2 mb-2" style="background:var(--bg-main); border:1px solid var(--border-soft);">
+                                    <div class="flex justify-between mb-2">
+                                        <input class="form-control form-control-sm" style="font-weight:bold;" value="${tab.title}" onchange="updateBlockById('${blockId}', 'data.tabs.${idx}.title', this.value)">
+                                        <button class="btn btn-sm text-red" onclick="removeArrayItem('${blockId}', 'tabs', ${idx})"><i class="fas fa-times"></i></button>
+                                    </div>
+                                    <textarea class="form-control form-control-sm" rows="2" onchange="updateBlockById('${blockId}', 'data.tabs.${idx}.content', this.value)">${tab.content}</textarea>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="addArrayItem('${blockId}', 'tabs')"><i class="fas fa-plus"></i> Add Tab</button>
+                    </div>
+                `;
+            }
+            else if (block.type === 'features') {
+                contentHtml = `
+                    <div class="block-label"><i class="fas fa-th-large"></i> Features Block</div>
+                    <div class="form-group">
+                        ${(block.data.items || []).map((item, idx) => `
+                            <div class="card p-2 mb-2" style="background:var(--bg-main); border:1px solid var(--border-soft);">
+                                <div class="flex justify-between mb-2">
+                                    <input class="form-control form-control-sm" style="font-weight:bold;" value="${item.title}" onchange="updateBlockById('${blockId}', 'data.items.${idx}.title', this.value)">
+                                    <button class="btn btn-sm text-red" onclick="removeArrayItem('${blockId}', 'items', ${idx})"><i class="fas fa-times"></i></button>
+                                </div>
+                                <input class="form-control form-control-sm" value="${item.description}" onchange="updateBlockById('${blockId}', 'data.items.${idx}.description', this.value)">
+                            </div>
+                        `).join('')}
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="addArrayItem('${blockId}', 'items')"><i class="fas fa-plus"></i> Add Feature</button>
+                    </div>
+                `;
+            }
             else if (block.type === 'hero_stats') {
-                let statsHtml = (block.data.stats || []).map((s, si) => `
-                    <div class="flex gap-2 mb-2">
-                        <input type="text" placeholder="Value (e.g. 10k+)" onchange="updateNestedBlock(${index}, 'stats', ${si}, 'value', this.value)" value="${s.value || ''}" class="form-control form-control-sm">
-                        <input type="text" placeholder="Label" onchange="updateNestedBlock(${index}, 'stats', ${si}, 'label', this.value)" value="${s.label || ''}" class="form-control form-control-sm">
-                        <button type="button" onclick="removeNestedItem(${index}, 'stats', ${si})" class="btn btn-secondary btn-sm" style="padding:0 0.5rem;"><i class="fas fa-times"></i></button>
-                    </div>
-                `).join('');
-
                 contentHtml = `
-                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
-                        <i class="fas fa-chart-line"></i> Hero Stats Block
-                    </div>
-                    <div class="form-group"><label>Title</label><input type="text" onchange="updateBlock(${index}, 'title', this.value)" value="${block.data.title || ''}" class="form-control"></div>
-                    <div class="form-group"><label>Description</label><textarea onchange="updateBlock(${index}, 'description', this.value)" class="form-control" rows="2">${block.data.description || ''}</textarea></div>
-                    <div class="form-group">
-                        <label>Hero Image URL</label>
-                        <div class="flex gap-2">
-                            <input type="url" onchange="updateBlock(${index}, 'image', this.value)" value="${block.data.image || ''}" class="form-control" placeholder="https://...">
-                            <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0 1rem; height:48px; display:flex; align-items:center; border-radius:12px;">
-                                <i class="fas fa-upload"></i> <input type="file" onchange="uploadImage(this, ${index}, 'image')" accept="image/*" style="display:none;">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label style="display:flex; justify-content:space-between; align-items:center;">Stats <button type="button" onclick="addNestedItem(${index}, 'stats')" class="btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.7rem;"><i class="fas fa-plus"></i></button></label>
-                        <div id="stats-container-${index}">${statsHtml}</div>
-                    </div>
-                `;
-            }
-            // --- TIMELINE BLOCK ---
-            else if (block.type === 'timeline') {
-                let eventsHtml = (block.data.events || []).map((e, ei) => `
-                    <div class="card mb-2 p-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
-                         <div class="form-row mb-2">
-                            <input type="text" placeholder="Year/Date" onchange="updateNestedBlock(${index}, 'events', ${ei}, 'year', this.value)" value="${e.year || ''}" class="form-control">
-                            <input type="text" placeholder="Badge/Status" onchange="updateNestedBlock(${index}, 'events', ${ei}, 'badge', this.value)" value="${e.badge || ''}" class="form-control">
-                         </div>
-                         <input type="text" placeholder="Event Title" onchange="updateNestedBlock(${index}, 'events', ${ei}, 'title', this.value)" value="${e.title || ''}" class="form-control mb-2">
-                         <div class="flex justify-end"><button type="button" onclick="removeNestedItem(${index}, 'events', ${ei})" class="btn btn-secondary btn-sm" style="color:#ef4444;"><i class="fas fa-trash"></i> Remove Event</button></div>
-                    </div>
-                `).join('');
-
-                contentHtml = `
-                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
-                        <i class="fas fa-clock-rotate-left"></i> Timeline Block
-                    </div>
-                    <div class="form-group">
-                        <label style="display:flex; justify-content:space-between; align-items:center;">Timeline Events <button type="button" onclick="addNestedItem(${index}, 'events', {year:'', title:'', badge:''})" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Event</button></label>
-                        <div id="events-container-${index}">${eventsHtml}</div>
-                    </div>
-                `;
-            }
-            // --- SPLIT CONTENT BLOCK ---
-            else if (block.type === 'split_content') {
-                 let statsHtml = (block.data.stats || []).map((s, si) => `
-                    <div class="flex gap-2 mb-2">
-                        <input type="text" placeholder="Value" onchange="updateNestedBlock(${index}, 'stats', ${si}, 'value', this.value)" value="${s.value || ''}" class="form-control form-control-sm">
-                        <input type="text" placeholder="Label" onchange="updateNestedBlock(${index}, 'stats', ${si}, 'label', this.value)" value="${s.label || ''}" class="form-control form-control-sm">
-                        <button type="button" onclick="removeNestedItem(${index}, 'stats', ${si})" class="btn btn-secondary btn-sm" style="padding:0 0.5rem;"><i class="fas fa-times"></i></button>
-                    </div>
-                `).join('');
-
-                contentHtml = `
-                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
-                        <i class="fas fa-columns"></i> Split Content Block
-                    </div>
+                    <div class="block-label"><i class="fas fa-chart-line"></i> Hero Stats</div>
                     <div class="form-row">
-                        <div class="form-group"><label>Title</label><input type="text" onchange="updateBlock(${index}, 'title', this.value)" value="${block.data.title || ''}" class="form-control"></div>
-                        <div class="form-group">
-                            <label>Image Position</label>
-                            <select onchange="updateBlock(${index}, 'position', this.value)" class="form-control">
+                        <div class="form-group col-md-6"><label>Title</label><input class="form-control" value="${block.data.title || ''}" onchange="updateBlockById('${blockId}', 'data.title', this.value)"></div>
+                        <div class="form-group col-md-6"><label>Image URL</label><input class="form-control" value="${block.data.image || ''}" onchange="updateBlockById('${blockId}', 'data.image', this.value)"></div>
+                    </div>
+                    <div class="form-group"><label>Stats</label>
+                        <div class="grid grid-cols-2 gap-2">
+                        ${(block.data.stats || []).map((stat, idx) => `
+                            <div class="card p-2" style="background:var(--bg-main); border:1px solid var(--border-soft);">
+                                <div class="flex justify-between"><label style="font-size:10px;">Stat ${idx+1}</label><button class="btn btn-sm p-0 text-red" onclick="removeArrayItem('${blockId}', 'stats', ${idx})"><i class="fas fa-times"></i></button></div>
+                                <input class="form-control form-control-sm mb-1" placeholder="Value" value="${stat.value}" onchange="updateBlockById('${blockId}', 'data.stats.${idx}.value', this.value)">
+                                <input class="form-control form-control-sm" placeholder="Label" value="${stat.label}" onchange="updateBlockById('${blockId}', 'data.stats.${idx}.label', this.value)">
+                            </div>
+                        `).join('')}
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addArrayItem('${blockId}', 'stats')"><i class="fas fa-plus"></i> Add Stat</button>
+                    </div>
+                `;
+            }
+            else if (block.type === 'timeline') {
+                contentHtml = `
+                    <div class="block-label"><i class="fas fa-clock"></i> Timeline</div>
+                    <div class="form-group">
+                        ${(block.data.events || []).map((ev, idx) => `
+                            <div class="card p-2 mb-2" style="background:var(--bg-main); border:1px solid var(--border-soft);">
+                                <div class="flex justify-between mb-2">
+                                    <div class="flex gap-2" style="flex:1;">
+                                        <input class="form-control form-control-sm" style="width:70px;" placeholder="Year" value="${ev.year}" onchange="updateBlockById('${blockId}', 'data.events.${idx}.year', this.value)">
+                                        <input class="form-control form-control-sm" placeholder="Title" value="${ev.title}" onchange="updateBlockById('${blockId}', 'data.events.${idx}.title', this.value)">
+                                    </div>
+                                    <button class="btn btn-sm text-red" onclick="removeArrayItem('${blockId}', 'events', ${idx})"><i class="fas fa-times"></i></button>
+                                </div>
+                                <input class="form-control form-control-sm" placeholder="Badge" value="${ev.badge}" onchange="updateBlockById('${blockId}', 'data.events.${idx}.badge', this.value)">
+                            </div>
+                        `).join('')}
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="addArrayItem('${blockId}', 'events')"><i class="fas fa-plus"></i> Add Event</button>
+                    </div>
+                `;
+            }
+            else if (block.type === 'split_content') {
+                contentHtml = `
+                    <div class="block-label"><i class="fas fa-columns"></i> Split Content</div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6"><label>Title</label><input class="form-control" value="${block.data.title || ''}" onchange="updateBlockById('${blockId}', 'data.title', this.value)"></div>
+                        <div class="form-group col-md-3"><label>Position</label>
+                            <select class="form-control" onchange="updateBlockById('${blockId}', 'data.position', this.value)">
                                 <option value="left" ${block.data.position === 'left' ? 'selected' : ''}>Image Left</option>
                                 <option value="right" ${block.data.position === 'right' ? 'selected' : ''}>Image Right</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group"><label>Description</label><textarea onchange="updateBlock(${index}, 'description', this.value)" class="form-control" rows="2">${block.data.description || ''}</textarea></div>
-                    <div class="form-group">
-                        <label>Feature Image URL</label>
-                        <div class="flex gap-2">
-                            <input type="url" onchange="updateBlock(${index}, 'image', this.value)" value="${block.data.image || ''}" class="form-control" placeholder="https://...">
-                            <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0 1rem; height:48px; display:flex; align-items:center; border-radius:12px;">
-                                <i class="fas fa-upload"></i> <input type="file" onchange="uploadImage(this, ${index}, 'image')" accept="image/*" style="display:none;">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                         <label style="display:flex; justify-content:space-between; align-items:center;">Mini Stats <button type="button" onclick="addNestedItem(${index}, 'stats')" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i></button></label>
-                         <div id="stats-container-${index}">${statsHtml}</div>
+                        <div class="form-group col-md-3"><label>Image URL</label><input class="form-control" value="${block.data.image || ''}" onchange="updateBlockById('${blockId}', 'data.image', this.value)"></div>
                     </div>
                 `;
             }
-            // --- FEATURES BLOCK ---
-            else if (block.type === 'features') {
-                let itemsHtml = (block.data.items || []).map((it, iti) => `
-                    <div class="card mb-2 p-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
-                         <input type="text" placeholder="Feature Title" onchange="updateNestedBlock(${index}, 'items', ${iti}, 'title', this.value)" value="${it.title || ''}" class="form-control mb-2">
-                         <textarea placeholder="Feature Description" onchange="updateNestedBlock(${index}, 'items', ${iti}, 'description', this.value)" class="form-control mb-2" rows="2">${it.description || ''}</textarea>
-                         <div class="flex justify-end"><button type="button" onclick="removeNestedItem(${index}, 'items', ${iti})" class="btn btn-secondary btn-sm" style="color:#ef4444;"><i class="fas fa-trash"></i> Remove</button></div>
-                    </div>
-                `).join('');
-
-                contentHtml = `
-                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
-                        <i class="fas fa-list-check"></i> Features Grid Block
-                    </div>
-                    <div class="form-group">
-                        <label style="display:flex; justify-content:space-between; align-items:center;">Features <button type="button" onclick="addNestedItem(${index}, 'items', {title:'', description:''})" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Feature</button></label>
-                        <div id="items-container-${index}">${itemsHtml}</div>
-                    </div>
-                `;
-            }
-            // --- TABS BLOCK ---
-            else if (block.type === 'tabs') {
-                 let tabsHtml = (block.data.tabs || []).map((t, ti) => `
-                    <div class="card mb-2 p-3" style="background:#f8fafc;">
-                         <input type="text" placeholder="Tab Title" onchange="updateNestedBlock(${index}, 'tabs', ${ti}, 'title', this.value)" value="${t.title || ''}" class="form-control mb-2">
-                         <textarea placeholder="Tab Content" onchange="updateNestedBlock(${index}, 'tabs', ${ti}, 'content', this.value)" class="form-control mb-2" rows="3">${t.content || ''}</textarea>
-                        <div class="flex justify-end"><button type="button" onclick="removeNestedItem(${index}, 'tabs', ${ti})" class="btn btn-secondary btn-sm" style="color:#ef4444;"><i class="fas fa-trash"></i> Remove Tab</button></div>
-                    </div>
-                `).join('');
-
-                contentHtml = `
-                    <div class="flex items-center gap-2 mb-4" style="color:var(--primary); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
-                        <i class="fas fa-folder-tree"></i> Interactive Tabs Block
-                    </div>
-                    <div class="form-group">
-                         <label style="display:flex; justify-content:space-between; align-items:center;">Tabs <button type="button" onclick="addNestedItem(${index}, 'tabs', {title:'', content:''})" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Tab</button></label>
-                         <div id="tabs-container-${index}">${tabsHtml}</div>
-                    </div>
-                `;
+            else {
+                contentHtml = `<div class="block-label"><i class="fas fa-cubes"></i> ${block.type.toUpperCase()} Block</div><p style="font-size:0.8rem; color:var(--text-light);">Traditional content block. Edit settings for styling.</p>`;
             }
 
-            // --- CONTROLS ---
             const controls = document.createElement('div');
             controls.className = 'block-controls';
-            controls.style.position = 'absolute';
-            controls.style.top = '1.25rem';
-            controls.style.right = '1.25rem';
-            controls.style.display = 'flex';
-            controls.style.gap = '0.5rem';
-            
-            const settingsBtn = `<button type="button" onclick="openSettings(${index})" class="btn btn-secondary" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px;" title="Block Settings"><i class="fas fa-cog" style="font-size:0.7rem;"></i></button>`;
-            const deleteBtn = `<button type="button" onclick="removeBlock(${index})" class="btn" style="width:32px; height:32px; justify-content:center; padding:0; border-radius:8px; background:rgba(239, 68, 68, 0.05); color:#ef4444;" title="Delete Block"><i class="fas fa-trash-can" style="font-size:0.7rem;"></i></button>`;
-            
-            controls.innerHTML = settingsBtn + deleteBtn;
+            controls.innerHTML = `
+                <button type="button" onclick="openSettings('${blockId}')" class="btn-icon-sm" title="Settings"><i class="fas fa-cog"></i></button>
+                <button type="button" onclick="removeBlockById('${blockId}')" class="btn-icon-sm text-red" title="Delete"><i class="fas fa-trash-can"></i></button>
+            `;
 
             el.innerHTML += contentHtml;
             el.appendChild(controls);
             container.appendChild(el);
 
-            // Initialize CKEditor for text blocks
-            if (block.type === 'text') {
-                ClassicEditor
-                    .create(el.querySelector(`#editor-${index}`))
-                    .then(editor => {
-                        editors[index] = editor;
-                        editor.model.document.on('change:data', () => {
-                            updateBlock(index, 'content', editor.getData());
-                        });
-                    })
-                    .catch(error => console.error(error));
-            }
-        });
-
-        input.value = JSON.stringify(blocks);
-        initSortable();
-    }
-
-    function initSortable() {
-        const container = document.getElementById('blocks-container');
-        if (sortable) sortable.destroy();
-        
-        sortable = new Sortable(container, {
-            animation: 150,
-            handle: '.drag-handle',
-            ghostClass: 'sortable-ghost',
-            onEnd: function (evt) {
-                const oldIndex = evt.oldIndex;
-                const newIndex = evt.newIndex;
-                if (oldIndex === newIndex) return;
-                
-                // Need to account for empty state if it's there
-                const blockList = Array.from(container.querySelectorAll('.block-item'));
-                const newBlocks = [];
-                
-                blockList.forEach((item) => {
-                    const originalIndex = parseInt(item.dataset.index);
-                    newBlocks.push(blocks[originalIndex]);
+            // Recursive call for columns
+            if (block.type === 'columns') {
+                block.data.columns.forEach((col, colIndex) => {
+                    const colContainer = el.querySelector(`#container-${blockId}-${colIndex}`);
+                    renderBlocks(colContainer, col.blocks, false);
                 });
-                
-                blocks = newBlocks;
-                renderBlocks(); // Re-render to update indices and editors
+            }
+
+            // Initialize CKEditor
+            if (block.type === 'text') {
+                ClassicEditor.create(el.querySelector(`#editor-${blockId}`)).then(editor => {
+                    editors[blockId] = editor;
+                    editor.model.document.on('change:data', () => {
+                        updateBlockById(blockId, 'data.content', editor.getData());
+                    });
+                }).catch(e => console.error(e));
             }
         });
+
+        if (isTopLevel) {
+            document.getElementById('blocks-input').value = JSON.stringify(blocks);
+            initSortable();
+        }
     }
 
-    // Modal logic for settings
-    let activeSettingsIndex = null;
-    function openSettings(index) {
-        activeSettingsIndex = index;
-        const block = blocks[index];
-        const settings = block.settings || {};
-        
-        document.getElementById('set-bg-color').value = settings.bg_color || '#ffffff';
-        document.getElementById('set-text-color').value = settings.text_color || '#334155';
-        document.getElementById('set-padding-top').value = settings.padding_top || '4';
-        document.getElementById('set-padding-bottom').value = settings.padding_bottom || '4';
-        
-        const modal = new bootstrap.Modal(document.getElementById('settingsModal'));
-        modal.show();
+    function updateBlockById(id, key, value) {
+        const block = allBlocks.get(id);
+        if (block) {
+            const parts = key.split('.');
+            let current = block;
+            for (let i = 0; i < parts.length - 1; i++) {
+                if (!current[parts[i]]) current[parts[i]] = {};
+                current = current[parts[i]];
+            }
+            current[parts[parts.length - 1]] = value;
+            document.getElementById('blocks-input').value = JSON.stringify(blocks);
+        }
     }
 
-    function saveSettings() {
-        if (activeSettingsIndex === null) return;
+    function removeBlockById(id) {
+        if (!confirm('Remove this block?')) return;
         
-        const settings = {
-            bg_color: document.getElementById('set-bg-color').value,
-            text_color: document.getElementById('set-text-color').value,
-            padding_top: document.getElementById('set-padding-top').value,
-            padding_bottom: document.getElementById('set-padding-bottom').value
-        };
-        
-        blocks[activeSettingsIndex].settings = settings;
+        function removeFromList(list) {
+            for (let i = 0; i < list.length; i++) {
+                if (list[i]._id === id) {
+                    list.splice(i, 1);
+                    return true;
+                }
+                if (list[i].type === 'columns') {
+                    for (let col of list[i].data.columns) {
+                        if (removeFromList(col.blocks)) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        removeFromList(blocks);
+        allBlocks.delete(id);
         renderBlocks();
-        
-        const modal = bootstrap.Modal.getInstance(document.getElementById('settingsModal'));
-        modal.hide();
     }
 
     function addBlock(type) {
-        if (!blocks) blocks = [];
         let data = {};
-        
-        if (type === 'text') data = { content: 'Enter your content here...' };
+        if (type === 'columns') data = { columns: [{ blocks: [] }, { blocks: [] }] };
+        else if (type === 'text') data = { content: '' };
         else if (type === 'image') data = { url: '', alt: '' };
-        else if (type === 'button') data = { text: 'Learn More', url: '#', rel_nofollow: false, target_blank: false };
-        else if (type === 'hero_stats') data = { title: '', description: '', image: '', stats: [] };
-        else if (type === 'timeline') data = { events: [] };
-        else if (type === 'split_content') data = { title: '', description: '', image: '', position: 'left', stats: [] };
-        else if (type === 'features') data = { items: [] };
-        else if (type === 'tabs') data = { tabs: [] };
-        
+        else if (type === 'button') data = { text: 'Click Me', url: '#' };
+        else data = { title: '', description: '' };
+
         blocks.push({ 
+            _id: generateId(),
             type: type, 
             data: data, 
-            settings: { bg_color: '#ffffff', text_color: '#334155', padding_top: '4', padding_bottom: '4' } 
+            settings: { bg_color: '#ffffff', text_color: '#334155', padding_top: '2', padding_bottom: '2', font_size: '16', border_radius: '0' } 
         });
         renderBlocks();
     }
 
-    function addNestedItem(blockIndex, key, defaultData = {value: '', label: ''}) {
-        if(!blocks[blockIndex].data[key]) blocks[blockIndex].data[key] = [];
-        blocks[blockIndex].data[key].push(defaultData);
-        renderBlocks();
-    }
-
-    function removeNestedItem(blockIndex, key, itemIndex) {
-        blocks[blockIndex].data[key].splice(itemIndex, 1);
-        renderBlocks();
-    }
-
-    function updateNestedBlock(blockIndex, key, itemIndex, field, value) {
-        blocks[blockIndex].data[key][itemIndex][field] = value;
-        document.getElementById('blocks-input').value = JSON.stringify(blocks);
-    }
-
-    function removeBlock(index) {
-        if(confirm('Are you sure you want to remove this block?')) {
-            blocks.splice(index, 1);
+    function addNestedBlock(parentId, colIndex) {
+        const block = allBlocks.get(parentId);
+        if (block && block.type === 'columns') {
+            block.data.columns[colIndex].blocks.push({ 
+                _id: generateId(),
+                type: 'text', 
+                data: { content: 'New nested text...' },
+                settings: { font_size: '14' }
+            });
             renderBlocks();
         }
     }
 
-    function updateBlock(index, key, value) {
-        blocks[index].data[key] = value;
-        document.getElementById('blocks-input').value = JSON.stringify(blocks);
+    let activeId = null;
+    function openSettings(id) {
+        activeId = id;
+        const block = allBlocks.get(id);
+        const s = block.settings || {};
+        
+        document.getElementById('set-bg-color').value = s.bg_color || '#ffffff';
+        document.getElementById('set-text-color').value = s.text_color || '#334155';
+        document.getElementById('set-padding-top').value = s.padding_top || '2';
+        document.getElementById('set-padding-bottom').value = s.padding_bottom || '2';
+        document.getElementById('set-margin-top').value = s.margin_top || '0';
+        document.getElementById('set-margin-bottom').value = s.margin_bottom || '0';
+        document.getElementById('set-font-size').value = s.font_size || '16';
+        document.getElementById('set-border-radius').value = s.border_radius || '0';
+        
+        new bootstrap.Modal(document.getElementById('settingsModal')).show();
     }
 
-    // Image Upload
-    async function uploadImage(input, index, key = 'url') {
+    function saveSettings() {
+        const block = allBlocks.get(activeId);
+        if (block) {
+            block.settings = {
+                bg_color: document.getElementById('set-bg-color').value,
+                text_color: document.getElementById('set-text-color').value,
+                padding_top: document.getElementById('set-padding-top').value,
+                padding_bottom: document.getElementById('set-padding-bottom').value,
+                margin_top: document.getElementById('set-margin-top').value,
+                margin_bottom: document.getElementById('set-margin-bottom').value,
+                font_size: document.getElementById('set-font-size').value,
+                border_radius: document.getElementById('set-border-radius').value
+            };
+            renderBlocks();
+            bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
+        }
+    }
+
+    function initSortable() {
+        const containers = document.querySelectorAll('#blocks-container, .nested-container');
+        containers.forEach(container => {
+            new Sortable(container, {
+                group: 'shared',
+                animation: 150,
+                handle: '.drag-handle',
+                onEnd: function() {
+                    // This is complex. For now, let's rebuild blocks from DOM
+                    blocks = rebuildBlocksFromDOM(document.getElementById('blocks-container'));
+                    renderBlocks();
+                }
+            });
+        });
+    }
+
+    function rebuildBlocksFromDOM(container) {
+        const list = [];
+        Array.from(container.children).forEach(el => {
+            if (el.classList.contains('block-item')) {
+                const id = el.dataset.id;
+                const block = allBlocks.get(id);
+                if (block) {
+                    if (block.type === 'columns') {
+                        block.data.columns.forEach((col, idx) => {
+                            const colContainer = el.querySelector(`#container-${id}-${idx}`);
+                            col.blocks = rebuildBlocksFromDOM(colContainer);
+                        });
+                    }
+                    list.push(block);
+                }
+            }
+        });
+        return list;
+    }
+
+    async function uploadImageByPath(input, path) {
         const file = input.files[0];
         if (!file) return;
-
         const formData = new FormData();
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
-
         try {
             const res = await fetch('{{ route('admin.builder.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
-            
             if (data.url) {
-                blocks[index].data[key] = data.url;
+                updateBlockById(path, 'data.url', data.url);
                 renderBlocks();
             }
-        } catch(e) { console.error(e); alert('Upload failed'); }
+        } catch(e) { console.warn(e); }
+    }
+
+    function addArrayItem(id, listKey) {
+        const block = allBlocks.get(id);
+        if (block) {
+            if (!block.data[listKey]) block.data[listKey] = [];
+            let newItem = {};
+            if (listKey === 'tabs') newItem = { title: 'New Tab', content: 'Tab content...' };
+            else if (listKey === 'items') newItem = { title: 'New Feature', description: 'Feature description...' };
+            else if (listKey === 'stats') newItem = { value: '100+', label: 'Happy Clients' };
+            else if (listKey === 'events') newItem = { year: '2024', title: 'New Event', badge: 'Company' };
+            
+            block.data[listKey].push(newItem);
+            renderBlocks();
+        }
+    }
+
+    function removeArrayItem(id, listKey, index) {
+        const block = allBlocks.get(id);
+        if (block && block.data[listKey]) {
+            block.data[listKey].splice(index, 1);
+            renderBlocks();
+        }
     }
 </script>
 
@@ -437,11 +438,65 @@
         background-color: var(--primary-soft) !important;
         border: 2px dashed var(--primary) !important;
     }
+    .drag-handle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        background: var(--bg-main);
+        border-right: 1px solid var(--border-soft);
+        transition: all 0.2s;
+    }
     .drag-handle:hover {
         background: var(--border-soft) !important;
     }
     .drag-handle:hover i {
         opacity: 1 !important;
         color: var(--primary);
+    }
+    .block-label {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-icon-sm {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-soft);
+        background: white;
+        color: var(--text-main);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-icon-sm:hover {
+        background: var(--bg-main);
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+    .btn-icon-sm.text-red { color: #ef4444; }
+    .btn-icon-sm.text-red:hover { background: #fee2e2; border-color: #ef4444; }
+
+    .column-header {
+        background: var(--bg-main);
+        padding: 0.25rem 0.5rem;
+        border-bottom: 1px solid var(--border-soft);
+    }
+    .nested-container {
+        min-height: 50px;
     }
 </style>

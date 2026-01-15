@@ -29,6 +29,10 @@
                 <p style="font-size: 0.75rem; color: var(--text-light); margin: 0.25rem 0 0;">Add and arrange any block to build your custom structure.</p>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" onclick="addBlock('columns')" class="btn btn-secondary" title="Add Multi-Column Layout">
+                    <i class="fas fa-columns"></i> Columns
+                </button>
+                <div style="border-left: 1px solid var(--border-soft); margin: 0 0.5rem;"></div>
                 <button type="button" onclick="addBlock('text')" class="btn btn-secondary" title="Add Text Area">
                     <i class="fas fa-font"></i> Text
                 </button>
@@ -119,13 +123,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="padding: 2rem;">
-                <div class="form-group">
-                    <label>Background Color</label>
-                    <input type="color" id="set-bg-color" class="form-control" style="height: 50px; padding: 5px;">
-                </div>
-                <div class="form-group">
-                    <label>Text Color</label>
-                    <input type="color" id="set-text-color" class="form-control" style="height: 50px; padding: 5px;">
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Background Color</label>
+                        <input type="color" id="set-bg-color" class="form-control" style="height: 50px; padding: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Text Color</label>
+                        <input type="color" id="set-text-color" class="form-control" style="height: 50px; padding: 5px;">
+                    </div>
                 </div>
                 <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
@@ -135,6 +141,26 @@
                     <div class="form-group">
                         <label>Padding Bottom (rem)</label>
                         <input type="number" id="set-padding-bottom" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Margin Top (rem)</label>
+                        <input type="number" id="set-margin-top" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Margin Bottom (rem)</label>
+                        <input type="number" id="set-margin-bottom" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Font Size (px)</label>
+                        <input type="number" id="set-font-size" class="form-control" min="8" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Border Radius (px)</label>
+                        <input type="number" id="set-border-radius" class="form-control" min="0" max="100">
                     </div>
                 </div>
             </div>

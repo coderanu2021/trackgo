@@ -18,6 +18,10 @@ class Blog extends Model
         'meta_keywords',
     ];
 
+    protected $casts = [
+        'content' => 'array',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
