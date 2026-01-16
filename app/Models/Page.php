@@ -26,4 +26,9 @@ class Page extends Model
         'gallery' => 'json',
         'is_active' => 'boolean'
     ];
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'page_id');
+    }
 }

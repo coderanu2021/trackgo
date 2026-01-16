@@ -3,10 +3,10 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
     <div>
-        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Landing Page Builder</h1>
-        <p style="color: var(--text-muted); font-size: 1rem;">Design and deploy high-conversion landing pages.</p>
+        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Page Builder</h1>
+        <p style="color: var(--text-muted); font-size: 1rem;">Design and deploy custom content pages.</p>
     </div>
-    <a href="{{ route('admin.builder.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">
+    <a href="{{ route('admin.pages.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">
         <i class="fas fa-sparkles"></i> Create New Page
     </a>
 </div>
@@ -23,29 +23,29 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($projects as $project)
+            @foreach($pages as $page)
             <tr>
                 <td>
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <div style="width: 42px; height: 42px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-soft);">
                             <i class="fas fa-window-maximize" style="color: var(--accent); font-size: 1rem;"></i>
                         </div>
-                        <div style="font-weight: 700; color: var(--text-main);">{{ $project->title }}</div>
+                        <div style="font-weight: 700; color: var(--text-main);">{{ $page->title }}</div>
                     </div>
                 </td>
-                <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">/projects/{{ $project->slug }}</td>
+                <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">/pages/{{ $page->slug }}</td>
                 <td>
-                    <a href="{{ route('projects.show', $project->slug) }}" target="_blank" class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); text-decoration: none; border: 1px solid rgba(99, 102, 241, 0.2);">
+                    <a href="{{ route('pages.show', $page->slug) }}" target="_blank" class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); text-decoration: none; border: 1px solid rgba(99, 102, 241, 0.2);">
                         PREVIEW <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.65rem; margin-left: 0.4rem;"></i>
                     </a>
                 </td>
-                <td style="color: var(--text-light); font-weight: 500;">{{ $project->updated_at->diffForHumans() }}</td>
+                <td style="color: var(--text-light); font-weight: 500;">{{ $page->updated_at->diffForHumans() }}</td>
                 <td style="text-align: right;">
                     <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
-                        <a href="{{ route('admin.builder.edit', $project->id) }}" class="btn" style="background: var(--bg-main); color: var(--accent); width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
+                        <a href="{{ route('admin.pages.edit', $page->id) }}" class="btn" style="background: var(--bg-main); color: var(--accent); width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
                             <i class="fas fa-layer-group"></i>
                         </a>
-                        <form action="{{ route('admin.builder.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Delete this landing page?')" style="display: inline-block;">
+                        <form action="{{ route('admin.pages.destroy', $page->id) }}" method="POST" onsubmit="return confirm('Delete this page?')" style="display: inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.05); color: #ef4444; width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">

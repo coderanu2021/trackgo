@@ -31,7 +31,7 @@
     <div class="card" style="margin-bottom: 2rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <div>
-                <h2 style="font-size: 1.1rem; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Blog Content Builder</h2>
+                <h2 style="font-size: 1.1rem; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Blog Builder</h2>
                 <p style="font-size: 0.75rem; color: var(--text-light); margin: 0.25rem 0 0;">Add and arrange blocks to build your post.</p>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -197,7 +197,7 @@
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
         try {
-            const res = await fetch('{{ route('admin.builder.upload') }}', { method: 'POST', body: formData });
+            const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.url) {
                 document.getElementById('blog-image-input').value = data.url;
@@ -212,7 +212,7 @@
         } catch(e) { console.error(e); alert('Upload failed'); }
     }
 </script>
-@include('admin.builder.script')
+@include('admin.pages.script')
 <script>
     renderBlocks();
 </script>

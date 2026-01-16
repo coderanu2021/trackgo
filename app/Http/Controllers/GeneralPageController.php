@@ -91,7 +91,9 @@ class GeneralPageController extends Controller
 
     public function show($slug)
     {
-        $page = Page::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        return view('front.page', compact('page'));
+        $page = Page::where('slug', $slug)->where('is_active', true)->with(['reviews' => function($q) {
+            $q->where('is_approved', true)->latest();
+        }])->firstOrFail();
+        return view('front.product', compact('page'));
     }
 }

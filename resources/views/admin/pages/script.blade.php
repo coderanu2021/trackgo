@@ -399,7 +399,7 @@
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
         try {
-            const res = await fetch('{{ route('admin.builder.upload') }}', { method: 'POST', body: formData });
+            const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.url) {
                 updateBlockById(path, 'data.url', data.url);

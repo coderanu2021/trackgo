@@ -3,7 +3,7 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
     <div>
-        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Blog Post Builder</h1>
+        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Blog Builder</h1>
         <p style="color: var(--text-muted); font-size: 1rem;">Craft and manage your publication content.</p>
     </div>
     <a href="{{ route('admin.blogs.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">

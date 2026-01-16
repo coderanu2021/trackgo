@@ -3,22 +3,16 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <div>
-        <h1>Edit Product Page</h1>
-        <p style="color: var(--text-muted);">Refine your custom structure and content.</p>
+        <h1>Create Page</h1>
+        <p style="color: var(--text-muted);">Build a dynamic page with a structure of your own choice.</p>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
-        <a href="{{ route('projects.show', $page->slug) }}" target="_blank" class="btn btn-secondary" style="border-radius: 20px; font-size: 0.8rem;">
-            <i class="fas fa-external-link-alt"></i> View Live
-        </a>
-        <button form="page-form" type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem;">
-            <i class="fas fa-save"></i> Update Page
-        </button>
-    </div>
+    <button form="page-form" type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem;">
+        <i class="fas fa-paper-plane"></i> Publish Page
+    </button>
 </div>
 
-<form id="page-form" action="{{ route('admin.builder.update', $page->id) }}" method="POST">
+<form id="page-form" action="{{ route('admin.pages.store') }}" method="POST">
     @csrf
-    @method('PUT')
     
 
     <!-- Row 1: Section Builder (Full Width) -->
@@ -62,7 +56,7 @@
         </div>
 
         <div id="blocks-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <p id="empty-state" style="text-align: center; color: var(--text-light); padding: 4rem 2rem; border: 2px dashed var(--border-soft); border-radius: var(--radius-lg); background: var(--bg-main); display: none;">
+            <p id="empty-state" style="text-align: center; color: var(--text-light); padding: 4rem 2rem; border: 2px dashed var(--border-soft); border-radius: var(--radius-lg); background: var(--bg-main);">
                 <i class="fas fa-cubes" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.2;"></i><br>
                 <span style="font-size: 0.95rem; font-weight: 500;">No content blocks added yet. Start building your page!</span>
             </p>
@@ -76,17 +70,17 @@
             <h3 style="margin-top: 0; margin-bottom: 1.5rem;"><i class="fas fa-search" style="color:var(--primary); margin-right: 0.5rem;"></i> SEO Optimization</h3>
             <div class="form-group">
                 <label>Meta Title</label>
-                <input type="text" name="meta_title" value="{{ $page->meta_title }}" class="form-control" placeholder="SEO Title">
+                <input type="text" name="meta_title" class="form-control" placeholder="SEO Title">
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Meta Keywords</label>
-                    <input type="text" name="meta_keywords" value="{{ $page->meta_keywords }}" class="form-control" placeholder="keyword1, keyword2...">
+                    <input type="text" name="meta_keywords" class="form-control" placeholder="keyword1, keyword2...">
                 </div>
             </div>
             <div class="form-group mb-0">
                 <label>Meta Description</label>
-                <textarea name="meta_description" rows="3" class="form-control" placeholder="Brief summary for search engines...">{{ $page->meta_description }}</textarea>
+                <textarea name="meta_description" rows="3" class="form-control" placeholder="Brief summary for search engines..."></textarea>
             </div>
         </div>
 
@@ -96,17 +90,17 @@
             
             <div class="form-group">
                 <label>Page Title</label>
-                <input type="text" name="title" class="form-control" value="{{ $page->title }}" required>
+                <input type="text" name="title" class="form-control" placeholder="e.g. Summer Collection" required>
             </div>
             
             <div class="form-group">
-                <label>URL Slug</label>
-                <input type="text" name="slug" class="form-control" value="{{ $page->slug }}">
+                <label>URL Slug (Optional)</label>
+                <input type="text" name="slug" class="form-control" placeholder="summer-collection">
             </div>
 
             <div class="form-group mb-0">
                 <label>Hero Image URL</label>
-                <input type="url" name="hero_image" class="form-control" value="{{ $page->hero_image }}">
+                <input type="url" name="hero_image" class="form-control" placeholder="https://...">
             </div>
         </div>
     </div>
@@ -173,9 +167,9 @@
 </div>
 
 <script>
-    let blocks = @json($page->content ?? []);
+    let blocks = [];
 </script>
-@include('admin.builder.script')
+@include('admin.pages.script')
 <script>
     renderBlocks();
 </script>

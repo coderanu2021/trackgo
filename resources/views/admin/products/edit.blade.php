@@ -3,8 +3,8 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <div>
-        <h1>Edit Product Detail</h1>
-        <p style="color: var(--text-muted);">Refine your product detail content and structure.</p>
+        <h1>Edit Product Page</h1>
+        <p style="color: var(--text-muted);">Refine your product page content and structure.</p>
     </div>
     <div style="display: flex; gap: 0.5rem;">
         <a href="{{ route('products.show', $page->slug) }}" target="_blank" class="btn btn-secondary" style="border-radius: 20px; font-size: 0.8rem;">
@@ -261,7 +261,7 @@
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
         try {
-            const res = await fetch('{{ route('admin.builder.upload') }}', { method: 'POST', body: formData });
+            const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.url) document.getElementById('thumbnail-input').value = data.url;
         } catch(e) { console.error(e); alert('Upload failed'); }
@@ -274,7 +274,7 @@
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
         try {
-            const res = await fetch('{{ route('admin.builder.upload') }}', { method: 'POST', body: formData });
+            const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.url) {
                 gallery[index] = data.url;
@@ -288,7 +288,7 @@
         renderGallery();
     });
 </script>
-@include('admin.builder.script')
+@include('admin.pages.script')
 <script>
     renderBlocks();
 </script>

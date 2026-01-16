@@ -3,11 +3,11 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
     <div>
-        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">General Page Builder</h1>
+        <h1 style="font-size: 1.875rem; font-weight: 800; letter-spacing: -0.025em;">Product Page Builder</h1>
         <p style="color: var(--text-muted); font-size: 1rem;">Design custom detail pages for your specific products.</p>
     </div>
     <a href="{{ route('admin.products.create') }}" class="btn btn-primary" style="padding: 0.875rem 2rem; border-radius: 14px;">
-        <i class="fas fa-plus"></i> Create New Product Detail
+        <i class="fas fa-plus"></i> Create New Product Page
     </a>
 </div>
 
@@ -34,7 +34,7 @@
                         <div style="font-weight: 700; color: var(--text-main);">{{ $page->title }}</div>
                     </div>
                 </td>
-                <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">/product/{{ $page->slug }}</td>
+                <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">/products/{{ $page->slug }}</td>
                 <td>
                     <a href="{{ route('products.show', $page->slug) }}" target="_blank" class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); text-decoration: none; border: 1px solid rgba(99, 102, 241, 0.2);">
                         PREVIEW <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.65rem; margin-left: 0.4rem;"></i>
@@ -53,7 +53,7 @@
                         <a href="{{ route('admin.products.edit', $page->id) }}" class="btn" style="background: var(--bg-main); color: var(--accent); width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form action="{{ route('admin.products.destroy', $page->id) }}" method="POST" onsubmit="return confirm('Delete this product detail?')" style="display: inline-block;">
+                        <form action="{{ route('admin.products.destroy', $page->id) }}" method="POST" onsubmit="return confirm('Delete this product page?')" style="display: inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.05); color: #ef4444; width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">

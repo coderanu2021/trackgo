@@ -22,7 +22,7 @@
             <div class="product-info">
                 <div class="product-category">{{ $category->name }}</div>
                 <h3 class="product-title">
-                    <a href="{{ route('projects.show', $product->slug) }}">{{ $product->title }}</a>
+                    <a href="{{ route('pages.show', $product->slug) }}">{{ $product->title }}</a>
                 </h3>
                 <div class="flex justify-between items-center">
                     <span class="product-price">$250.00</span>

@@ -78,6 +78,17 @@
                 <div class="stat-value">{{ number_format($stats['subscribers']) }}</div>
             </div>
         </div>
+        <div class="stat-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div class="stat-icon" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+            <div>
+                <div class="stat-label">Product Reviews</div>
+                <div class="stat-value">{{ number_format($stats['reviews']) }}</div>
+            </div>
+        </div>
     </div>
 
     <div style="display: grid; grid-template-columns: 1.8fr 1fr; gap: 2rem; align-items: start;">
@@ -148,19 +159,19 @@
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <h2 style="font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-rocket" style="color: var(--accent)"></i> Landing Pages
+                            <i class="fas fa-rocket" style="color: var(--accent)"></i> Pages
                         </h2>
-                        <a href="{{ route('admin.builder.create') }}" class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;"><i class="fas fa-plus"></i> New</a>
+                        <a href="{{ route('admin.pages.create') }}" class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;"><i class="fas fa-plus"></i> New</a>
                     </div>
                     <div style="display: grid; gap: 1rem;">
-                        @foreach($projects as $project)
+                        @foreach($pages as $page)
                         <div style="display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0;">
                             <div style="width: 40px; height: 40px; border-radius: 8px; background: var(--bg-main); display: flex; align-items: center; justify-content: center;">
                                 <i class="fas fa-globe" style="color: var(--text-light); font-size: 0.8rem;"></i>
                             </div>
                             <div style="flex: 1;">
-                                <div style="font-size: 0.85rem; font-weight: 700;">{{ $project->title }}</div>
-                                <div style="font-size: 0.7rem; color: var(--text-light);">{{ $project->slug }}</div>
+                                <div style="font-size: 0.85rem; font-weight: 700;">{{ $page->title }}</div>
+                                <div style="font-size: 0.7rem; color: var(--text-light);">{{ $page->slug }}</div>
                             </div>
                         </div>
                         @endforeach

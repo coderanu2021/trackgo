@@ -49,6 +49,12 @@
         grid-template-columns: repeat(4, 1fr);
         gap: 2rem;
     }
+    @media (max-width: 1024px) {
+        .features-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+        .features-grid { grid-template-columns: 1fr; gap: 1rem; }
+    }
     .feature-item {
         display: flex;
         align-items: center;
@@ -242,6 +248,18 @@
             </div>
         </div>
     </div>
+    <style>
+        @media (max-width: 768px) {
+            .hero-slider { padding: 2rem; }
+            .hero-content h1 { font-size: 2rem; }
+            .hero-slide { flex-direction: column !important; text-align: center; }
+            .hero-slide div:last-child { justify-content: center !important; margin-top: 2rem; }
+            .about-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+            .about-img-container { order: 2; }
+            .about-content { order: 1; text-align: center; }
+            .about-content div { margin: 0 auto 2rem !important; }
+        }
+    </style>
 </section>
 
 <!-- Features -->
@@ -278,6 +296,31 @@
     </div>
 </section>
 
+<!-- About Us Section -->
+<section style="padding: 6rem 0; background: var(--white);">
+    <div class="container">
+        <div class="about-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+            <div class="about-img-container" style="position: relative;">
+                <div style="position: absolute; top: -20px; left: -20px; width: 100px; height: 100px; background: var(--primary-soft); border-radius: 50%; z-index: 0;"></div>
+                <img src="{{ asset('uploads/about/home_about.png') }}" alt="About Us" style="width: 100%; border-radius: 24px; position: relative; z-index: 1; box-shadow: var(--shadow-lg);">
+            </div>
+            <div class="about-content">
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--secondary); letter-spacing: -0.02em;">Crafting Digital Excellence for Your Business</h2>
+                <div style="width: 60px; height: 4px; background: var(--primary); border-radius: 2px; margin-bottom: 2rem;"></div>
+                <p style="font-size: 1.15rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.5rem;">
+                    At <strong>{{ $settings['site_name'] ?? 'TrackGo' }}</strong>, we are dedicated to providing the most advanced project tracking and order management solutions. Our mission is to empower teams with precision tools that simplify complex workflows and drive measurable results.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 2.5rem;">
+                    With a focus on innovation and user-centric design, we help businesses across the globe transform their digital operations into efficient, high-performing powerhouses.
+                </p>
+                <a href="{{ route('about') }}" class="btn btn-primary" style="padding: 1rem 2.5rem; border-radius: 12px; font-weight: 800;">
+                    LEARN MORE <i class="fas fa-arrow-right" style="margin-left: 0.5rem; font-size: 0.8rem;"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Projects / Products -->
 <section class="container" style="padding: 4rem 0;">
     <div class="section-header">
@@ -298,7 +341,7 @@
             <div class="product-info">
                 <div class="product-category">{{ $product->category->name ?? 'General' }}</div>
                 <h3 class="product-title">
-                    <a href="{{ route('projects.show', $product->slug) }}">{{ $product->title }}</a>
+                    <a href="{{ route('pages.show', $product->slug) }}">{{ $product->title }}</a>
                 </h3>
                 <div class="flex justify-between items-center">
                     <span class="product-price">${{ number_format($product->price, 2) }}</span>

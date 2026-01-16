@@ -12,6 +12,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\GeneralPageController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('pricing', [HomeController::class, 'pricing'])->name('pricing');
@@ -37,7 +38,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Banners
     Route::resource('banners', BannerController::class);
 
-    // Product Detail Builder (Formerly General Page Builder)
+    // Product Page Builder (Formerly General Page Builder)
     Route::get('products', [GeneralPageController::class, 'index'])->name('products.index');
     Route::get('products/create', [GeneralPageController::class, 'create'])->name('products.create');
     Route::post('products/store', [GeneralPageController::class, 'store'])->name('products.store');
@@ -45,14 +46,14 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('products/{id}', [GeneralPageController::class, 'update'])->name('products.update');
     Route::delete('products/{id}', [GeneralPageController::class, 'destroy'])->name('products.destroy');
 
-    // Builder Routes
-    Route::get('builder', [PageBuilderController::class, 'index'])->name('builder.index');
-    Route::get('builder/create', [PageBuilderController::class, 'create'])->name('builder.create');
-    Route::post('builder/store', [PageBuilderController::class, 'store'])->name('builder.store');
-    Route::get('builder/{id}/edit', [PageBuilderController::class, 'edit'])->name('builder.edit');
-    Route::put('builder/{id}', [PageBuilderController::class, 'update'])->name('builder.update');
-    Route::delete('builder/{id}', [PageBuilderController::class, 'destroy'])->name('builder.destroy');
-    Route::post('builder/upload', [PageBuilderController::class, 'upload'])->name('builder.upload');
+    // Page Builder (Formerly Builder/Landing Page Builder)
+    Route::get('pages', [PageBuilderController::class, 'index'])->name('pages.index');
+    Route::get('pages/create', [PageBuilderController::class, 'create'])->name('pages.create');
+    Route::post('pages/store', [PageBuilderController::class, 'store'])->name('pages.store');
+    Route::get('pages/{id}/edit', [PageBuilderController::class, 'edit'])->name('pages.edit');
+    Route::put('pages/{id}', [PageBuilderController::class, 'update'])->name('pages.update');
+    Route::delete('pages/{id}', [PageBuilderController::class, 'destroy'])->name('pages.destroy');
+    Route::post('pages/upload', [PageBuilderController::class, 'upload'])->name('pages.upload');
 
     // Orders Routes
     Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'update']);
@@ -70,6 +71,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('subscriptions', \App\Http\Controllers\Admin\SubscriptionController::class);
     Route::resource('newsletters', \App\Http\Controllers\Admin\NewsletterController::class)->only(['index', 'destroy']);
     Route::post('newsletters/{newsletter}/toggle', [\App\Http\Controllers\Admin\NewsletterController::class, 'toggle'])->name('newsletters.toggle');
+    
+    // Reviews Management
+    Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::post('reviews/{review}/toggle', [\App\Http\Controllers\Admin\ReviewController::class, 'toggleStatus'])->name('reviews.toggle');
 });
 
 // Newsletter Route
@@ -77,12 +82,16 @@ Route::post('newsletter/subscribe', [App\Http\Controllers\NewsletterController::
 
 // Front Routes
 Route::get('category/{slug}', [CategoryController::class, 'show'])->name('category.show');
-Route::get('product/{slug}', [GeneralPageController::class, 'show'])->name('products.show');
+Route::get('products/{slug}', [GeneralPageController::class, 'show'])->name('products.show');
 Route::view('about', 'front.about')->name('about');
 Route::view('contact', 'front.contact')->name('contact');
-Route::get('projects/{slug}', [PageBuilderController::class, 'show'])->name('projects.show');
+Route::get('pages/{slug}', [PageBuilderController::class, 'show'])->name('pages.show');
 Route::get('blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
 Route::get('blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blogs.show');
+
+// Review Routes
+Route::post('reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
+Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
 
 // Cart Routes
 Route::get('cart', [CartController::class, 'index'])->name('cart.index');

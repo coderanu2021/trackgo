@@ -3,11 +3,11 @@
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <div>
-        <h1>Product Detail Builder</h1>
+        <h1>Product Page Builder</h1>
         <p style="color: var(--text-muted);">Design custom product detail pages with drag-and-drop sections.</p>
     </div>
     <button form="page-form" type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem;">
-        <i class="fas fa-check"></i> Save Product Detail
+        <i class="fas fa-check"></i> Save Product Page
     </button>
 </div>
 
@@ -255,7 +255,7 @@
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
         try {
-            const res = await fetch('{{ route('admin.builder.upload') }}', { method: 'POST', body: formData });
+            const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.url) document.getElementById('thumbnail-input').value = data.url;
         } catch(e) { console.error(e); alert('Upload failed'); }
@@ -268,7 +268,7 @@
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
         try {
-            const res = await fetch('{{ route('admin.builder.upload') }}', { method: 'POST', body: formData });
+            const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.url) {
                 gallery[index] = data.url;
@@ -277,7 +277,7 @@
         } catch(e) { console.error(e); alert('Upload failed'); }
     }
 </script>
-@include('admin.builder.script')
+@include('admin.pages.script')
 <script>
     renderBlocks();
 </script>

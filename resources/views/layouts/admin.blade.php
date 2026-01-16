@@ -105,14 +105,14 @@
                 
                 <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;">Page Builders</div>
                 
-                <a href="{{ route('admin.builder.index') }}" class="nav-link {{ request()->routeIs('admin.builder.*') ? 'active' : '' }}">
-                    <i class="fas fa-rocket"></i> <span>Landing Page Builder</span>
-                </a>
                 <a href="{{ route('admin.products.index') }}" class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                    <i class="fas fa-file-invoice"></i> <span>General Page Builder</span>
+                    <i class="fas fa-boxes-stacked"></i> <span>Product Page Builder</span>
+                </a>
+                <a href="{{ route('admin.pages.index') }}" class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+                    <i class="fas fa-file-invoice"></i> <span>Page Builder</span>
                 </a>
                 <a href="{{ route('admin.blogs.index') }}" class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
-                    <i class="fas fa-pen-nib"></i> <span>Blog Post Builder</span>
+                    <i class="fas fa-pen-nib"></i> <span>Blog Builder</span>
                 </a>
                 
                 <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;"><span>Content</span></div>
@@ -130,6 +130,9 @@
                 </a>
                 <a href="{{ route('admin.newsletters.index') }}" class="nav-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
                     <i class="fas fa-paper-plane"></i> <span>Newsletter</span>
+                </a>
+                <a href="{{ route('admin.reviews.index') }}" class="nav-link {{ request()->routeIs('admin.reviews.index') ? 'active' : '' }}">
+                    <i class="fas fa-star"></i> <span>Product Reviews</span>
                 </a>
 
                 <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;"><span>Management</span></div>

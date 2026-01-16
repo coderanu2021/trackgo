@@ -12,20 +12,20 @@ class PageBuilderController extends Controller
     public function show($slug)
     {
         $page = ProductPage::where('slug', $slug)->where('is_published', true)->firstOrFail();
-        return view('front.project', compact('page'));
+        return view('front.page', compact('page'));
     }
 
     // Admin: List
     public function index()
     {
-        $projects = ProductPage::latest()->get();
-        return view('admin.builder.index', compact('projects'));
+        $pages = ProductPage::latest()->get();
+        return view('admin.pages.index', compact('pages'));
     }
 
     // Admin: Create
     public function create()
     {
-        return view('admin.builder.create');
+        return view('admin.pages.create');
     }
 
     // Admin: Store
@@ -51,14 +51,14 @@ class PageBuilderController extends Controller
             'meta_keywords' => $request->meta_keywords,
         ]);
 
-        return redirect()->route('admin.builder.index')->with('success', 'Page created successfully!');
+        return redirect()->route('admin.pages.index')->with('success', 'Page created successfully!');
     }
 
     // Admin: Edit
     public function edit($id)
     {
         $page = ProductPage::findOrFail($id);
-        return view('admin.builder.edit', compact('page'));
+        return view('admin.pages.edit', compact('page'));
     }
 
     // Admin: Update
@@ -85,7 +85,7 @@ class PageBuilderController extends Controller
             'meta_keywords' => $request->meta_keywords,
         ]);
 
-        return redirect()->route('admin.builder.index')->with('success', 'Page updated successfully!');
+        return redirect()->route('admin.pages.index')->with('success', 'Page updated successfully!');
     }
 
     // Admin: Delete
@@ -93,7 +93,7 @@ class PageBuilderController extends Controller
     {
         $page = ProductPage::findOrFail($id);
         $page->delete();
-        return redirect()->route('admin.builder.index')->with('success', 'Page deleted successfully!');
+        return redirect()->route('admin.pages.index')->with('success', 'Page deleted successfully!');
     }
 
     // Admin: Upload Image

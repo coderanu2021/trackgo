@@ -3,7 +3,14 @@
 @section('title', 'Insights & Articles - ' . ($settings['site_name'] ?? 'TrackGo'))
 
 @section('content')
-<div style="background: var(--bg-light); padding: 6rem 0; border-bottom: 1px solid var(--border);">
+<style>
+    @media (max-width: 768px) {
+        .blog-header { padding: 4rem 0 !important; }
+        .blog-header h1 { font-size: 2.5rem !important; }
+        .blog-grid { grid-template-columns: 1fr !important; }
+    }
+</style>
+<div class="blog-header" style="background: var(--bg-light); padding: 6rem 0; border-bottom: 1px solid var(--border);">
     <div class="container" style="text-align: center;">
         <h1 style="font-size: 3.5rem; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 1rem; color: var(--secondary);">Insights & Articles</h1>
         <p style="color: var(--text-muted); font-size: 1.25rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">
@@ -13,7 +20,7 @@
 </div>
 
 <div class="container" style="padding: 6rem 0;">
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 3rem;">
+    <div class="blog-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 3rem;">
         @forelse($blogs as $blog)
         <article style="background: white; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); height: 100%; display: flex; flex-direction: column;" 
                  onmouseover="this.style.transform='translateY(-12px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)'; this.style.borderColor='var(--primary)';"
