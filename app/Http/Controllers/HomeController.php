@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductPage;
+use App\Models\Page;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $products = ProductPage::where('is_published', true)->latest()->get();
+        $products = Page::where('is_active', true)->latest()->take(8)->get();
         $categories = \App\Models\Category::where('is_active', true)->get();
         $blogs = \App\Models\Blog::where('is_published', true)->latest()->take(3)->get();
         $hero_slides = \App\Models\Banner::where('type', 'main')->orderBy('order')->get();

@@ -12,6 +12,31 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'role' => 'customer',
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->route('customer.dashboard');
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -22,7 +47,11 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('admin/dashboard');
+            if (Auth::user()->isAdmin()) {
+                return redirect()->intended('admin/dashboard');
+            }
+
+            return redirect()->intended(route('customer.dashboard'));
         }
 
         return back()->withErrors([

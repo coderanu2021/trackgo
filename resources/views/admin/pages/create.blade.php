@@ -167,10 +167,13 @@
 </div>
 
 <script>
-    let blocks = [];
+    window.blocks = [];
+    if (!Array.isArray(window.blocks)) window.blocks = [];
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.renderBlocks === 'function') {
+            window.renderBlocks();
+        }
+    });
 </script>
 @include('admin.pages.script')
-<script>
-    renderBlocks();
-</script>
 @endsection

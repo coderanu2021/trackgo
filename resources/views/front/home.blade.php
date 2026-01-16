@@ -240,7 +240,7 @@
         <div style="display:flex; flex-direction:column; gap:2rem;">
             <div style="flex:1; background:#edf2f7; border-radius:8px; padding:2rem; display:flex; flex-direction:column; justify-content:center;">
                 <h3>Summer Offer</h3>
-                <p class="text-primary">New Arraival</p>
+                <p class="text-primary">New Arrival</p>
             </div>
             <div style="flex:1; background:#2b3445; color:white; border-radius:8px; padding:2rem; display:flex; flex-direction:column; justify-content:center;">
                 <h3>AMLED Sound</h3>
@@ -325,15 +325,15 @@
 <section class="container" style="padding: 4rem 0;">
     <div class="section-header">
         <h2 class="section-title">New Arrivals</h2>
-        <a href="#" class="text-primary">View All</a>
+        <a href="{{ route('shop') }}" class="text-primary">View All</a>
     </div>
 
     <div class="product-grid">
         @forelse($products as $product)
         <div class="product-card">
             <div class="product-img">
-                @if($product->hero_image)
-                    <img src="{{ $product->hero_image }}" alt="{{ $product->title }}">
+                @if($product->thumbnail)
+                    <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}">
                 @else
                     <span>No Image</span>
                 @endif
@@ -341,7 +341,7 @@
             <div class="product-info">
                 <div class="product-category">{{ $product->category->name ?? 'General' }}</div>
                 <h3 class="product-title">
-                    <a href="{{ route('pages.show', $product->slug) }}">{{ $product->title }}</a>
+                    <a href="{{ route('products.show', $product->slug) }}">{{ $product->title }}</a>
                 </h3>
                 <div class="flex justify-between items-center">
                     <span class="product-price">${{ number_format($product->price, 2) }}</span>

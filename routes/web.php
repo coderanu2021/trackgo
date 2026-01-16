@@ -22,10 +22,20 @@ Route::get('faqs', [HomeController::class, 'faqs'])->name('faqs');
 // Auth Routes
 Route::get('login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
+Route::get('register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
+// Customer Routes
+Route::middleware('auth')->prefix('customer')->name('customer.')->group(function () {
+    Route::get('dashboard', [\App\Http\Controllers\CustomerController::class, 'dashboard'])->name('dashboard');
+    Route::get('orders', [\App\Http\Controllers\CustomerController::class, 'orders'])->name('orders');
+    Route::get('profile', [\App\Http\Controllers\CustomerController::class, 'profile'])->name('profile');
+    Route::post('profile', [\App\Http\Controllers\CustomerController::class, 'updateProfile'])->name('profile.update');
+});
+
 // Admin Routes
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     
     // Settings Routes

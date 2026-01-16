@@ -25,11 +25,12 @@ class SettingsSeeder extends Seeder
             // Main Navigation (Stored as JSON for dynamic menu builder)
             ['key' => 'main_menu', 'value' => json_encode([
                 ['label' => 'Home', 'url' => '/', 'type' => 'link'],
-                ['label' => 'Shop', 'url' => '#', 'type' => 'link'],
+                ['label' => 'Shop', 'url' => '/shop', 'type' => 'link'],
                 ['label' => 'Vendor', 'url' => '#', 'type' => 'link'],
                 ['label' => 'Flash Deals', 'url' => '#', 'type' => 'link'],
                 ['label' => 'About', 'url' => '/about', 'type' => 'link'],
                 ['label' => 'Contact', 'url' => '/contact', 'type' => 'link'],
+                ['label' => 'FAQs', 'url' => '/faqs', 'type' => 'link'],
             ]), 'type' => 'json'],
 
             // Site Identity

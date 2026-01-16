@@ -63,6 +63,10 @@
         </div>
 
         <div id="blocks-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <p id="empty-state" style="text-align: center; color: var(--text-light); padding: 4rem 2rem; border: 2px dashed var(--border-soft); border-radius: var(--radius-lg); background: var(--bg-main); display: none;">
+                <i class="fas fa-cubes" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.2;"></i><br>
+                <span style="font-size: 0.95rem; font-weight: 500;">No content blocks added yet. Start building your page!</span>
+            </p>
              <!-- Blocks will be rendered here by JavaScript -->
         </div>
     </div>
@@ -216,41 +220,41 @@
             </div>
         </div>
     </div>
-</div>
-</div>
-</div>
-            <div class="modal-footer" style="border-top: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="saveSettings()">Apply Settings</button>
-            </div>
-        </div>
+    <div class="modal-footer" style="border-top: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="saveSettings()">Apply Settings</button>
     </div>
+</div>
+</div>
 </div>
 
 <script>
-    let blocks = {!! json_encode($page->content) !!} || [];
-    let gallery = {!! json_encode($page->gallery ?? []) !!} || [];
+    // Global data initialization
+    window.blocks = {!! json_encode($page->content ?? []) !!};
+    if (!Array.isArray(window.blocks)) window.blocks = [];
+    window.gallery = {!! json_encode($page->gallery ?? []) !!};
+    if (!Array.isArray(window.gallery)) window.gallery = [];
 
     function addGalleryItem(url = '') {
-        const index = gallery.length;
-        gallery.push(url);
+        window.gallery.push(url);
         renderGallery();
     }
 
     function removeGalleryItem(index) {
-        gallery.splice(index, 1);
+        window.gallery.splice(index, 1);
         renderGallery();
     }
 
     function updateGalleryItem(index, value) {
-        gallery[index] = value;
-        document.getElementById('gallery-hidden-input').value = JSON.stringify(gallery);
+        window.gallery[index] = value;
+        document.getElementById('gallery-hidden-input').value = JSON.stringify(window.gallery);
     }
 
     function renderGallery() {
         const container = document.getElementById('gallery-container');
+        if (!container) return;
         container.innerHTML = '';
-        gallery.forEach((url, index) => {
+        window.gallery.forEach((url, index) => {
             const div = document.createElement('div');
             div.className = 'flex gap-2';
             div.innerHTML = `
@@ -262,7 +266,7 @@
             `;
             container.appendChild(div);
         });
-        document.getElementById('gallery-hidden-input').value = JSON.stringify(gallery);
+        document.getElementById('gallery-hidden-input').value = JSON.stringify(window.gallery);
     }
 
     async function uploadMainImage(input) {
@@ -288,19 +292,19 @@
             const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.url) {
-                gallery[index] = data.url;
+                window.gallery[index] = data.url;
                 renderGallery();
             }
         } catch(e) { console.error(e); alert('Upload failed'); }
     }
 
-    // Initial render
     document.addEventListener('DOMContentLoaded', function() {
         renderGallery();
+        if (typeof window.renderBlocks === 'function') {
+            window.renderBlocks();
+        }
     });
 </script>
+
 @include('admin.pages.script')
-<script>
-    renderBlocks();
-</script>
 @endsection

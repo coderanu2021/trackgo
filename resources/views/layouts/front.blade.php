@@ -9,6 +9,7 @@
     @endif
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         :root {
             --primary: {{ $settings['site_primary_color'] ?? '#f37021' }};
@@ -389,9 +390,15 @@
                     <span class="badge">{{ count(session()->get('cart', [])) }}</span>
                 </a>
                 @auth
-                    <a href="{{ route('admin.dashboard') }}" class="action-link" title="Dashboard">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </a>
+                    @if(Auth::user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" class="action-link" title="Admin Dashboard">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </a>
+                    @else
+                        <a href="{{ route('customer.dashboard') }}" class="action-link" title="My Account">
+                            <i class="fa-solid fa-user"></i>
+                        </a>
+                    @endif
                 @else
                     <a href="{{ route('login') }}" class="action-link" title="Sign In">
                         <i class="fa-solid fa-user"></i>
@@ -418,7 +425,14 @@
                 </script>
                 @php $menu = json_decode($settings['main_menu'] ?? '[]', true); @endphp
                 @forelse($menu as $item)
-                    <li><a href="{{ $item['url'] }}" class="nav-item">{{ $item['label'] }}</a></li>
+                    @php 
+                        $url = $item['url'] ?? '#';
+                        if ($url === '#') {
+                            if (strtolower($item['label'] ?? '') === 'shop') $url = route('shop');
+                            if (strtolower($item['label'] ?? '') === 'home') $url = url('/');
+                        }
+                    @endphp
+                    <li><a href="{{ $url }}" class="nav-item">{{ $item['label'] }}</a></li>
                 @empty
                     <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
                     <li><a href="{{ route('shop') }}" class="nav-item">Shop</a></li>
@@ -429,16 +443,6 @@
                     <li><a href="{{ route('about') }}" class="nav-item">About Us</a></li>
                     <li><a href="{{ route('contact') }}" class="nav-item">Contact</a></li>
                 @endforelse
-
-                {{-- Ensure Shop & FAQ link is present if using custom menu but forgot to add it --}}
-                @if(!empty($menu))
-                    @if(!collect($menu)->contains(function($item) { return str_contains($item['url'] ?? '', 'shop'); }))
-                        <li><a href="{{ route('shop') }}" class="nav-item">Shop</a></li>
-                    @endif
-                    @if(!collect($menu)->contains(function($item) { return str_contains($item['url'] ?? '', 'faqs'); }))
-                        <li><a href="{{ route('faqs') }}" class="nav-item">FAQs</a></li>
-                    @endif
-                @endif
             </ul>
         </div>
     </nav>
