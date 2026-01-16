@@ -81,6 +81,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 Route::post('newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 // Front Routes
+Route::get('shop', [App\Http\Controllers\ProductController::class, 'shop'])->name('shop');
 Route::get('category/{slug}', [CategoryController::class, 'show'])->name('category.show');
 Route::get('products/{slug}', [GeneralPageController::class, 'show'])->name('products.show');
 Route::view('about', 'front.about')->name('about');

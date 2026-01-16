@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Page extends Model
 {
     protected $fillable = [
+        'category_id',
         'title',
         'slug',
         'content',
@@ -30,5 +31,10 @@ class Page extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class, 'page_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

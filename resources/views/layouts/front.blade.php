@@ -421,6 +421,7 @@
                     <li><a href="{{ $item['url'] }}" class="nav-item">{{ $item['label'] }}</a></li>
                 @empty
                     <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
+                    <li><a href="{{ route('shop') }}" class="nav-item">Shop</a></li>
                     <li><a href="{{ route('blogs.index') }}" class="nav-item">Blog</a></li>
                     <li><a href="{{ route('reviews.index') }}" class="nav-item">Reviews</a></li>
                     <li><a href="{{ route('pricing') }}" class="nav-item">Pricing</a></li>
@@ -429,9 +430,14 @@
                     <li><a href="{{ route('contact') }}" class="nav-item">Contact</a></li>
                 @endforelse
 
-                {{-- Ensure FAQ link is present if using custom menu but forgot to add it --}}
-                @if(!empty($menu) && !collect($menu)->contains(function($item) { return str_contains($item['url'] ?? '', 'faqs'); }))
-                    <li><a href="{{ route('faqs') }}" class="nav-item">FAQs</a></li>
+                {{-- Ensure Shop & FAQ link is present if using custom menu but forgot to add it --}}
+                @if(!empty($menu))
+                    @if(!collect($menu)->contains(function($item) { return str_contains($item['url'] ?? '', 'shop'); }))
+                        <li><a href="{{ route('shop') }}" class="nav-item">Shop</a></li>
+                    @endif
+                    @if(!collect($menu)->contains(function($item) { return str_contains($item['url'] ?? '', 'faqs'); }))
+                        <li><a href="{{ route('faqs') }}" class="nav-item">FAQs</a></li>
+                    @endif
                 @endif
             </ul>
         </div>

@@ -23,8 +23,13 @@
             @foreach($reviews as $review)
                 <div style="background: white; border-radius: 24px; padding: 2.5rem; box-shadow: var(--shadow-md); border: 1px solid var(--border-soft); display: flex; flex-direction: column; height: 100%;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-                        <div>
-                            <div style="font-weight: 800; color: var(--secondary); font-size: 1.15rem;">{{ $review->name }}</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 800; color: var(--secondary); font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                {{ $review->name }}
+                                <span style="font-size: 0.65rem; color: #059669; background: #ecfdf5; padding: 0.2rem 0.6rem; border-radius: 50px; font-weight: 800; border: 1px solid #10b98144; display: inline-flex; align-items: center; gap: 0.2rem;">
+                                    <i class="fas fa-check-circle" style="font-size: 0.6rem;"></i> VERIFIED
+                                </span>
+                            </div>
                             <div style="font-size: 0.85rem; color: var(--text-light);">{{ $review->created_at->format('M d, Y') }}</div>
                         </div>
                         <div style="color: #ffc107; font-size: 0.85rem;">

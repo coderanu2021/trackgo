@@ -113,9 +113,20 @@
 
             <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Product Details</h2>
             
-            <div class="form-group">
-                <label>Product Name</label>
-                <input type="text" name="title" class="form-control" placeholder="e.g. Premium Wireless Headphones" required>
+            <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Product Category</label>
+                    <select name="category_id" class="form-control">
+                        <option value="">No Category</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" name="title" class="form-control" placeholder="e.g. Premium Wireless Headphones" required>
+                </div>
             </div>
             
             <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
