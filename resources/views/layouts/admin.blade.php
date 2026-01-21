@@ -119,6 +119,9 @@
                 <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                     <i class="fas fa-tags"></i> <span>Categories</span>
                 </a>
+                <a href="{{ route('admin.brands.index') }}" class="nav-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+                    <i class="fas fa-star"></i> <span>Brands</span>
+                </a>
                 <a href="{{ route('admin.banners.index') }}" class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
                     <i class="fas fa-flag"></i> <span>Home Banners</span>
                 </a>

@@ -262,6 +262,31 @@
     </style>
 </section>
 
+</section>
+
+<!-- Top Brands -->
+@if(isset($brands) && $brands->count() > 0)
+<section class="container" style="padding: 3rem 0; margin-bottom: 2rem;">
+    <div class="section-header">
+        <h2 class="section-title">Our Top Brands</h2>
+        <!-- <a href="#" class="text-primary">View All <i class="fas fa-arrow-right"></i></a> -->
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.5rem;">
+        @foreach($brands as $brand)
+            <a href="{{ $brand->url ?? '#' }}" class="brand-item" title="{{ $brand->name }}" target="{{ $brand->url ? '_blank' : '_self' }}"
+               style="background: white; border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; display: flex; align-items: center; justify-content: center; height: 100px; transition: all 0.3s; position: relative; overflow: hidden;">
+                <img src="{{ asset($brand->logo) }}" alt="{{ $brand->name }}" style="max-width: 80%; max-height: 80%; object-fit: contain; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s;">
+                <style>
+                    .brand-item:hover { border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.05); transform: translateY(-3px); }
+                    .brand-item:hover img { filter: grayscale(0); opacity: 1; }
+                </style>
+            </a>
+        @endforeach
+    </div>
+</section>
+@endif
+
 <!-- Features -->
 <section class="features-section container">
     <div class="features-grid">
@@ -355,42 +380,7 @@
     </div>
 </section>
 
-<!-- Pricing Section -->
-<section class="container" style="padding: 6rem 0;">
-    <div style="text-align: center; margin-bottom: 5rem;">
-        <h2 class="section-title">Strategic Pricing</h2>
-        <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            Choose a plan that fits your vision. Risk-free commitment with world-class support.
-        </p>
-    </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
-        @php $plans = \App\Models\Plan::where('is_active', true)->get(); @endphp
-        @foreach($plans as $plan)
-        <div style="background: white; border: 1px solid {{ $plan->is_featured ? 'var(--primary)' : 'var(--border)' }}; border-radius: 20px; padding: 3rem 2rem; display: flex; flex-direction: column; transition: 0.3s; {{ $plan->is_featured ? 'box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);' : '' }}">
-            <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--secondary);">{{ $plan->name }}</h3>
-            <div style="display: flex; align-items: baseline; gap: 0.25rem; margin-bottom: 1.5rem;">
-                <span style="font-size: 2.5rem; font-weight: 800; color: var(--secondary); font-family: 'Outfit', sans-serif;">${{ number_format($plan->price, 0) }}</span>
-                <span style="color: var(--text-muted); font-weight: 600;">/{{ $plan->cycle }}</span>
-            </div>
-            <div style="margin-bottom: 2rem; flex: 1;">
-                @php $features = json_decode($plan->features) @endphp
-                @if($features)
-                    @foreach(array_slice($features, 0, 4) as $feature)
-                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; font-size: 0.95rem;">
-                        <i class="fas fa-check" style="color: var(--primary); font-size: 0.8rem;"></i>
-                        <span>{{ $feature }}</span>
-                    </div>
-                    @endforeach
-                @endif
-            </div>
-            <a href="{{ route('pricing') }}" class="btn {{ $plan->is_featured ? 'btn-primary' : '' }}" style="width: 100%; justify-content: center; font-size: 0.9rem; font-weight: 800; background: {{ $plan->is_featured ? 'var(--primary)' : '#f8fafc' }}; color: {{ $plan->is_featured ? 'white' : 'var(--secondary)' }};">
-                Select Plan
-            </a>
-        </div>
-        @endforeach
-    </div>
-</section>
 
 <!-- Blog Section -->
 <section class="container" style="padding: 4rem 0; background: #f9f9f9; border-radius: 12px; margin-bottom: 4rem;">

@@ -83,6 +83,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('newsletters/{newsletter}/toggle', [\App\Http\Controllers\Admin\NewsletterController::class, 'toggle'])->name('newsletters.toggle');
     
     // Reviews Management
+    Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
     Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->only(['index', 'create', 'store', 'destroy']);
     Route::post('reviews/{review}/toggle', [\App\Http\Controllers\Admin\ReviewController::class, 'toggleStatus'])->name('reviews.toggle');
 });
