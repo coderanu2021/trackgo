@@ -31,6 +31,73 @@
             --radius-lg: 24px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* User Dropdown */
+        .user-menu-container { position: relative; }
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 240px;
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            padding: 0.5rem;
+            margin-top: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 100;
+            border: 1px solid var(--border-soft);
+        }
+        .user-dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .user-info {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-soft);
+            margin-bottom: 0.5rem;
+        }
+        .user-name {
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+        .user-email {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        .dropdown-item:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-soft);
+            margin: 0.5rem 0;
+        }
+        .text-danger { color: #ef4444; }
+        .text-danger:hover { background: #fef2f2; color: #dc2626; }
         
         body {
             font-family: 'Inter', sans-serif;
@@ -395,9 +462,37 @@
                             <i class="fa-solid fa-user-shield"></i>
                         </a>
                     @else
-                        <a href="{{ route('customer.dashboard') }}" class="action-link" title="My Account">
-                            <i class="fa-solid fa-user"></i>
-                        </a>
+                        <div class="user-menu-container">
+                            <button onclick="toggleUserMenu()" class="action-link" style="background:none; border:none; cursor:pointer;" title="My Account">
+                                <i class="fa-solid fa-user"></i>
+                            </button>
+
+                            <div id="user-dropdown" class="user-dropdown-menu">
+                                <div class="user-info">
+                                    <div class="user-name">{{ Auth::user()->name }}</div>
+                                    <div class="user-email">{{ Auth::user()->email }}</div>
+                                </div>
+                                <a href="{{ route('customer.dashboard') }}" class="dropdown-item">
+                                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                                </a>
+                                <a href="{{ route('customer.profile') }}" class="dropdown-item">
+                                    <i class="fa-regular fa-user"></i> My Account
+                                </a>
+                                <a href="{{ route('customer.orders') }}" class="dropdown-item">
+                                    <i class="fa-solid fa-bag-shopping"></i> My Order
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    <i class="fa-regular fa-heart"></i> Wishlist
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item text-danger">
+                                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </div>
                     @endif
                 @else
                     <a href="{{ route('login') }}" class="action-link" title="Sign In">
@@ -546,6 +641,20 @@
         function toggleMobileSearch() {
             document.querySelector('.search-container').classList.toggle('active');
         }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('user-dropdown');
+            menu.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const container = document.querySelector('.user-menu-container');
+            const menu = document.getElementById('user-dropdown');
+            if (container && !container.contains(event.target) && menu.classList.contains('active')) {
+                menu.classList.remove('active');
+            }
+        });
 
         $(document).ready(function() {
             // Header scroll effect
