@@ -16,7 +16,8 @@ class CategoryController extends Controller
 
     public function create()
     {
-        return view('admin.categories.create');
+        $categories = Category::whereNull('parent_id')->get();
+        return view('admin.categories.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -30,7 +31,8 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name),
             'image' => $request->image,
             'icon' => $request->icon,
-            'is_active' => $request->has('is_active')
+            'is_active' => $request->has('is_active'),
+            'parent_id' => $request->parent_id
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
@@ -38,7 +40,8 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-        return view('admin.categories.edit', compact('category'));
+        $categories = Category::whereNull('parent_id')->where('id', '!=', $category->id)->get();
+        return view('admin.categories.edit', compact('category', 'categories'));
     }
 
     public function update(Request $request, Category $category)
@@ -48,7 +51,8 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name),
             'image' => $request->image,
             'icon' => $request->icon,
-            'is_active' => $request->has('is_active')
+            'is_active' => $request->has('is_active'),
+            'parent_id' => $request->parent_id
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');

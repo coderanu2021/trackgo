@@ -224,6 +224,29 @@
         .reviews-section .container > div { grid-template-columns: 1fr !important; gap: 3rem !important; }
         .review-form-card { position: static; padding: 2rem; }
     }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 1000; display: none;
+        align-items: center; justify-content: center;
+        opacity: 0; transition: opacity 0.3s;
+    }
+    .modal-overlay.active { display: flex; opacity: 1; }
+    .modal-card {
+        background: white; width: 90%; max-width: 500px;
+        padding: 2rem; border-radius: 16px;
+        transform: translateY(20px); transition: transform 0.3s;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+    .modal-overlay.active .modal-card { transform: translateY(0); }
+    .close-modal {
+        position: absolute; top: 1rem; right: 1rem;
+        background: none; border: none; font-size: 1.5rem;
+        color: #94a3b8; cursor: pointer;
+    }
+    .close-modal:hover { color: var(--text); }
 </style>
 @endpush
 
@@ -271,14 +294,20 @@
                     {{ $page->meta_description ?? 'This premium product is designed to meet all your needs with high quality and reliability.' }}
                 </p>
 
-                @if($page->price > 0)
+                @if($page->price > 0 || $page->is_enquiry)
                     <div class="action-buttons">
-                        <a href="{{ route('cart.add', $page->id) }}" class="btn-large btn-cart">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </a>
-                        <a href="{{ route('cart.add', $page->id) }}?redirect=checkout" class="btn-large btn-buy">
-                            <i class="fas fa-bolt"></i> Buy Now
-                        </a>
+                        @if($page->is_enquiry)
+                            <button onclick="openEnquiryModal()" class="btn-large btn-buy" style="background: var(--secondary); justify-content: center; cursor: pointer;">
+                                <i class="fas fa-envelope"></i> Enquire Now
+                            </button>
+                        @else
+                            <a href="{{ route('cart.add', $page->id) }}" class="btn-large btn-cart">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </a>
+                            <a href="{{ route('cart.add', $page->id) }}?redirect=checkout" class="btn-large btn-buy">
+                                <i class="fas fa-bolt"></i> Buy Now
+                            </a>
+                        @endif
                     </div>
                 @endif
             </div>
@@ -292,6 +321,7 @@
             if (!function_exists('renderFrontendBlocks')) {
                 function renderFrontendBlocks($blocks, $pageId) {
                     foreach($blocks as $block) {
+                        if (!is_array($block) || !isset($block['type'])) continue;
                         $settings = $block['settings'] ?? [];
                         $styles = [];
                         if (!empty($settings['bg_color'])) $styles[] = "background-color: {$settings['bg_color']}";
@@ -402,7 +432,19 @@
                 }
             }
             
-            renderFrontendBlocks($page->content, $page->id);
+            $content = $page->content;
+            if (is_string($content)) {
+                $decoded = json_decode($content, true);
+                $content = is_array($decoded) ? $decoded : [];
+            } elseif (!is_array($content)) {
+                $content = [];
+            }
+            // Ensure it's a list of blocks, if it's a single block (assoc array), wrap it
+            if (!empty($content) && count(array_filter(array_keys($content), 'is_string')) > 0) {
+                 $content = [$content];
+            }
+            
+            renderFrontendBlocks($content, $page->id);
         @endphp
     @endif
 </main>
@@ -518,6 +560,42 @@
 </section>
 @endsection
 
+<!-- Enquiry Modal -->
+<div id="enquiryModal" class="modal-overlay">
+    <div class="modal-card">
+        <button class="close-modal" onclick="closeEnquiryModal()">&times;</button>
+        <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">Enquire about {{ $page->title }}</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Fill out the form below and we'll get back to you.</p>
+        
+        <form action="{{ route('contact.submit') }}" method="POST">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $page->id }}">
+            <input type="hidden" name="message" value="I am interested in {{ $page->title }}. Please contact me.">
+            
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Phone (Optional)</label>
+                <input type="text" name="phone" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea name="message" class="form-control" rows="3">I am interested in {{ $page->title }}. Please provide more details.</textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem; border-radius: 12px;">
+                Send Enquiry
+            </button>
+        </form>
+    </div>
+</div>
+
 @push('scripts')
 <script>
     function updatePreview(url, el) {
@@ -543,5 +621,20 @@
             label.textContent = '';
         }
     }
+
+    // Modal Logic
+    const modal = document.getElementById('enquiryModal');
+    function openEnquiryModal() {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeEnquiryModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    // Close on outside click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeEnquiryModal();
+    });
 </script>
 @endpush

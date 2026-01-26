@@ -15,7 +15,7 @@
     .hero-slider {
         background: #f6f9fc;
         border-radius: 8px;
-        padding: 4rem;
+        padding: 0;
         display: flex;
         align-items: center;
         position: relative;
@@ -167,7 +167,10 @@
             background: white;
             border: 1px solid var(--border);
             border-radius: 8px;
-            overflow: hidden;
+            position: relative; /* Ensure z-index context if needed */
+        }
+        .cat-item {
+            position: relative;
         }
         .cat-link {
             display: flex;
@@ -176,8 +179,41 @@
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border);
             transition: 0.3s;
+            color: var(--text);
+            text-decoration: none;
+            width: 100%;
         }
-        .cat-link:hover { padding-left: 1.5rem; color: var(--primary); }
+        .cat-link:hover { padding-left: 1.5rem; color: var(--primary); background: #f8f9fa; }
+        
+        /* Submenu */
+        .submenu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            width: 250px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 0 8px 8px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .cat-item:hover .submenu {
+            display: block;
+        }
+        .submenu-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f1f1;
+            color: var(--text);
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .submenu-link:hover {
+            color: var(--primary);
+            background: #f8f9fa;
+            padding-left: 1.25rem;
+        }
     </style>
 
     <div class="hero-grid">
@@ -186,10 +222,27 @@
             <div style="background:var(--secondary); color:white; padding:1rem; font-weight:600;">Browse Categories</div>
             @if(isset($categories))
                 @foreach($categories as $cat)
-                <a href="{{ route('category.show', $cat->slug) }}" class="cat-link">
-                    @if($cat->icon) <i class="{{ $cat->icon }}"></i> @endif
-                    {{ $cat->name }}
-                </a>
+                <div class="cat-item">
+                    <a href="{{ route('category.show', $cat->slug) }}" class="cat-link" style="justify-content: space-between;">
+                        <span style="display:flex; align-items:center; gap:0.75rem;">
+                            @if($cat->icon) <i class="{{ $cat->icon }}"></i> @endif
+                            {{ $cat->name }}
+                        </span>
+                        @if($cat->children->count() > 0)
+                            <i class="fas fa-chevron-right" style="font-size: 0.7rem; color: #ccc;"></i>
+                        @endif
+                    </a>
+                    
+                    @if($cat->children->count() > 0)
+                    <div class="submenu">
+                        @foreach($cat->children as $child)
+                        <a href="{{ route('category.show', $child->slug) }}" class="submenu-link">
+                            {{ $child->name }}
+                        </a>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
                 @endforeach
             @endif
         </div>
@@ -198,31 +251,27 @@
         <!-- Slider -->
         <div class="hero-slider" style="position: relative;">
             @forelse($hero_slides as $index => $banner)
-            <div class="hero-slide" style="display: {{ $index == 0 ? 'flex' : 'none' }}; width: 100%; align-items: center; justify-content: space-between; animation: fadeEffect 1s;">
-                <div class="hero-content" style="flex: 1;">
-                    <p class="text-primary" style="font-weight:600;">{{ $banner->subtitle ?? 'Trending' }}</p>
-                    <h1>{!! nl2br(e($banner->title)) !!}</h1>
-                    @if($banner->link)
-                    <a href="{{ $banner->link }}" class="btn-shop">Shop Now</a>
-                    @endif
+            <div class="hero-slide" style="display: {{ $index == 0 ? 'block' : 'none' }}; width: 100%; animation: fadeEffect 1s;">
+                @if($banner->link)
+                <a href="{{ $banner->link }}" style="display:block; width:100%;">
+                @endif
+                
+                @if($banner->image)
+                <img src="{{ $banner->image }}" alt="{{ $banner->title }}" style="width: 100%; height: auto; border-radius: 8px; display: block; object-fit: cover;">
+                @else
+                <div style="width: 100%; height: 400px; background: #ddd; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                    <span style="font-size: 1.5rem; color: #666;">{{ $banner->title }}</span>
                 </div>
-                <div style="flex:1; text-align:right; display: flex; justify-content: flex-end;">
-                    @if($banner->image)
-                    <img src="{{ $banner->image }}" alt="{{ $banner->title }}" style="max-width: 100%; max-height: 350px; object-fit: contain;">
-                    @else
-                    <div style="width:300px; height:300px; background:#ddd; display:inline-block; border-radius:50%;"></div>
-                    @endif
-                </div>
+                @endif
+
+                @if($banner->link)
+                </a>
+                @endif
             </div>
             @empty
-            <div class="hero-slide" style="width: 100%; display: flex; align-items: center;">
-                <div class="hero-content">
-                    <p class="text-primary" style="font-weight:600;">Welcome</p>
-                    <h1>Welcome to<br>Our Store</h1>
-                    <p>Discover best products.</p>
-                </div>
-                <div style="flex:1; text-align:right;">
-                    <div style="width:300px; height:300px; background:#ddd; display:inline-block; border-radius:50%;"></div>
+            <div class="hero-slide" style="display: block; width: 100%;">
+                 <div style="width: 100%; height: 400px; background: #ddd; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                    <span style="font-size: 1.5rem; color: #666;">Welcome to Our Store</span>
                 </div>
             </div>
             @endforelse
@@ -250,7 +299,7 @@
     </div>
     <style>
         @media (max-width: 768px) {
-            .hero-slider { padding: 2rem; }
+            .hero-slider { padding: 0; }
             .hero-content h1 { font-size: 2rem; }
             .hero-slide { flex-direction: column !important; text-align: center; }
             .hero-slide div:last-child { justify-content: center !important; margin-top: 2rem; }
@@ -276,7 +325,7 @@
         @foreach($brands as $brand)
             <a href="{{ $brand->url ?? '#' }}" class="brand-item" title="{{ $brand->name }}" target="{{ $brand->url ? '_blank' : '_self' }}"
                style="background: white; border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; display: flex; align-items: center; justify-content: center; height: 100px; transition: all 0.3s; position: relative; overflow: hidden;">
-                <img src="{{ asset($brand->logo) }}" alt="{{ $brand->name }}" style="max-width: 80%; max-height: 80%; object-fit: contain; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s;">
+                <img src="{{ Str::startsWith($brand->logo, ['http://', 'https://']) ? $brand->logo : asset($brand->logo) }}" alt="{{ $brand->name }}" style="max-width: 80%; max-height: 80%; object-fit: contain; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s;">
                 <style>
                     .brand-item:hover { border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.05); transform: translateY(-3px); }
                     .brand-item:hover img { filter: grayscale(0); opacity: 1; }
@@ -369,8 +418,12 @@
                     <a href="{{ route('products.show', $product->slug) }}">{{ $product->title }}</a>
                 </h3>
                 <div class="flex justify-between items-center">
-                    <span class="product-price">${{ number_format($product->price, 2) }}</span>
-                    <a href="{{ route('cart.add', $product->id) }}" class="btn-shop" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Add to Cart</a>
+                    @if($product->is_enquiry)
+                        <a href="{{ route('products.show', $product->slug) }}" class="btn-shop" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: var(--secondary);">Enquire Now</a>
+                    @else
+                        <span class="product-price">${{ number_format($product->price, 2) }}</span>
+                        <a href="{{ route('cart.add', $product->id) }}" class="btn-shop" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Add to Cart</a>
+                    @endif
                 </div>
             </div>
         </div>

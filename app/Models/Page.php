@@ -19,13 +19,15 @@ class Page extends Model
         'discount',
         'stock',
         'thumbnail',
-        'gallery'
+        'gallery',
+        'is_enquiry'
     ];
 
     protected $casts = [
         'content' => 'json',
         'gallery' => 'json',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'is_enquiry' => 'boolean'
     ];
 
     public function reviews()

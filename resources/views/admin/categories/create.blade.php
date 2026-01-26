@@ -19,6 +19,16 @@
             <input type="text" name="name" class="form-control" required placeholder="e.g. Smartphones">
         </div>
 
+        <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Parent Category</label>
+            <select name="parent_id" class="form-control">
+                <option value="">None (Main Category)</option>
+                @foreach($categories as $cat)
+                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label">Image URL (Optional)</label>

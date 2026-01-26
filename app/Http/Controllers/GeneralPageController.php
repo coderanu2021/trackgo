@@ -45,6 +45,7 @@ class GeneralPageController extends Controller
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
             'is_active' => true,
+            'is_enquiry' => $request->has('is_enquiry'),
         ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Product detail created successfully!');
@@ -83,6 +84,7 @@ class GeneralPageController extends Controller
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
+            'is_enquiry' => $request->has('is_enquiry'),
         ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Product detail updated successfully!');

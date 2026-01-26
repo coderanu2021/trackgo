@@ -97,6 +97,7 @@ Route::get('category/{slug}', [CategoryController::class, 'show'])->name('catego
 Route::get('products/{slug}', [GeneralPageController::class, 'show'])->name('products.show');
 Route::view('about', 'front.about')->name('about');
 Route::view('contact', 'front.contact')->name('contact');
+Route::post('contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 Route::get('pages/{slug}', [PageBuilderController::class, 'show'])->name('pages.show');
 Route::get('blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
 Route::get('blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blogs.show');
