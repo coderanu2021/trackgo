@@ -69,17 +69,6 @@
         </div>
         <div class="stat-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div class="stat-icon" style="background: var(--primary-soft); color: var(--primary);">
-                    <i class="fas fa-paper-plane"></i>
-                </div>
-            </div>
-            <div>
-                <div class="stat-label">Subscribers</div>
-                <div class="stat-value">{{ number_format($stats['subscribers']) }}</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div class="stat-icon" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">
                     <i class="fas fa-star"></i>
                 </div>

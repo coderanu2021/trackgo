@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
+            GpsProductSeeder::class, // RK Enterprises GPS Products
             ProjectPageSeeder::class,
             BlogSeeder::class,
             PlanSeeder::class,

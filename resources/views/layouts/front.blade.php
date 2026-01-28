@@ -3,574 +3,397 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', $settings['site_name'] ?? 'TrackGo')</title>
     @if(isset($settings['site_favicon']))
         <link rel="icon" type="image/x-icon" href="{{ asset($settings['site_favicon']) }}">
     @endif
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+        /* Cache buster: {{ time() }} */
+        /* Debug: Primary={{ $settings['site_primary_color'] ?? 'NOT_SET' }}, Secondary={{ $settings['site_secondary_color'] ?? 'NOT_SET' }} */
         :root {
-            --primary: {{ $settings['site_primary_color'] ?? '#f37021' }};
-            --primary-dark: {{ $settings['site_primary_color_dark'] ?? '#d45e12' }};
-            --primary-soft: {{ $settings['site_primary_color_soft'] ?? 'rgba(243, 112, 33, 0.1)' }};
-            --secondary: {{ $settings['site_secondary_color'] ?? '#2d2e32' }};
-            --secondary-dark: #1a1b1e;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --text-light: #94a3b8;
-            --bg-light: #f8fafc;
+            /* Dynamic Colors from Admin Settings */
+            --primary: {{ $settings['site_primary_color'] ?? '#f37021' }}; /* Primary Color */
+            --primary-dark: #d65d14; /* Keep static for now */
+            --secondary: #1a1a1a; /* Force black for headings - ignore admin setting */
+            --text-main: #333333;
+            --text-muted: #666666;
             --white: #ffffff;
-            --border: #e2e8f0;
+            --border: #e5e5e5;
             --border-soft: #f1f5f9;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.04);
-            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05);
-            --radius-md: 14px;
-            --radius-lg: 24px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.3s ease;
+            
+            /* Layout variables */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+            --bg-light: #f8fafc;
+            --text-light: #94a3b8;
+            --primary-soft: rgba(243, 112, 33, 0.1);
+            
+            /* Separate variable for navigation background */
+            --nav-bg: {{ $settings['site_secondary_color'] ?? '#1a1a1a' }}; /* This can be dynamic */
         }
 
-        /* User Dropdown */
-        .user-menu-container { position: relative; }
-        .user-dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            width: 240px;
-            background: var(--white);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            padding: 0.5rem;
-            margin-top: 1rem;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: var(--transition);
-            z-index: 100;
-            border: 1px solid var(--border-soft);
-        }
-        .user-dropdown-menu.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .user-info {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-soft);
-            margin-bottom: 0.5rem;
-        }
-        .user-name {
-            font-weight: 700;
-            color: var(--text-main);
-            font-size: 0.95rem;
-        }
-        .user-email {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.1rem;
-        }
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: var(--secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-        .dropdown-item:hover {
-            background: var(--bg-light);
-            color: var(--primary);
-        }
-        .dropdown-item i {
-            width: 20px;
-            text-align: center;
-            font-size: 1rem;
-        }
-        .dropdown-divider {
-            height: 1px;
-            background: var(--border-soft);
-            margin: 0.5rem 0;
-        }
-        .text-danger { color: #ef4444; }
-        .text-danger:hover { background: #fef2f2; color: #dc2626; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            color: var(--text-main);
-            background-color: var(--white);
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, .logo { font-family: 'Outfit', sans-serif; }
-        
-        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        body { font-family: 'Inter', sans-serif; color: var(--text-main); }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
         ul { list-style: none; padding: 0; margin: 0; }
         
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 15px; }
 
-        @media (max-width: 768px) {
-            .container { padding: 0 1rem; }
-        }
 
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        .gap-4 { gap: 1rem; }
-
-        .btn {
-            padding: 0.875rem 1.75rem;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+        
+        /* 2. MIDDLE HEADER (Logo & Search) */
+        .header-middle {
+            padding: 25px 0;
+            background: var(--white);
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); }
-
-        /* Navigation */
-        .top-bar {
-            background: var(--secondary);
-            color: rgba(255,255,255,0.7);
-            padding: 0.75rem 0;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            letter-spacing: 0.02em;
-        }
-        .top-bar-content {
+        .hm-flex {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            gap: 30px;
         }
-
-        .header-main {
-            padding: 1rem 0;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border);
-            transition: var(--transition);
-        }
-        .header-main.scrolled {
-            padding: 0.75rem 0;
-            box-shadow: var(--shadow-md);
-        }
-
-        .logo {
-            font-size: 1.85rem;
-            font-weight: 900;
-            color: var(--secondary);
-            letter-spacing: -0.04em;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .logo span { color: var(--primary); }
-
-        .search-container {
+        .logo img { height: 45px; }
+        
+        /* Search Box */
+        .zenis-search {
             flex: 1;
-            max-width: 600px;
-            margin: 0 4rem;
+            max-width: 700px;
             position: relative;
         }
-        .search-bar {
+        .search-form {
             display: flex;
-            background: var(--bg-light);
-            border: 1.5px solid transparent;
-            border-radius: var(--radius-md);
+            border: 2px solid var(--primary);
+            border-radius: 50px;
             overflow: hidden;
-            transition: var(--transition);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            height: 50px;
         }
-        .search-bar:focus-within { 
-            border-color: var(--primary); 
-            background: var(--white);
-            box-shadow: 0 0 0 4px var(--primary-soft);
-        }
-        .search-bar input {
-            flex: 1;
-            padding: 0.85rem 1.5rem;
+        .cat-select {
+            background: #f5f5f5;
             border: none;
-            background: transparent;
-            outline: none;
-            font-size: 0.95rem;
-            font-weight: 500;
+            padding: 0 15px;
+            border-right: 1px solid #ddd;
             color: var(--text-main);
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            display: none; /* Hidden on smaller screens */
         }
-        .search-bar input::placeholder { color: var(--text-muted); opacity: 0.8; }
-        .search-bar button {
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 0 20px;
+            font-size: 15px;
+            outline: none;
+        }
+        .search-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0 1.75rem;
-            font-size: 1rem;
+            padding: 0 30px;
+            font-weight: 600;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: var(--transition);
+            transition: 0.3s;
         }
-        .search-bar button:hover { background: var(--primary-dark); }
+        .search-btn:hover { background: var(--primary-dark); }
 
-        .header-actions {
+        /* Header Icons */
+        .header-icons { display: flex; gap: 25px; align-items: center; }
+        .icon-box {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 2rem;
-        }
-        .action-link {
+            font-size: 12px;
+            color: var(--text-main);
             position: relative;
-            font-size: 1.35rem;
+        }
+        .icon-wrap {
+            position: relative;
+            font-size: 24px;
+            margin-bottom: 2px;
             color: var(--secondary);
+        }
+        .icon-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
+            font-weight: 700;
         }
-        .action-link:hover { color: var(--primary); transform: translateY(-2px); }
-        .badge {
-            position: absolute;
-            top: -6px;
-            right: -10px;
+        .icon-box:hover .icon-wrap { color: var(--primary); }
+
+        /* 3. BOTTOM NAVBAR (Yellow/Primary or Dark) */
+        .header-bottom {
+            background: var(--nav-bg); /* Use separate variable for navigation */
+            color: white;
+            position: relative;
+        }
+        .hb-flex { display: flex; align-items: stretch; height: 50px; } /* Stretch items to full height */
+        
+        /* Vertical Menu Toggle */
+        .vertical-menu-btn {
             background: var(--primary);
             color: white;
-            font-size: 0.65rem;
-            width: 20px;
-            height: 20px;
+            width: 260px;
+            padding: 0 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            height: 50px;
+        }
+        
+        .vertical-menu-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Simple Category Dropdown */
+        .category-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 260px;
+            background: white;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .cat-dropdown-list {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .cat-dropdown-link {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.2s;
+        }
+        
+        .cat-dropdown-link:last-child { 
+            border-bottom: none; 
+        }
+        
+        .cat-dropdown-link:hover {
+            background: #f9f9f9;
+            color: var(--primary);
+            padding-left: 1.25rem;
+        }
+        
+        /* Arrow rotation */
+        .vertical-menu-btn.active #category-arrow {
+            transform: rotate(180deg);
+        }
+        
+        /* Main Menu */
+        .main-menu { display: flex; gap: 10px; align-items: center; height: 100%; } /* Align-items center for links inside the bar */
+        .menu-link {
+            display: block;
+            padding: 15px 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: #443e3e;
+            position: relative;
+        }
+        .menu-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: 0.3s;
+        }
+        .menu-link:hover { color: var(--primary); }
+        .menu-link:hover::after { width: 100%; }
+
+        /* Responsive */
+        @media (min-width: 993px) {
+            .cat-select { display: block; }
+        }
+        @media (max-width: 992px) {
+            .top-bar { display: none; }
+            .header-bottom { display: none; } /* Mobile Menu converts this */
+            .zenis-search { margin: 0 10px; order: 3; width: 100%; max-width: 100%; margin-top: 15px; }
+            .hm-flex { flex-wrap: wrap; }
+            .logo { order: 1; }
+            .header-icons { order: 2; margin-left: auto; }
+        }
+
+        /* Footer - Always Dark */
+        footer {
+            background-color: #1a1a1a; /* Always dark, ignore admin setting */
+            color: #b0b0b0;
+            padding: 5rem 0 2rem;
+            font-size: 0.95rem;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        @media (max-width: 992px) {
+            .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        }
+        @media (max-width: 576px) {
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+        .footer-title {
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .footer-links li {
+            margin-bottom: 0.85rem;
+            transition: 0.3s;
+        }
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.05);
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            font-weight: 800;
-            border: 2px solid var(--white);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        /* Navbar Links */
-        .nav-links {
-            display: flex;
-            gap: 3rem;
-        }
-        .nav-item {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--secondary);
-            padding: 1.15rem 0;
-            display: block;
-            position: relative;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            opacity: 0.85;
-            transition: var(--transition);
-        }
-        .nav-item:hover { opacity: 1; color: var(--primary); }
-        .nav-item::after {
-            content: '';
-            position: absolute;
-            bottom: 0.75rem;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: var(--transition);
-            border-radius: 2px;
-        }
-        .nav-item:hover::after { width: 100%; }
-
-        /* Mobile Menu Toggle */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--secondary);
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        @media (max-width: 992px) {
-            .top-bar { display: none; }
-            .search-container { order: 3; margin: 1rem 0 0; max-width: 100%; width: 100%; display: none; }
-            .header-main .container { flex-wrap: wrap; }
-            .search-container.active { display: block; }
-            .mobile-menu-btn { display: block; }
-            .header-main { padding: 0.75rem 0; }
-            .logo { font-size: 1.5rem; }
-            
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                gap: 0;
-                position: fixed;
-                top: 0;
-                left: -100%;
-                width: 300px;
-                height: 100vh;
-                background: white;
-                z-index: 2000;
-                padding: 2rem;
-                box-shadow: 20px 0 40px rgba(0,0,0,0.1);
-                transition: var(--transition);
-            }
-            .nav-links.active { display: flex; left: 0; }
-            .nav-item { padding: 1.5rem 0; border-bottom: 1px solid var(--border-soft); width: 100%; }
-            .nav-item::after { display: none; }
-            
-            .header-actions { gap: 1rem; }
-            .action-link { font-size: 1.2rem; }
-
-            .mobile-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.5);
-                z-index: 1500;
-                backdrop-filter: blur(5px);
-            }
-            .mobile-overlay.active { display: block; }
-
-            .search-trigger-mobile { display: block !important; }
-        }
-
-        .search-trigger-mobile { display: none; }
-
-        /* Footer */
-        footer {
-            background: var(--secondary);
-            color: #94a3b8;
-            padding: 6rem 0 3rem;
-            margin-top: 6rem;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
-            gap: 4rem;
-            margin-bottom: 4rem;
-        }
-        .footer-title {
-            color: var(--white);
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-        }
-        .footer-links li { margin-bottom: 1rem; transition: transform 0.3s; }
-        .footer-links li:hover { transform: translateX(5px); }
-        .footer-links a:hover { color: var(--white); }
-        
-        .social-icon {
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
+            transition: 0.3s;
             color: white;
-            transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.05);
         }
         .social-icon:hover {
             background: var(--primary);
-            border-color: var(--primary);
             transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
-        }
-
-        /* Responsive Grids */
-        @media (max-width: 992px) {
-            .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
-            .newsletter-grid { grid-template-columns: 1fr !important; gap: 2rem !important; text-align: center; }
-            .newsletter-grid form { max-width: 500px; margin: 0 auto; }
-        }
-        @media (max-width: 640px) {
-            .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
-            .footer-links li { transform: none !important; }
-            .footer-links li i { margin-top: 0 !important; }
-            .footer-links li { justify-content: center; }
-            .social-links { justify-content: center; }
-            .flex { justify-content: center; }
         }
     </style>
     @stack('styles')
 </head>
 <body>
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="container top-bar-content">
-            <div class="flex gap-4">
-                <span>{{ $settings['site_phone'] ?? '+1 234 567 890' }}</span>
-                <span>{{ $settings['site_email'] ?? 'support@example.com' }}</span>
+
+
+    <!-- 2. Middle Header -->
+    <div class="header-middle">
+        <div class="container hm-flex">
+            <!-- Logo -->
+            <a href="{{ url('/') }}" class="logo">
+                @if(isset($settings['site_logo']))
+                    <img src="{{ asset($settings['site_logo']) }}" alt="{{ $settings['site_name'] }}">
+                @else
+                    <h2 style="font-family:'Outfit'; font-weight:800; font-size:32px; margin:0; color:var(--secondary);">
+                        Zenis<span style="color:var(--primary);">.</span>
+                    </h2>
+                @endif
+            </a>
+
+            <!-- Search Bar -->
+            <div class="zenis-search">
+                <form action="#" class="search-form">
+                    <select class="cat-select">
+                        <option>All Categories</option>
+                        <option>Electronics</option>
+                        <option>Fashion</option>
+                    </select>
+                    <input type="text" class="search-input" placeholder="Search for products...">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
             </div>
-            <div class="flex gap-4">
-                <select style="background:none; color:white; border:none;"><option>English</option></select>
-                <select style="background:none; color:white; border:none;"><option>{{ $settings['site_currency'] ?? 'USD' }}</option></select>
+
+            <!-- Icons -->
+            <div class="header-icons">
+                @guest
+                <a href="{{ route('login') }}" class="icon-box">
+                    <div class="icon-wrap"><i class="far fa-user"></i></div>
+                    <span style="font-weight:600;">Account</span>
+                </a>
+                @else
+                <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('customer.dashboard') }}" class="icon-box">
+                    <div class="icon-wrap"><i class="fas fa-user-circle"></i></div>
+                    <span style="font-weight:600;">{{ Str::limit(Auth::user()->name, 8) }}</span>
+                </a>
+                @endguest
+                
+                <a href="#" class="icon-box">
+                    <div class="icon-wrap">
+                        <i class="far fa-heart"></i>
+                        <span class="icon-badge">0</span>
+                    </div>
+                    <span style="font-weight:600;">Wishlist</span>
+                </a>
+
+                <a href="{{ route('cart.index') }}" class="icon-box">
+                    <div class="icon-wrap">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="icon-badge">{{ count(session()->get('cart', [])) }}</span>
+                    </div>
+                    <span style="font-weight:600;">My Cart</span>
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Header Main -->
-    <header class="header-main">
-        <div class="container flex items-center justify-between">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
-                <a href="{{ url('/') }}" class="logo">
-                    @if(isset($settings['site_logo']))
-                        <img src="{{ asset($settings['site_logo']) }}" alt="{{ $settings['site_name'] }}" style="height: 45px; width: auto; object-fit: contain;">
-                    @else
-                        {{ $settings['site_name'] ?? 'eTrack GO' }}<span>.</span>
-                    @endif
-                </a>
-            </div>
-            
-            <div class="search-container">
-                <form action="#" class="search-bar">
-                    <input type="text" placeholder="Search premium projects & products...">
-                    <button><i class="fas fa-search"></i></button>
-                </form>
+    <!-- 3. Bottom Navigation -->
+    <div class="header-bottom">
+        <div class="container hb-flex">
+            <!-- Vertical Menu Button (No dropdown) -->
+            <div class="vertical-menu-btn">
+                <span><i class="fas fa-bars" style="margin-right:10px;"></i> All Categories</span>
+                <i class="fas fa-angle-down"></i>
             </div>
 
-            <div class="header-actions">
-                <button class="action-link search-trigger-mobile" onclick="toggleMobileSearch()" style="background:none; border:none; cursor:pointer;">
-                    <i class="fa-solid fa-search"></i>
-                </button>
-                <a href="{{ route('cart.index') }}" class="action-link">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="badge">{{ count(session()->get('cart', [])) }}</span>
-                </a>
-                @auth
-                    @if(Auth::user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}" class="action-link" title="Admin Dashboard">
-                            <i class="fa-solid fa-user-shield"></i>
-                        </a>
-                    @else
-                        <div class="user-menu-container">
-                            <button onclick="toggleUserMenu()" class="action-link" style="background:none; border:none; cursor:pointer;" title="My Account">
-                                <i class="fa-solid fa-user"></i>
-                            </button>
-
-                            <div id="user-dropdown" class="user-dropdown-menu">
-                                <div class="user-info">
-                                    <div class="user-name">{{ Auth::user()->name }}</div>
-                                    <div class="user-email">{{ Auth::user()->email }}</div>
-                                </div>
-                                <a href="{{ route('customer.dashboard') }}" class="dropdown-item">
-                                    <i class="fa-solid fa-chart-line"></i> Dashboard
-                                </a>
-                                <a href="{{ route('customer.profile') }}" class="dropdown-item">
-                                    <i class="fa-regular fa-user"></i> My Account
-                                </a>
-                                <a href="{{ route('customer.orders') }}" class="dropdown-item">
-                                    <i class="fa-solid fa-bag-shopping"></i> My Order
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <i class="fa-regular fa-heart"></i> Wishlist
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item text-danger">
-                                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </div>
-                        </div>
-                    @endif
-                @else
-                    <a href="{{ route('login') }}" class="action-link" title="Sign In">
-                        <i class="fa-solid fa-user"></i>
-                    </a>
-                @endauth
-            </div>
-        </div>
-    </header>
-
-    <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
-
-    <!-- Navbar -->
-    <nav style="background: white; border-bottom: 2px solid var(--border-soft); position: relative; z-index: 10;">
-        <div class="container">
-            <ul class="nav-links" id="main-nav">
-                <div class="mobile-nav-header" style="display: none; padding-bottom: 2rem; border-bottom: 1px solid var(--border-soft); margin-bottom: 1rem; justify-content: space-between; align-items: center;">
-                    <div class="logo">Manage<span>.</span></div>
-                    <button onclick="toggleMobileMenu()" style="background:none; border:none; font-size: 1.5rem;"><i class="fas fa-times"></i></button>
-                </div>
-                <script>
-                    if(window.innerWidth <= 992) {
-                        document.querySelector('.mobile-nav-header').style.display = 'flex';
-                    }
-                </script>
-                @php $menu = json_decode($settings['main_menu'] ?? '[]', true); @endphp
-                @forelse($menu as $item)
-                    @php 
-                        $url = $item['url'] ?? '#';
-                        if ($url === '#') {
-                            if (strtolower($item['label'] ?? '') === 'shop') $url = route('shop');
-                            if (strtolower($item['label'] ?? '') === 'home') $url = url('/');
-                        }
-                    @endphp
-                    <li><a href="{{ $url }}" class="nav-item">{{ $item['label'] }}</a></li>
-                @empty
-                    <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
-                    <li><a href="{{ route('shop') }}" class="nav-item">Shop</a></li>
-                    <li><a href="{{ route('blogs.index') }}" class="nav-item">Blog</a></li>
-                    <li><a href="{{ route('reviews.index') }}" class="nav-item">Reviews</a></li>
-                    <li><a href="{{ route('pricing') }}" class="nav-item">Pricing</a></li>
-                    <li><a href="{{ route('faqs') }}" class="nav-item">FAQs</a></li>
-                    <li><a href="{{ route('about') }}" class="nav-item">About Us</a></li>
-                    <li><a href="{{ route('contact') }}" class="nav-item">Contact</a></li>
-                @endforelse
+            <!-- Main Nav -->
+            <ul class="main-menu">
+                <li><a href="{{ url('/') }}" class="menu-link">Home</a></li>
+                <li><a href="{{ route('shop') }}" class="menu-link">Shop</a></li>
+                <li><a href="{{ route('blogs.index') }}" class="menu-link">Blog</a></li>
+                <li><a href="{{ route('about') }}" class="menu-link">About Us</a></li>
+                <li><a href="{{ route('contact') }}" class="menu-link">Contact</a></li>
+                <li style="margin-left:20px; color:var(--primary); font-weight:700; padding:15px 0;">
+                    <i class="fas fa-tags"></i> SPECIAL OFFER
+                </li>
             </ul>
         </div>
-    </nav>
+    </div>
 
     <!-- Main Content -->
     @yield('content')
-
-    <!-- Newsletter Banner -->
-    <section style="background: var(--primary); padding: 5rem 0; position: relative; overflow: hidden;">
-        <div class="container" style="position: relative; z-index: 2;">
-            <div class="newsletter-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
-                <div style="color: white;">
-                    <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; font-family: 'Outfit', sans-serif;">Join the Pulse.</h2>
-                    <p style="font-size: 1.15rem; color: rgba(255,255,255,0.8); line-height: 1.6;">
-                        Subscribe to our premium newsletter for exclusive insights, early access to projects, and strategic industry updates.
-                    </p>
-                </div>
-                <div>
-                    <form id="newsletter-form" style="display: flex; gap: 1rem; background: white; padding: 0.5rem; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
-                        @csrf
-                        <input type="email" name="email" placeholder="Enter your email..." 
-                               style="flex: 1; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-size: 1rem; outline: none;" required>
-                        <button type="submit" class="btn btn-primary" style="padding: 1rem 2rem; border-radius: 12px; font-weight: 800; display: flex; align-items: center; gap: 0.75rem;">
-                            SUBSCRIBE
-                        </button>
-                    </form>
-                    <div id="newsletter-message" style="margin-top: 1rem; font-weight: 600; display: none;"></div>
-                </div>
-            </div>
-        </div>
-        <!-- Decorative Circle -->
-        <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
-    </section>
 
     <!-- Footer -->
     <footer>
@@ -633,67 +456,66 @@
 
     <script>
         function toggleMobileMenu() {
-            document.querySelector('.nav-links').classList.toggle('active');
-            document.querySelector('.mobile-overlay').classList.toggle('active');
-            document.body.style.overflow = document.body.style.overflow === 'hidden' ? 'auto' : 'hidden';
+            try {
+                const navLinks = document.querySelector('.nav-links');
+                const overlay = document.querySelector('.mobile-overlay');
+                if (navLinks) navLinks.classList.toggle('active');
+                if (overlay) overlay.classList.toggle('active');
+                document.body.style.overflow = document.body.style.overflow === 'hidden' ? 'auto' : 'hidden';
+            } catch (e) {
+                console.warn('Mobile menu toggle error:', e);
+            }
         }
 
         function toggleMobileSearch() {
-            document.querySelector('.search-container').classList.toggle('active');
+            try {
+                const searchContainer = document.querySelector('.search-container');
+                if (searchContainer) searchContainer.classList.toggle('active');
+            } catch (e) {
+                console.warn('Mobile search toggle error:', e);
+            }
         }
 
         function toggleUserMenu() {
-            const menu = document.getElementById('user-dropdown');
-            menu.classList.toggle('active');
+            try {
+                const menu = document.getElementById('user-dropdown');
+                if (menu) menu.classList.toggle('active');
+            } catch (e) {
+                console.warn('User menu toggle error:', e);
+            }
         }
 
         // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
-            const container = document.querySelector('.user-menu-container');
-            const menu = document.getElementById('user-dropdown');
-            if (container && !container.contains(event.target) && menu.classList.contains('active')) {
-                menu.classList.remove('active');
+            try {
+                const container = document.querySelector('.user-menu-container');
+                const menu = document.getElementById('user-dropdown');
+                if (container && menu && !container.contains(event.target) && menu.classList.contains('active')) {
+                    menu.classList.remove('active');
+                }
+            } catch (e) {
+                console.warn('Dropdown close error:', e);
             }
         });
 
         $(document).ready(function() {
-            // Header scroll effect
-            $(window).scroll(function() {
-                if ($(this).scrollTop() > 50) {
-                    $('.header-main').addClass('scrolled');
-                } else {
-                    $('.header-main').removeClass('scrolled');
-                }
-            });
-
-            $('#newsletter-form').on('submit', function(e) {
-                e.preventDefault();
-                const form = $(this);
-                const btn = form.find('button');
-                const msg = $('#newsletter-message');
-                
-                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> PROCESSING...');
-                msg.hide();
-
-                $.ajax({
-                    url: "{{ route('newsletter.subscribe') }}",
-                    method: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        if(response.success) {
-                            form.slideUp();
-                            msg.html(response.message).css('color', '#fff').fadeIn();
+            try {
+                // Header scroll effect
+                $(window).scroll(function() {
+                    try {
+                        if ($(this).scrollTop() > 50) {
+                            $('.header-main').addClass('scrolled');
                         } else {
-                            msg.html(response.message).css('color', '#fee2e2').fadeIn();
-                            btn.prop('disabled', false).html('SUBSCRIBE <i class="fas fa-paper-plane"></i>');
+                            $('.header-main').removeClass('scrolled');
                         }
-                    },
-                    error: function() {
-                        msg.html('An unexpected error occurred. Please try again.').css('color', '#fee2e2').fadeIn();
-                        btn.prop('disabled', false).html('SUBSCRIBE <i class="fas fa-paper-plane"></i>');
+                    } catch (e) {
+                        console.warn('Scroll effect error:', e);
                     }
                 });
-            });
+
+            } catch (error) {
+                console.warn('Script initialization error:', error);
+            }
         });
     </script>
     @stack('scripts')

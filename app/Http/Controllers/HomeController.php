@@ -12,8 +12,16 @@ class HomeController extends Controller
         $products = Page::where('is_active', true)->latest()->take(8)->get();
         $categories = \App\Models\Category::where('is_active', true)->whereNull('parent_id')->with('children')->get();
         $blogs = \App\Models\Blog::where('is_published', true)->latest()->take(3)->get();
-        $hero_slides = \App\Models\Banner::where('type', 'main')->orderBy('order')->get();
+        $hero_slides = \App\Models\Banner::where('is_active', true)->orderBy('order')->get();
         $brands = \App\Models\Brand::where('status', true)->get();
+        
+        // Debug logging
+        \Log::info('HomeController Debug', [
+            'products_count' => $products->count(),
+            'products_class' => get_class($products),
+            'first_product' => $products->first() ? $products->first()->title : 'No products'
+        ]);
+        
         return view('front.home', compact('products', 'categories', 'blogs', 'hero_slides', 'brands'));
     }
 

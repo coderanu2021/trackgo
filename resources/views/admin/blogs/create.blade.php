@@ -123,57 +123,54 @@
 
 <!-- Settings Modal -->
 <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content" style="border-radius: 20px; border: none; box-shadow: var(--shadow-lg);">
-    <div class="modal-header" style="border-bottom: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
-        <h5 class="modal-title" style="font-weight: 700; color: var(--text-main);">Block Settings</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
-    <div class="modal-body" style="padding: 2rem;">
-        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-                <label>Background Color</label>
-                <input type="color" id="set-bg-color" class="form-control" style="height: 50px; padding: 5px;">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: var(--shadow-lg);">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
+                <h5 class="modal-title" style="font-weight: 700; color: var(--text-main);">Block Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="form-group">
-                <label>Text Color</label>
-                <input type="color" id="set-text-color" class="form-control" style="height: 50px; padding: 5px;">
+            <div class="modal-body" style="padding: 2rem;">
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Background Color</label>
+                        <input type="color" id="set-bg-color" class="form-control" style="height: 50px; padding: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Text Color</label>
+                        <input type="color" id="set-text-color" class="form-control" style="height: 50px; padding: 5px;">
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Padding Top (rem)</label>
+                        <input type="number" id="set-padding-top" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Padding Bottom (rem)</label>
+                        <input type="number" id="set-padding-bottom" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Margin Top (rem)</label>
+                        <input type="number" id="set-margin-top" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Margin Bottom (rem)</label>
+                        <input type="number" id="set-margin-bottom" class="form-control" min="0" max="20" step="0.5">
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Font Size (px)</label>
+                        <input type="number" id="set-font-size" class="form-control" min="8" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Border Radius (px)</label>
+                        <input type="number" id="set-border-radius" class="form-control" min="0" max="100">
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-                <label>Padding Top (rem)</label>
-                <input type="number" id="set-padding-top" class="form-control" min="0" max="20" step="0.5">
-            </div>
-            <div class="form-group">
-                <label>Padding Bottom (rem)</label>
-                <input type="number" id="set-padding-bottom" class="form-control" min="0" max="20" step="0.5">
-            </div>
-        </div>
-        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-                <label>Margin Top (rem)</label>
-                <input type="number" id="set-margin-top" class="form-control" min="0" max="20" step="0.5">
-            </div>
-            <div class="form-group">
-                <label>Margin Bottom (rem)</label>
-                <input type="number" id="set-margin-bottom" class="form-control" min="0" max="20" step="0.5">
-            </div>
-        </div>
-        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-                <label>Font Size (px)</label>
-                <input type="number" id="set-font-size" class="form-control" min="8" max="100">
-            </div>
-            <div class="form-group">
-                <label>Border Radius (px)</label>
-                <input type="number" id="set-border-radius" class="form-control" min="0" max="100">
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-</div>
             <div class="modal-footer" style="border-top: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" onclick="saveSettings()">Apply Settings</button>
@@ -183,22 +180,56 @@
 </div>
 
 <script>
-    let blocks = [];
+    // Initialize blocks array globally
+    window.blocks = [];
+    
     async function uploadBlogImage(input) {
-        const file = input.files[0];
-        if (!file) return;
-        const formData = new FormData();
-        formData.append('image', file);
-        formData.append('_token', '{{ csrf_token() }}');
         try {
-            const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
+            const file = input.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('_token', '{{ csrf_token() }}');
+            
+            const res = await fetch('{{ route('admin.pages.upload') }}', { 
+                method: 'POST', 
+                body: formData 
+            });
+            
             const data = await res.json();
-            if (data.url) document.getElementById('blog-image-input').value = data.url;
-        } catch(e) { console.error(e); alert('Upload failed'); }
+            if (data.url) {
+                document.getElementById('blog-image-input').value = data.url;
+            } else {
+                throw new Error('No URL returned');
+            }
+        } catch(e) { 
+            console.error('Upload error:', e); 
+            alert('Upload failed. Please try again.'); 
+        }
     }
 </script>
+
 @include('admin.pages.script')
+
 <script>
-    renderBlocks();
+    // Initialize the page after everything is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            if (typeof window.renderBlocks === 'function') {
+                window.renderBlocks();
+            } else {
+                console.warn('renderBlocks function not available yet');
+                // Retry after a short delay
+                setTimeout(() => {
+                    if (typeof window.renderBlocks === 'function') {
+                        window.renderBlocks();
+                    }
+                }, 100);
+            }
+        } catch (error) {
+            console.error('Blog create initialization error:', error);
+        }
+    });
 </script>
 @endsection

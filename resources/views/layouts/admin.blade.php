@@ -4,50 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Command Center | TrackGo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     
     <style>
         :root {
-            --primary: {{ $settings['site_primary_color'] ?? '#6366f1' }};
-            --accent: {{ $settings['site_secondary_color'] ?? '#8b5cf6' }};
-            --shadow-primary: 0 4px 14px 0 {{ $settings['site_primary_color'] ?? '#6366F1' }}4D; /* 30% opacity hex suffix 4D */
+            /* Dynamic overrides if needed from backend settings */
+            --primary: {{ $settings['site_primary_color'] ?? '#f37021' }};
+            --accent: {{ $settings['site_secondary_color'] ?? '#ff8c42' }};
         }
-
-        /* Sidebar Collapse Overrides */
+        
+        /* Auto-Collapse Handling */
         .sidebar.collapsed {
             width: 80px !important;
-            padding: 1.5rem 0.75rem !important;
         }
         .sidebar.collapsed .sidebar-header span,
-        .sidebar.collapsed .sidebar-nav div,
+        .sidebar.collapsed .sidebar-label,
         .sidebar.collapsed .nav-link span {
             display: none !important;
         }
         .sidebar.collapsed .sidebar-header {
-            justify-content: center !important;
-            gap: 0 !important;
+            justify-content: center;
+            padding: 0;
         }
         .sidebar.collapsed .nav-link {
-            justify-content: center !important;
-            padding: 0.875rem !important;
+            justify-content: center;
+            padding: 0.75rem;
         }
         .sidebar.collapsed .nav-link i {
-            margin-right: 0 !important;
-            font-size: 1.25rem !important;
+            margin: 0;
+            font-size: 1.25rem;
         }
         .sidebar.collapsed + .main-content {
             margin-left: 80px !important;
         }
-        .sidebar, .main-content {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        }
+        
         .collapse-toggle {
             cursor: pointer;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -58,6 +57,16 @@
         .collapse-toggle:hover {
             background: var(--sidebar-nav-hover);
             color: var(--sidebar-header-text);
+        }
+
+        /* Profile Dropdown trigger area */
+        .user-profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-left: 1px solid var(--border-soft);
+            padding-left: 1.5rem;
+            cursor: pointer;
         }
     </style>
     
@@ -87,9 +96,9 @@
             <div class="sidebar-header">
                 <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; overflow: hidden;">
                     @if(isset($settings['site_logo']))
-                        <img src="{{ asset($settings['site_logo']) }}" alt="Logo" style="height: 35px; width: auto; object-fit: contain;">
+                        <img src="{{ asset($settings['site_logo']) }}" alt="Logo" style="height: 32px; width: auto; object-fit: contain;">
                     @else
-                        <i class="fas fa-bolt"></i>
+                        <i class="fas fa-bolt text-primary"></i>
                     @endif
                     <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $settings['site_name'] ?? 'TrackGo' }}</span>
                 </div>
@@ -103,7 +112,7 @@
                     <i class="fas fa-grid-2"></i> <span>Dashboard</span>
                 </a>
                 
-                <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;">Page Builders</div>
+                <div class="sidebar-label">Page Builders</div>
                 
                 <a href="{{ route('admin.products.index') }}" class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
                     <i class="fas fa-boxes-stacked"></i> <span>Product Page Builder</span>
@@ -115,7 +124,7 @@
                     <i class="fas fa-pen-nib"></i> <span>Blog Builder</span>
                 </a>
                 
-                <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;"><span>Content</span></div>
+                <div class="sidebar-label"><span>Content</span></div>
                 <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                     <i class="fas fa-tags"></i> <span>Categories</span>
                 </a>
@@ -131,14 +140,11 @@
                 <a href="{{ route('admin.faqs.index') }}" class="nav-link {{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
                     <i class="fas fa-question-circle"></i> <span>FAQs</span>
                 </a>
-                <a href="{{ route('admin.newsletters.index') }}" class="nav-link {{ request()->routeIs('admin.newsletters.*') ? 'active' : '' }}">
-                    <i class="fas fa-paper-plane"></i> <span>Newsletter</span>
-                </a>
                 <a href="{{ route('admin.reviews.index') }}" class="nav-link {{ request()->routeIs('admin.reviews.index') ? 'active' : '' }}">
                     <i class="fas fa-star"></i> <span>Product Reviews</span>
                 </a>
 
-                <div style="margin: 1.5rem 0 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 700; color: var(--sidebar-label); text-transform: uppercase; letter-spacing: 0.1em;"><span>Management</span></div>
+                <div class="sidebar-label"><span>Management</span></div>
                 
                 <a href="{{ route('admin.orders.index') }}" class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                     <i class="fas fa-bag-shopping"></i> <span>Orders</span>
@@ -168,26 +174,28 @@
         <main class="main-content">
             <header class="top-header">
                 <div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 600;">
-                        <span style="color: var(--text-muted)">Admin</span>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 500;">
+                        <span style="color: var(--text-light)">Admin</span>
                         <i class="fas fa-chevron-right" style="font-size: 0.6rem; color: var(--text-light)"></i>
-                        <span style="color: var(--primary)">{{ Str::title(request()->segment(2) ?? 'Dashboard') }}</span>
+                        <span style="color: var(--primary); font-weight: 600;">{{ Str::title(request()->segment(2) ?? 'Dashboard') }}</span>
                     </div>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 1.5rem;">
-                    <button id="theme-toggle" class="btn btn-secondary" title="Toggle Sidebar Theme" style="padding: 0.5rem; width: 40px; height: 40px; justify-content: center; border-radius: 50%;">
-                        <i class="fas fa-sidebar" id="theme-icon"></i>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button id="theme-toggle" class="btn btn-secondary" title="Toggle Sidebar Theme" style="padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: none; border-color: transparent;">
+                        <i class="fas fa-sidebar" id="theme-icon" style="color: var(--text-muted);"></i>
                     </button>
-                    <button class="btn btn-secondary" style="padding: 0.5rem; width: 40px; height: 40px; justify-content: center; border-radius: 50%;">
-                        <i class="fas fa-bell"></i>
+                    <!-- Notification Bell Placeholder -->
+                    <button class="btn btn-secondary" style="padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: none; border-color: transparent;">
+                        <i class="fas fa-bell" style="color: var(--text-muted);"></i>
                     </button>
-                    <div style="display: flex; align-items: center; gap: 0.75rem; border-left: 1px solid var(--border-soft); padding-left: 1.5rem;">
+                    
+                    <div class="user-profile-trigger">
                         <div style="text-align: right;">
-                            <div style="font-size: 0.9rem; font-weight: 700;">{{ auth()->user()->name }}</div>
+                            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">{{ auth()->user()->name }}</div>
                             <div style="font-size: 0.75rem; color: var(--text-muted);">Master Admin</div>
                         </div>
-                        <div style="width: 45px; height: 45px; border-radius: 14px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.2rem; box-shadow: var(--shadow-primary);">
+                        <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; box-shadow: var(--shadow-primary);">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
                     </div>
@@ -196,7 +204,7 @@
 
             <div class="page-content">
                 @if(session('success'))
-                    <div style="background: rgba(16, 185, 129, 0.1); color: #065f46; padding: 1.25rem 1.5rem; border-radius: var(--radius-md); margin-bottom: 2rem; border-left: 4px solid #10b981; display: flex; align-items: center; gap: 1rem; font-weight: 600;">
+                    <div style="background: #ecfdf5; color: #047857; padding: 1rem 1.5rem; border-radius: var(--radius-md); margin-bottom: 2rem; border-left: 4px solid #10b981; display: flex; align-items: center; gap: 1rem; font-weight: 500; box-shadow: var(--shadow-sm);">
                          <i class="fas fa-circle-check" style="font-size: 1.25rem; color: #10b981;"></i> {{ session('success') }}
                     </div>
                 @endif
@@ -206,27 +214,41 @@
         </main>
     </div>
 
-    <!-- Initialize Tooltips & Theme Toggle -->
     <script>
         $(document).ready(function() {
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeIcon = document.getElementById('theme-icon');
-            const sidebarBtn = document.getElementById('sidebar-collapse-btn');
-            const sidebar = document.querySelector('.sidebar');
-            const html = document.documentElement;
+            try {
+                const themeToggle = document.getElementById('theme-toggle');
+                const sidebarBtn = document.getElementById('sidebar-collapse-btn');
+                const sidebar = document.querySelector('.sidebar');
+                const html = document.documentElement;
 
-            themeToggle.addEventListener('click', () => {
-                const currentSidebar = html.getAttribute('data-sidebar');
-                const newTheme = currentSidebar === 'light' ? 'dark' : 'light';
-                
-                html.setAttribute('data-sidebar', newTheme);
-                localStorage.setItem('sidebar-theme', newTheme);
-            });
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', () => {
+                        try {
+                            const currentSidebar = html.getAttribute('data-sidebar');
+                            const newTheme = currentSidebar === 'light' ? 'dark' : 'light';
+                            
+                            html.setAttribute('data-sidebar', newTheme);
+                            localStorage.setItem('sidebar-theme', newTheme);
+                        } catch (e) {
+                            console.warn('Theme toggle error:', e);
+                        }
+                    });
+                }
 
-            sidebarBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-                localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
-            });
+                if (sidebarBtn && sidebar) {
+                    sidebarBtn.addEventListener('click', () => {
+                        try {
+                            sidebar.classList.toggle('collapsed');
+                            localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+                        } catch (e) {
+                            console.warn('Sidebar toggle error:', e);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.warn('Admin script initialization error:', error);
+            }
         });
     </script>
 </body>

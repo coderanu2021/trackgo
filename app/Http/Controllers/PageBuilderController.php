@@ -8,27 +8,27 @@ use Illuminate\Support\Str;
 
 class PageBuilderController extends Controller
 {
-    // Frontend View
+    // Frontend: Show general page (About, Contact, etc.)
     public function show($slug)
     {
         $page = ProductPage::where('slug', $slug)->where('is_published', true)->firstOrFail();
         return view('front.page', compact('page'));
     }
 
-    // Admin: List
+    // Admin: List all general pages
     public function index()
     {
         $pages = ProductPage::latest()->get();
         return view('admin.pages.index', compact('pages'));
     }
 
-    // Admin: Create
+    // Admin: Create general page form
     public function create()
     {
         return view('admin.pages.create');
     }
 
-    // Admin: Store
+    // Admin: Store new general page
     public function store(Request $request)
     {
         $request->validate([
@@ -54,14 +54,14 @@ class PageBuilderController extends Controller
         return redirect()->route('admin.pages.index')->with('success', 'Page created successfully!');
     }
 
-    // Admin: Edit
+    // Admin: Edit general page form
     public function edit($id)
     {
         $page = ProductPage::findOrFail($id);
         return view('admin.pages.edit', compact('page'));
     }
 
-    // Admin: Update
+    // Admin: Update general page
     public function update(Request $request, $id)
     {
         $page = ProductPage::findOrFail($id);
@@ -88,7 +88,7 @@ class PageBuilderController extends Controller
         return redirect()->route('admin.pages.index')->with('success', 'Page updated successfully!');
     }
 
-    // Admin: Delete
+    // Admin: Delete general page
     public function destroy($id)
     {
         $page = ProductPage::findOrFail($id);
@@ -96,7 +96,7 @@ class PageBuilderController extends Controller
         return redirect()->route('admin.pages.index')->with('success', 'Page deleted successfully!');
     }
 
-    // Admin: Upload Image
+    // Admin: Upload image for page builder
     public function upload(Request $request)
     {
         $request->validate([
