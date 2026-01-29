@@ -26,17 +26,47 @@
             </div>
 
             <div class="form-group">
-                <label style="display: block; font-size: 0.85rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; margin-left: 0.25rem;">Email Address</label>
-                <input type="email" name="email" value="{{ old('email', $user->email) }}" 
-                       style="width: 100%; padding: 1.15rem 1.5rem; background: var(--bg-light); border: 1.5px solid transparent; border-radius: 16px; font-size: 1rem; font-weight: 600; outline: none; transition: all 0.3s;"
-                       onfocus="this.style.borderColor='var(--primary)'; this.style.background='white'; this.style.boxShadow='0 0 0 4px var(--primary-soft)'"
-                       onblur="this.style.borderColor='transparent'; this.style.background='var(--bg-light)'; this.style.boxShadow='none'" required>
-                @error('email') <span style="color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-top: 0.5rem; display: block;">{{ $message }}</span> @enderror
+                <label style="display: block; font-size: 0.85rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; margin-left: 0.25rem;">
+                    @if($user->isPhoneUser())
+                        Phone Number
+                    @else
+                        Email Address
+                    @endif
+                </label>
+                @if($user->isPhoneUser())
+                    <input type="tel" name="phone" value="{{ old('phone', $user->phone) }}" 
+                           style="width: 100%; padding: 1.15rem 1.5rem; background: var(--bg-light); border: 1.5px solid transparent; border-radius: 16px; font-size: 1rem; font-weight: 600; outline: none; transition: all 0.3s;"
+                           onfocus="this.style.borderColor='var(--primary)'; this.style.background='white'; this.style.boxShadow='0 0 0 4px var(--primary-soft)'"
+                           onblur="this.style.borderColor='transparent'; this.style.background='var(--bg-light)'; this.style.boxShadow='none'" required>
+                    @error('phone') <span style="color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-top: 0.5rem; display: block;">{{ $message }}</span> @enderror
+                    
+                    <!-- Optional email for phone users -->
+                    <div style="margin-top: 2rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; margin-left: 0.25rem;">Email Address (Optional)</label>
+                        <input type="email" name="email" value="{{ old('email', $user->email) }}" 
+                               style="width: 100%; padding: 1.15rem 1.5rem; background: var(--bg-light); border: 1.5px solid transparent; border-radius: 16px; font-size: 1rem; font-weight: 600; outline: none; transition: all 0.3s;"
+                               onfocus="this.style.borderColor='var(--primary)'; this.style.background='white'; this.style.boxShadow='0 0 0 4px var(--primary-soft)'"
+                               onblur="this.style.borderColor='transparent'; this.style.background='var(--bg-light)'; this.style.boxShadow='none'">
+                        @error('email') <span style="color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-top: 0.5rem; display: block;">{{ $message }}</span> @enderror
+                    </div>
+                @else
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" 
+                           style="width: 100%; padding: 1.15rem 1.5rem; background: var(--bg-light); border: 1.5px solid transparent; border-radius: 16px; font-size: 1rem; font-weight: 600; outline: none; transition: all 0.3s;"
+                           onfocus="this.style.borderColor='var(--primary)'; this.style.background='white'; this.style.boxShadow='0 0 0 4px var(--primary-soft)'"
+                           onblur="this.style.borderColor='transparent'; this.style.background='var(--bg-light)'; this.style.boxShadow='none'" required>
+                    @error('email') <span style="color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-top: 0.5rem; display: block;">{{ $message }}</span> @enderror
+                @endif
             </div>
         </div>
 
         <div style="margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--border-soft);">
-            <h3 style="font-family: 'Outfit'; font-size: 1.25rem; margin: 0 0 2rem;">Security Update <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400; font-family: 'Inter';">(Leave blank to keep current password)</span></h3>
+            <h3 style="font-family: 'Outfit'; font-size: 1.25rem; margin: 0 0 2rem;">
+                @if($user->isPhoneUser())
+                    Set Password <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400; font-family: 'Inter';">(Optional - for email login)</span>
+                @else
+                    Security Update <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400; font-family: 'Inter';">(Leave blank to keep current password)</span>
+                @endif
+            </h3>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
                 <div class="form-group">

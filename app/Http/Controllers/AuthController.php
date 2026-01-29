@@ -9,32 +9,26 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
-        return view('auth.login');
+        return view('auth.admin-login');
+    }
+
+    public function showAdminLogin()
+    {
+        return view('auth.admin-login');
     }
 
     public function showRegister()
     {
-        return view('auth.register');
+        // Redirect regular users to WhatsApp login
+        return redirect()->route('whatsapp.login')
+                        ->with('info', 'Please use WhatsApp login for customer registration');
     }
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user = \App\Models\User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
-            'role' => 'customer',
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('customer.dashboard');
+        // Only allow admin registration (or disable completely)
+        return redirect()->route('whatsapp.login')
+                        ->with('info', 'Please use WhatsApp login for registration');
     }
 
     public function login(Request $request)
@@ -45,13 +39,18 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            if (Auth::user()->isAdmin()) {
-                return redirect()->intended('admin/dashboard');
+            $user = Auth::user();
+            
+            // Only allow admin users to login via email/password
+            if (!$user->isAdmin()) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Admin access only. Please use WhatsApp login for customer access.',
+                ])->onlyInput('email');
             }
 
-            return redirect()->intended(route('customer.dashboard'));
+            $request->session()->regenerate();
+            return redirect()->intended('admin/dashboard');
         }
 
         return back()->withErrors([

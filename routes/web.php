@@ -28,6 +28,15 @@ Route::get('register', [AuthController::class, 'showRegister'])->name('register'
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
+// WhatsApp Authentication Routes
+Route::get('whatsapp-login', [\App\Http\Controllers\WhatsAppAuthController::class, 'showLoginForm'])->name('whatsapp.login');
+Route::post('whatsapp/send-otp', [\App\Http\Controllers\WhatsAppAuthController::class, 'sendOtp'])->name('whatsapp.send-otp');
+Route::post('whatsapp/verify-otp', [\App\Http\Controllers\WhatsAppAuthController::class, 'verifyOtp'])->name('whatsapp.verify-otp');
+Route::post('whatsapp/resend-otp', [\App\Http\Controllers\WhatsAppAuthController::class, 'resendOtp'])->name('whatsapp.resend-otp');
+
+// Admin-specific login
+Route::get('admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+
 // Customer Routes
 Route::middleware('auth')->prefix('customer')->name('customer.')->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\CustomerController::class, 'dashboard'])->name('dashboard');

@@ -478,9 +478,9 @@
             <!-- Icons -->
             <div class="header-icons">
                 @guest
-                <a href="{{ route('login') }}" class="icon-box">
-                    <div class="icon-wrap"><i class="far fa-user"></i></div>
-                    <span style="font-weight:600;">Account</span>
+                <a href="{{ route('whatsapp.login') }}" class="icon-box">
+                    <div class="icon-wrap"><i class="fab fa-whatsapp"></i></div>
+                    <span style="font-weight:600;">Login</span>
                 </a>
                 @else
                 <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('customer.dashboard') }}" class="icon-box">

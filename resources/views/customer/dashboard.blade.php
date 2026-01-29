@@ -13,7 +13,7 @@
             <i class="fas fa-shopping-cart"></i>
         </div>
         <div>
-            <div style="font-size: 2.25rem; font-weight: 800; line-height: 1; font-family: 'Outfit';">{{ $total_orders }}</div>
+            <div style="font-size: 2.25rem; font-weight: 800; line-height: 1; font-family: 'Outfit';">{{ $totalOrders }}</div>
             <div style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Orders</div>
         </div>
     </div>
@@ -23,7 +23,7 @@
             <i class="fas fa-check-circle"></i>
         </div>
         <div>
-            <div style="font-size: 2.25rem; font-weight: 800; line-height: 1; font-family: 'Outfit';">{{ $recent_orders->where('status', 'completed')->count() }}</div>
+            <div style="font-size: 2.25rem; font-weight: 800; line-height: 1; font-family: 'Outfit';">{{ $recentOrders->where('status', 'completed')->count() }}</div>
             <div style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em;">Completed</div>
         </div>
     </div>
@@ -47,7 +47,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($recent_orders as $order)
+                @forelse($recentOrders as $order)
                 <tr style="border-bottom: 1px solid var(--border-soft);">
                     <td style="padding: 1.5rem 2.5rem; font-weight: 700;">#{{ $order->order_number ?? $order->id }}</td>
                     <td style="padding: 1.5rem 2.5rem; color: var(--text-muted);">{{ $order->created_at->format('M d, Y') }}</td>
