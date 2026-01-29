@@ -109,4 +109,132 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Contact Page Responsive Styles */
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        outline: none;
+        transition: 0.3s;
+        font-size: 1rem;
+        box-sizing: border-box;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    @media (max-width: 1024px) {
+        .container > div:nth-child(2) {
+            grid-template-columns: 1fr 1.2fr;
+            gap: 4rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        /* Header responsive */
+        .container > div:first-child {
+            padding: 4rem 1rem !important;
+        }
+        
+        .container > div:first-child h1 {
+            font-size: 2.5rem !important;
+        }
+        
+        .container > div:first-child p {
+            font-size: 1.1rem !important;
+        }
+        
+        /* Main content responsive */
+        .container {
+            padding: 4rem 1rem !important;
+        }
+        
+        .container > div:nth-child(2) {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        
+        /* Contact info responsive */
+        .container > div:nth-child(2) > div:first-child h2 {
+            font-size: 2rem !important;
+            margin-bottom: 2rem !important;
+        }
+        
+        .container > div:nth-child(2) > div:first-child > div {
+            gap: 2rem !important;
+        }
+        
+        /* Form responsive */
+        .container > div:nth-child(2) > div:last-child > div {
+            padding: 2.5rem !important;
+            border-radius: 16px !important;
+        }
+        
+        .container > div:nth-child(2) > div:last-child > div > form > div:first-child {
+            grid-template-columns: 1fr !important;
+            gap: 1rem;
+        }
+        
+        /* Social links responsive */
+        .container > div:nth-child(2) > div:first-child > div:last-child {
+            margin-top: 3rem !important;
+            padding-top: 2rem !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        /* Header extra small */
+        .container > div:first-child {
+            padding: 3rem 1rem !important;
+        }
+        
+        .container > div:first-child h1 {
+            font-size: 2rem !important;
+        }
+        
+        .container > div:first-child p {
+            font-size: 1rem !important;
+        }
+        
+        /* Main content extra small */
+        .container {
+            padding: 3rem 1rem !important;
+        }
+        
+        /* Contact info extra small */
+        .container > div:nth-child(2) > div:first-child h2 {
+            font-size: 1.75rem !important;
+        }
+        
+        .container > div:nth-child(2) > div:first-child > div > div {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .container > div:nth-child(2) > div:first-child > div > div > div:first-child {
+            align-self: center;
+        }
+        
+        /* Form extra small */
+        .container > div:nth-child(2) > div:last-child > div {
+            padding: 2rem !important;
+        }
+        
+        /* Prevent zoom on iOS */
+        .form-control {
+            font-size: 16px !important;
+        }
+        
+        /* Social links stack on very small screens */
+        .container > div:nth-child(2) > div:first-child > div:last-child > div {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+</style>
 @endsection

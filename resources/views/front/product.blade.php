@@ -301,9 +301,9 @@
                                 <i class="fas fa-envelope"></i> Enquire Now
                             </button>
                         @else
-                            <a href="{{ route('cart.add', $page->id) }}" class="btn-large btn-cart">
+                            <button onclick="addToCartAjax({{ $page->id }})" class="btn-large btn-cart">
                                 <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </a>
+                            </button>
                             <a href="{{ route('cart.add', $page->id) }}?redirect=checkout" class="btn-large btn-buy">
                                 <i class="fas fa-bolt"></i> Buy Now
                             </a>
@@ -543,7 +543,7 @@
                             <i class="fas fa-lock" style="font-size: 2.5rem; color: var(--border); margin-bottom: 1.5rem;"></i>
                             <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">Verified Reviews Only</h3>
                             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">You must purchase this product before you can leave a review.</p>
-                            <a href="{{ route('cart.add', $page->id) }}" class="btn btn-primary" style="width: 100%; justify-content: center; border-radius: 12px;">Get Started</a>
+                            <button onclick="addToCartAjax({{ $page->id }})" class="btn btn-primary" style="width: 100%; justify-content: center; border-radius: 12px;">Get Started</button>
                         </div>
                     @else
                         <div style="text-align: center; padding: 1rem 0;">

@@ -117,4 +117,94 @@
         }
     });
 </script>
+
+<style>
+    /* Responsive Cart Styles */
+    @media (max-width: 768px) {
+        .container {
+            padding: 3rem 1rem !important;
+        }
+        
+        /* Hide table headers on mobile */
+        table thead {
+            display: none;
+        }
+        
+        /* Stack table rows vertically on mobile */
+        table, tbody, tr, td {
+            display: block;
+            width: 100%;
+        }
+        
+        tr {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        td {
+            padding: 0.5rem 0 !important;
+            border: none !important;
+            position: relative;
+        }
+        
+        /* Add labels for mobile */
+        td:nth-child(2):before { content: "Price: "; font-weight: 700; color: var(--text-muted); }
+        td:nth-child(3):before { content: "Quantity: "; font-weight: 700; color: var(--text-muted); }
+        td:nth-child(4):before { content: "Total: "; font-weight: 700; color: var(--text-muted); }
+        
+        /* Product details on mobile */
+        td:first-child > div {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+        
+        td:first-child img {
+            width: 100px;
+            height: 100px;
+        }
+        
+        /* Quantity input on mobile */
+        .quantity-input {
+            width: 100px !important;
+        }
+        
+        /* Remove button on mobile */
+        td:last-child {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        /* Footer on mobile */
+        .container > div:last-child > div:last-child {
+            flex-direction: column;
+            gap: 2rem;
+            text-align: center !important;
+        }
+        
+        .container > div:last-child > div:last-child > div:last-child {
+            text-align: center !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 2rem !important;
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        td:first-child > div > div:first-child {
+            width: 60px;
+            height: 60px;
+        }
+    }
+</style>
 @endsection

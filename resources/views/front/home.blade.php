@@ -375,6 +375,59 @@
         flex-wrap: wrap;
         gap: 0.25rem;
     }
+
+    /* Home page product actions */
+    .product-actions-home {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    /* Notification Styles */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        padding: 1rem 1.5rem;
+        z-index: 10000;
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--primary);
+    }
+
+    .notification.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .notification-success {
+        border-left-color: var(--success);
+    }
+
+    .notification-error {
+        border-left-color: var(--error);
+    }
+
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .notification-success .notification-content i {
+        color: var(--success);
+    }
+
+    .notification-error .notification-content i {
+        color: var(--error);
+    }
 </style>
 
 <!-- Hero -->
@@ -574,9 +627,17 @@
                                 <div class="p-price">
                                     ₹{{ number_format($product->price, 2) }}
                                 </div>
-                                <a href="#" class="add-cart-btn" onclick="addToCart({{ $product->id }})">
-                                    Add to Cart
-                                </a>
+                                <div class="product-actions-home">
+                                    <button onclick="addToCartAjax({{ $product->id }})" class="btn-cart-icon" title="Add to Cart">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                    <button onclick="addToWishlistAjax({{ $product->id }})" class="btn-wishlist-icon" title="Add to Wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <a href="{{ route('products.show', $product->slug) }}" class="btn-view-icon" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -727,11 +788,6 @@
         if (slides.length > 1) {
             slideTimer = setTimeout(showSlides, 5000);
         }
-    }
-
-    function addToCart(productId) {
-        // Use the existing GET route for adding to cart
-        window.location.href = `/cart/add/${productId}`;
     }
 
     document.addEventListener('DOMContentLoaded', () => {

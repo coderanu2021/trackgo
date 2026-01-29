@@ -20,15 +20,15 @@
             </div>
         @endif
         <div class="product-overlay">
-            <a href="{{ route('cart.add', $product->id) }}" class="btn-icon" title="Add to Cart">
+            <button onclick="addToCartAjax({{ $product->id }})" class="btn-icon" title="Add to Cart">
                 <i class="fas fa-shopping-cart"></i>
-            </a>
+            </button>
             <a href="{{ route('products.show', $product->slug) }}" class="btn-icon" title="Quick View">
                 <i class="fas fa-eye"></i>
             </a>
-            <a href="#" class="btn-icon" title="Add to Wishlist">
+            <button onclick="addToWishlistAjax({{ $product->id }})" class="btn-icon" title="Add to Wishlist">
                 <i class="far fa-heart"></i>
-            </a>
+            </button>
         </div>
     </div>
     <div class="product-info-minimal">
@@ -44,11 +44,14 @@
         </div>
 
         <div class="product-actions-inline">
-            <a href="{{ route('cart.add', $product->id) }}" class="btn-cart-inline" title="Add to Cart">
-                <i class="fas fa-shopping-cart"></i> Add to Cart
-            </a>
-            <a href="{{ route('cart.add', ['id' => $product->id, 'redirect' => 'checkout']) }}" class="btn-buy-inline" title="Buy Now">
-                <i class="fas fa-bolt"></i> Buy Now
+            <button onclick="addToCartAjax({{ $product->id }})" class="btn-cart-icon" title="Add to Cart">
+                <i class="fas fa-shopping-cart"></i>
+            </button>
+            <button onclick="addToWishlistAjax({{ $product->id }})" class="btn-wishlist-icon" title="Add to Wishlist">
+                <i class="far fa-heart"></i>
+            </button>
+            <a href="{{ route('products.show', $product->slug) }}" class="btn-view-icon" title="Quick View">
+                <i class="fas fa-eye"></i>
             </a>
         </div>
     </div>

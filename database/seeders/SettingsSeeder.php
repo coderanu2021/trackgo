@@ -17,9 +17,15 @@ class SettingsSeeder extends Seeder
             
             // Social Media (Stored as JSON)
             ['key' => 'social_links', 'value' => json_encode([
-                ['platform' => 'Facebook', 'url' => '#', 'icon' => 'facebook'],
-                ['platform' => 'Twitter', 'url' => '#', 'icon' => 'twitter'],
-                ['platform' => 'Instagram', 'url' => '#', 'icon' => 'instagram'],
+                ['platform' => 'Twitter', 'url' => 'https://x.com/EtrackG?s=09', 'icon' => 'twitter'],
+                ['platform' => 'Facebook', 'url' => 'https://www.facebook.com/etrackgo1/', 'icon' => 'facebook'],
+                ['platform' => 'Youtube', 'url' => 'https://www.youtube.com/c/etrackgo', 'icon' => 'youtube'],
+            ]), 'type' => 'json'],
+
+            // App Store Links (New section)
+            ['key' => 'app_store_links', 'value' => json_encode([
+                ['platform' => 'Google Play', 'url' => 'https://play.google.com/store/apps/details?id=app.etrack.go&hl=en_IN', 'icon' => 'google-play'],
+                ['platform' => 'App Store', 'url' => 'https://apps.apple.com/in/app/e-track-go/id1615744929', 'icon' => 'apple'],
             ]), 'type' => 'json'],
 
             // Main Navigation (Stored as JSON for dynamic menu builder)

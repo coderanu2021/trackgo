@@ -89,4 +89,71 @@
         </aside>
     </div>
 </div>
+
+<style>
+    /* Responsive Checkout Styles */
+    @media (max-width: 1024px) {
+        .container > div:nth-child(2) {
+            grid-template-columns: 1fr 350px;
+            gap: 3rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            padding: 3rem 1rem !important;
+        }
+        
+        .container > div:nth-child(2) {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        /* Form responsive */
+        .container > div:nth-child(2) > div:first-child {
+            padding: 2rem !important;
+        }
+        
+        .container > div:nth-child(2) > div:first-child > form > div:first-child {
+            grid-template-columns: 1fr !important;
+            gap: 1rem;
+        }
+        
+        /* Order summary responsive */
+        aside > div {
+            position: static !important;
+            padding: 2rem !important;
+        }
+        
+        /* Order items responsive */
+        aside > div > div:nth-child(2) > div {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.5rem;
+        }
+        
+        aside > div > div:nth-child(2) > div > div:last-child {
+            align-self: flex-end;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 2rem !important;
+        }
+        
+        .container > div:nth-child(2) > div:first-child {
+            padding: 1.5rem !important;
+        }
+        
+        aside > div {
+            padding: 1.5rem !important;
+        }
+        
+        /* Form inputs full width on small screens */
+        input, textarea {
+            font-size: 16px !important; /* Prevent zoom on iOS */
+        }
+    }
+</style>
 @endsection

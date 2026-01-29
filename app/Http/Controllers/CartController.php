@@ -30,6 +30,28 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
+        // If it's an AJAX request, return JSON response
+        if ($request->ajax()) {
+            $cartCount = array_sum(array_column($cart, 'quantity'));
+            $cartTotal = array_sum(array_map(function($item) {
+                return $item['price'] * $item['quantity'];
+            }, $cart));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added to cart successfully!',
+                'cart_count' => $cartCount,
+                'cart_total' => $cartTotal,
+                'product' => [
+                    'id' => $id,
+                    'title' => $product->title,
+                    'price' => $product->price,
+                    'quantity' => $cart[$id]['quantity']
+                ]
+            ]);
+        }
+
+        // Regular redirect for non-AJAX requests
         if ($request->has('redirect') && $request->redirect == 'checkout') {
             return redirect()->route('checkout.index')->with('success', 'Product added to cart successfully!');
         }

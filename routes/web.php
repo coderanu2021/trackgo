@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\GeneralPageController;
 use App\Http\Controllers\BannerController;
@@ -123,8 +124,15 @@ Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index')
 // Cart Routes
 Route::get('cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::post('cart/add/{id}', [CartController::class, 'add'])->name('cart.add.ajax'); // AJAX route
 Route::patch('cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::delete('cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+// Wishlist Routes
+Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+Route::get('wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
+Route::post('wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add.ajax'); // AJAX route
+Route::delete('wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
 
 // Checkout Routes
 Route::get('checkout', [CheckoutController::class, 'index'])->name('checkout.index');

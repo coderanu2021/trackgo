@@ -302,6 +302,145 @@
             background: var(--primary);
             transform: translateY(-3px);
         }
+
+        /* Global Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            padding: 1rem 1.5rem;
+            z-index: 10000;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification-success {
+            border-left-color: var(--success);
+        }
+
+        .notification-error {
+            border-left-color: var(--error);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .notification-success .notification-content i {
+            color: var(--success);
+        }
+
+        .notification-error .notification-content i {
+            color: var(--error);
+        }
+
+        /* Button loading states */
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .add-cart-btn:disabled,
+        .btn-cart-inline:disabled,
+        .btn-large:disabled {
+            pointer-events: none;
+        }
+
+        /* Product Action Icon Buttons */
+        .product-actions-inline {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .btn-cart-icon,
+        .btn-wishlist-icon,
+        .btn-view-icon {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .btn-cart-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-cart-icon:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(243, 112, 33, 0.3);
+        }
+
+        .btn-wishlist-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .btn-wishlist-icon:hover {
+            background: var(--error);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-view-icon {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--info);
+        }
+
+        .btn-view-icon:hover {
+            background: var(--info);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Product overlay buttons (for hover effect) */
+        .product-overlay .btn-icon {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text-main);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        .product-overlay .btn-icon:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
     </style>
     @stack('styles')
 </head>
@@ -350,10 +489,10 @@
                 </a>
                 @endguest
                 
-                <a href="#" class="icon-box">
+                <a href="{{ route('wishlist.index') }}" class="icon-box">
                     <div class="icon-wrap">
                         <i class="far fa-heart"></i>
-                        <span class="icon-badge">0</span>
+                        <span class="icon-badge">{{ count(session()->get('wishlist', [])) }}</span>
                     </div>
                     <span style="font-weight:600;">Wishlist</span>
                 </a>
@@ -513,10 +652,209 @@
                     }
                 });
 
+                // Category dropdown hover enhancement
+                $('.vertical-menu-btn').hover(
+                    function() {
+                        $(this).find('#category-arrow').addClass('rotated');
+                    },
+                    function() {
+                        $(this).find('#category-arrow').removeClass('rotated');
+                    }
+                );
+
             } catch (error) {
                 console.warn('Script initialization error:', error);
             }
         });
+
+        // Global AJAX Add to Cart Function
+        function addToCartAjax(productId) {
+            // Show loading state
+            const button = event.target.closest('button') || event.target.closest('a');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            button.disabled = true;
+
+            // AJAX request to add to cart
+            fetch(`/cart/add/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update cart count in header
+                    const cartBadge = document.querySelector('.icon-badge');
+                    if (cartBadge) {
+                        cartBadge.textContent = data.cart_count;
+                    }
+
+                    // Show success message
+                    showNotification('success', data.message);
+
+                    // Reset button
+                    button.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    button.style.background = 'var(--success)';
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.style.background = '';
+                        button.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'Failed to add to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('error', 'Failed to add product to cart. Please try again.');
+                
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        // Global AJAX Add to Wishlist Function
+        function addToWishlistAjax(productId) {
+            // Show loading state
+            const button = event.target.closest('button') || event.target.closest('a');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+
+            // AJAX request to add to wishlist
+            fetch(`/wishlist/add/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update wishlist count in header
+                    const wishlistBadge = document.querySelector('.icon-badge');
+                    if (wishlistBadge && wishlistBadge.closest('.icon-box').querySelector('.fa-heart')) {
+                        wishlistBadge.textContent = data.wishlist_count;
+                    }
+
+                    // Show success message
+                    showNotification('success', data.message);
+
+                    // Change button to filled heart
+                    button.innerHTML = '<i class="fas fa-heart"></i>';
+                    button.style.color = 'var(--error)';
+                    button.title = 'Added to Wishlist';
+                    
+                    setTimeout(() => {
+                        button.disabled = false;
+                    }, 1000);
+                } else {
+                    throw new Error(data.message || 'Failed to add to wishlist');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('error', 'Failed to add product to wishlist. Please try again.');
+                
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        // Global AJAX Remove from Wishlist Function
+        function removeFromWishlistAjax(productId) {
+            // Show loading state
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+
+            // AJAX request to remove from wishlist
+            fetch(`/wishlist/remove`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({id: productId})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update wishlist count in header
+                    const wishlistBadge = document.querySelector('.icon-badge');
+                    if (wishlistBadge && wishlistBadge.closest('.icon-box').querySelector('.fa-heart')) {
+                        wishlistBadge.textContent = data.wishlist_count;
+                    }
+
+                    // Show success message
+                    showNotification('success', data.message);
+
+                    // Remove the item from the page
+                    const wishlistItem = button.closest('.wishlist-item');
+                    if (wishlistItem) {
+                        wishlistItem.style.opacity = '0';
+                        wishlistItem.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            wishlistItem.remove();
+                            
+                            // Check if wishlist is empty
+                            const remainingItems = document.querySelectorAll('.wishlist-item');
+                            if (remainingItems.length === 0) {
+                                location.reload(); // Reload to show empty state
+                            }
+                        }, 300);
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to remove from wishlist');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('error', 'Failed to remove product from wishlist. Please try again.');
+                
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        // Global Notification function
+        function showNotification(type, message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // Hide and remove notification
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
     </script>
     @stack('scripts')
 </body>

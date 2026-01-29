@@ -29,6 +29,12 @@ class AppServiceProvider extends ServiceProvider
             
             View::share('settings', $settings);
             View::share('categories_global', $categories_global);
+            
+            // Share cart and wishlist counts globally
+            View::composer('*', function ($view) {
+                $view->with('cart_count', count(session()->get('cart', [])));
+                $view->with('wishlist_count', count(session()->get('wishlist', [])));
+            });
         }
         \Illuminate\Support\Facades\Schema::defaultStringLength(191);
     }
