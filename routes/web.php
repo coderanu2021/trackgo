@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\GeneralPageController;
 use App\Http\Controllers\BannerController;
@@ -137,3 +138,15 @@ Route::delete('wishlist/remove', [WishlistController::class, 'remove'])->name('w
 // Checkout Routes
 Route::get('checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('order/{order}/success', [CheckoutController::class, 'orderSuccess'])->name('order.success');
+
+// Payment Routes
+Route::get('payment/{order}/methods', [PaymentController::class, 'showPaymentMethods'])->name('payment.methods');
+Route::post('payment/{order}/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
+Route::post('payment/{payment}/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+Route::get('payment/{payment}/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('payment/{payment}/failed', [PaymentController::class, 'failed'])->name('payment.failed');
+Route::post('payment/{payment}/verify', [PaymentController::class, 'verify'])->name('payment.verify');
+
+// Payment Webhooks (no auth required)
+Route::post('webhook/payment/{gateway}', [PaymentController::class, 'webhook'])->name('payment.webhook');

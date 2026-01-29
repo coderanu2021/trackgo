@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             BannerSeeder::class,
             GeneralPageSeeder::class,
             DummyLayoutSeeder::class,
+            PaymentGatewaySeeder::class, // Payment gateways
         ]);
     }
 }
