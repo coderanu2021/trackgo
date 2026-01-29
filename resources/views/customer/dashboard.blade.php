@@ -51,7 +51,7 @@
                 <tr style="border-bottom: 1px solid var(--border-soft);">
                     <td style="padding: 1.5rem 2.5rem; font-weight: 700;">#{{ $order->order_number ?? $order->id }}</td>
                     <td style="padding: 1.5rem 2.5rem; color: var(--text-muted);">{{ $order->created_at->format('M d, Y') }}</td>
-                    <td style="padding: 1.5rem 2.5rem; font-weight: 700; color: var(--primary);">{{ $settings['site_currency_symbol'] ?? '$' }}{{ number_format($order->total_amount, 2) }}</td>
+                    <td style="padding: 1.5rem 2.5rem; font-weight: 700; color: var(--primary);">{{ $settings['site_currency_symbol'] ?? '₹' }}{{ number_format($order->total_amount, 2) }}</td>
                     <td style="padding: 1.5rem 2.5rem;">
                         <span style="padding: 0.5rem 1rem; border-radius: 30px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; 
                             @if($order->status == 'completed') background: rgba(34, 197, 94, 0.1); color: #22c55e;

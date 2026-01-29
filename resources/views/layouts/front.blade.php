@@ -42,7 +42,7 @@
             --nav-bg: {{ $settings['site_secondary_color'] ?? '#1a1a1a' }}; /* This can be dynamic */
         }
 
-        body { font-family: 'Inter', sans-serif; color: var(--text-main); }
+        body { font-family: 'Inter', sans-serif; color: var(--text-main);margin:0px; }
         a { text-decoration: none; color: inherit; transition: var(--transition); }
         ul { list-style: none; padding: 0; margin: 0; }
         

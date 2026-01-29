@@ -35,7 +35,8 @@ class SettingsSeeder extends Seeder
 
             // Site Identity
             ['key' => 'site_name', 'value' => 'Zenis'],
-            ['key' => 'site_currency', 'value' => 'USD'],
+            ['key' => 'site_currency', 'value' => 'INR'],
+            ['key' => 'site_currency_symbol', 'value' => '₹'],
         ];
 
         foreach ($settings as $setting) {

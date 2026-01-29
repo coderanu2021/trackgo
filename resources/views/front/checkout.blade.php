@@ -62,7 +62,7 @@
                                 <div style="font-weight: 600;">{{ $details['title'] }}</div>
                                 <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">QTY: {{ $details['quantity'] }}</div>
                             </div>
-                            <div style="font-family: 'Outfit', sans-serif; font-weight: 700;">${{ number_format($details['price'] * $details['quantity'], 2) }}</div>
+                            <div style="font-family: 'Outfit', sans-serif; font-weight: 700;">₹{{ number_format($details['price'] * $details['quantity'], 2) }}</div>
                         </div>
                     @endforeach
                 </div>
@@ -70,7 +70,7 @@
                 <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
                     <div class="flex justify-between" style="margin-bottom: 0.75rem; font-size: 0.9rem; color: rgba(255,255,255,0.6);">
                         <span>Subtotal</span>
-                        <span>${{ number_format($total, 2) }}</span>
+                        <span>₹{{ number_format($total, 2) }}</span>
                     </div>
                     <div class="flex justify-between" style="margin-bottom: 0.75rem; font-size: 0.9rem; color: rgba(255,255,255,0.6);">
                         <span>Processing Fee</span>
@@ -78,7 +78,7 @@
                     </div>
                     <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; font-weight: 800; font-size: 1.5rem;">
                         <span>Final Total</span>
-                        <span style="color: var(--primary);">${{ number_format($total, 2) }}</span>
+                        <span style="color: var(--primary);">₹{{ number_format($total, 2) }}</span>
                     </div>
                 </div>
 

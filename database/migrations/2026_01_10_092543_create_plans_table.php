@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('price', 10, 2);
-            $table->string('currency')->default('USD');
+            $table->string('currency')->default('INR');
             $table->string('cycle')->default('monthly'); // monthly, yearly
             $table->text('features')->nullable(); // JSON or comma separated
             $table->boolean('is_featured')->default(false);

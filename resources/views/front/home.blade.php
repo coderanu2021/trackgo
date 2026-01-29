@@ -542,7 +542,7 @@
             </a>
         </div>
         
-        @if($products->count() < 0)
+        @if($products->count() > 0)
             <div class="product-grid-compact">
                 @foreach($products->take(8) as $product)
                     <div class="product-card">
@@ -572,7 +572,7 @@
                             </h3>
                             <div class="p-footer">
                                 <div class="p-price">
-                                    ${{ number_format($product->price, 2) }}
+                                    ₹{{ number_format($product->price, 2) }}
                                 </div>
                                 <a href="#" class="add-cart-btn" onclick="addToCart({{ $product->id }})">
                                     Add to Cart

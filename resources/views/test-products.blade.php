@@ -20,7 +20,7 @@
                     <strong>Product {{ $index + 1 }}:</strong><br>
                     ID: {{ $product->id }}<br>
                     Title: {{ $product->title }}<br>
-                    Price: ${{ $product->price }}<br>
+                    Price: ₹{{ $product->price }}<br>
                     Active: {{ $product->is_active ? 'YES' : 'NO' }}<br>
                     Category: {{ $product->category->name ?? 'No Category' }}
                 </div>

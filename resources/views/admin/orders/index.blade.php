@@ -29,7 +29,7 @@
                     <div style="font-size: 0.75rem; color: var(--text-light);">{{ $order->customer_email }}</div>
                 </td>
                 <td>
-                    <div style="font-weight: 800; color: var(--text-main); font-size: 1.05rem;">${{ number_format($order->total_amount, 2) }}</div>
+                    <div style="font-weight: 800; color: var(--text-main); font-size: 1.05rem;">₹{{ number_format($order->total_amount, 2) }}</div>
                 </td>
                 <td>
                     <span class="badge" style="background: {{ $order->status == 'completed' ? 'rgba(16,185,129,0.1)' : ( $order->status == 'pending' ? 'rgba(59,130,246,0.1)' : 'rgba(239, 68, 68, 0.1)' ) }};

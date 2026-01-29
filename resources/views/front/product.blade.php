@@ -285,9 +285,9 @@
 
                 <div class="price-tag">
                     @if($page->discount > 0)
-                        <span class="price-old">${{ number_format($page->price + $page->discount, 2) }}</span>
+                        <span class="price-old">₹{{ number_format($page->price + $page->discount, 2) }}</span>
                     @endif
-                    <span>${{ number_format($page->price, 2) }}</span>
+                    <span>₹{{ number_format($page->price, 2) }}</span>
                 </div>
 
                 <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">

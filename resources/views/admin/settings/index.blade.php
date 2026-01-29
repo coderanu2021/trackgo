@@ -40,7 +40,7 @@
                     </div>
                     <div class="form-group">
                         <label>Currency</label>
-                        <input type="text" name="site_currency" class="form-control" value="{{ $settings['site_currency'] ?? 'USD' }}" placeholder="e.g. USD, $">
+                        <input type="text" name="site_currency" class="form-control" value="{{ $settings['site_currency'] ?? 'INR' }}" placeholder="e.g. INR, ₹">
                     </div>
                 </div>
 

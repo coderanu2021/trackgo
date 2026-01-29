@@ -40,13 +40,13 @@
                                 </div>
                             </div>
                         </td>
-                        <td style="padding: 2rem; font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--secondary);">${{ number_format($details['price'], 2) }}</td>
+                        <td style="padding: 2rem; font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--secondary);">₹{{ number_format($details['price'], 2) }}</td>
                         <td style="padding: 2rem;">
                             <input type="number" value="{{ $details['quantity'] }}" class="quantity-input" data-id="{{ $id }}" 
                                    style="width: 70px; padding: 0.65rem; border: 1px solid var(--border); border-radius: 10px; outline: none; transition: 0.3s; font-weight: 600; text-align: center;"
                                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'">
                         </td>
-                        <td style="padding: 2rem; font-family: 'Outfit', sans-serif; font-weight: 800; color: var(--primary); font-size: 1.15rem;">${{ number_format($details['price'] * $details['quantity'], 2) }}</td>
+                        <td style="padding: 2rem; font-family: 'Outfit', sans-serif; font-weight: 800; color: var(--primary); font-size: 1.15rem;">₹{{ number_format($details['price'] * $details['quantity'], 2) }}</td>
                         <td style="padding: 2rem; text-align: right;">
                             <button class="btn remove-from-cart" data-id="{{ $id }}" style="background: rgba(239, 68, 68, 0.05); color: #ef4444; width: 45px; height: 45px; justify-content: center; padding: 0; border-radius: 12px; transition: 0.3s;">
                                 <i class="fas fa-trash-alt"></i>
@@ -71,7 +71,7 @@
             </a>
             <div style="text-align: right;">
                 <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Grand Total</div>
-                <div style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 2rem;">${{ number_format($total, 2) }}</div>
+                <div style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 2rem;">₹{{ number_format($total, 2) }}</div>
                 <a href="{{ route('checkout.index') }}" class="btn btn-primary" style="padding: 1.15rem 3rem; font-size: 1.1rem; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);">
                     Proceed to Settlement <i class="fas fa-arrow-right"></i>
                 </a>
