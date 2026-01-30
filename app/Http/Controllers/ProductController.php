@@ -9,10 +9,31 @@ use Illuminate\Support\Str;
 class ProductController extends Controller
 {
     // Frontend: Shop page
-    public function shop()
+    public function shop(Request $request)
     {
-        $products = Page::where('is_active', true)->latest()->paginate(12);
+        $query = Page::where('is_active', true);
+        
+        // Filter by category if provided
+        if ($request->filled('category')) {
+            $category = \App\Models\Category::where('slug', $request->category)->first();
+            if ($category) {
+                $query->where('category_id', $category->id);
+            }
+        }
+        
+        // Filter by search term if provided
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('meta_description', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('meta_keywords', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+        
+        $products = $query->latest()->paginate(12);
         $categories = \App\Models\Category::where('is_active', true)->get();
+        
         return view('front.shop', compact('products', 'categories'));
     }
 

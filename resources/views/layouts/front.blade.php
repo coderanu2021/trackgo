@@ -86,6 +86,16 @@
             outline: none;
             cursor: pointer;
             display: none; /* Hidden on smaller screens */
+            min-width: 150px;
+        }
+        
+        .cat-select option {
+            padding: 8px 12px;
+            color: var(--text-main);
+        }
+        
+        .cat-select option[value^=""] {
+            font-weight: 600;
         }
         .search-input {
             flex: 1;
@@ -206,9 +216,18 @@
         }
         
         .cat-dropdown-link:hover {
-            background: #f9f9f9;
+            background: linear-gradient(135deg, var(--primary-soft), rgba(243, 112, 33, 0.05));
             color: var(--primary);
             padding-left: 1.25rem;
+            transform: translateX(2px);
+        }
+        
+        .cat-dropdown-link i {
+            transition: all 0.2s ease;
+        }
+        
+        .cat-dropdown-link:hover i {
+            transform: scale(1.1);
         }
         
         /* Arrow rotation */
@@ -255,10 +274,30 @@
 
         /* Footer - Always Dark */
         footer {
-            background-color: #1a1a1a; /* Always dark, ignore admin setting */
+            background: linear-gradient(rgba(26, 26, 26, 0.85), rgba(26, 26, 26, 0.85)), url('/uploads/footer_bg.jpg') center/cover no-repeat;
             color: #b0b0b0;
             padding: 5rem 0 2rem;
             font-size: 0.95rem;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.8));
+            z-index: 1;
+        }
+        
+        footer .container {
+            position: relative;
+            z-index: 2;
         }
         .footer-grid {
             display: grid;
@@ -464,13 +503,25 @@
 
             <!-- Search Bar -->
             <div class="zenis-search">
-                <form action="#" class="search-form">
-                    <select class="cat-select">
-                        <option>All Categories</option>
-                        <option>Electronics</option>
-                        <option>Fashion</option>
+                <form action="{{ route('shop') }}" method="GET" class="search-form">
+                    <select class="cat-select" name="category">
+                        <option value="">All Categories</option>
+                        @foreach($categories_global as $category)
+                            @if($category->parent_id == null)
+                                <!-- Parent Category -->
+                                <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                <!-- Child Categories -->
+                                @foreach($category->children as $child)
+                                    <option value="{{ $child->slug }}" {{ request('category') == $child->slug ? 'selected' : '' }}>
+                                        &nbsp;&nbsp;→ {{ $child->name }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        @endforeach
                     </select>
-                    <input type="text" class="search-input" placeholder="Search for products...">
+                    <input type="text" class="search-input" name="search" value="{{ request('search') }}" placeholder="Search for products...">
                     <button type="submit" class="search-btn">Search</button>
                 </form>
             </div>
@@ -511,10 +562,41 @@
     <!-- 3. Bottom Navigation -->
     <div class="header-bottom">
         <div class="container hb-flex">
-            <!-- Vertical Menu Button (No dropdown) -->
-            <div class="vertical-menu-btn">
+            <!-- Vertical Menu Button with Categories Dropdown -->
+            <div class="vertical-menu-btn" onclick="toggleCategoryDropdown()">
                 <span><i class="fas fa-bars" style="margin-right:10px;"></i> All Categories</span>
-                <i class="fas fa-angle-down"></i>
+                <i class="fas fa-angle-down" id="category-arrow"></i>
+                
+                <!-- Category Dropdown -->
+                <div class="category-dropdown" id="category-dropdown" style="display: none;">
+                    <div class="cat-dropdown-list">
+                        @foreach($categories_global as $category)
+                            @if($category->parent_id == null)
+                                <!-- Parent Category -->
+                                <a href="{{ route('category.show', $category->slug) }}" class="cat-dropdown-link">
+                                    @if($category->icon)
+                                        <i class="{{ $category->icon }}" style="margin-right: 8px; color: var(--primary);"></i>
+                                    @endif
+                                    {{ $category->name }}
+                                    @if($category->children->count() > 0)
+                                        <i class="fas fa-angle-right" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+                                    @endif
+                                </a>
+                                <!-- Child Categories -->
+                                @foreach($category->children as $child)
+                                    <a href="{{ route('category.show', $child->slug) }}" class="cat-dropdown-link" style="padding-left: 2rem; font-size: 0.85rem;">
+                                        @if($child->icon)
+                                            <i class="{{ $child->icon }}" style="margin-right: 8px; color: var(--primary);"></i>
+                                        @else
+                                            <i class="fas fa-arrow-right" style="margin-right: 8px; color: var(--text-muted); font-size: 0.7rem;"></i>
+                                        @endif
+                                        {{ $child->name }}
+                                    </a>
+                                @endforeach
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
             </div>
 
             <!-- Main Nav -->
@@ -605,6 +687,43 @@
                 console.warn('Mobile menu toggle error:', e);
             }
         }
+
+        function toggleCategoryDropdown() {
+            try {
+                const dropdown = document.getElementById('category-dropdown');
+                const arrow = document.getElementById('category-arrow');
+                const button = document.querySelector('.vertical-menu-btn');
+                
+                if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                    dropdown.style.display = 'block';
+                    arrow.style.transform = 'rotate(180deg)';
+                    button.classList.add('active');
+                } else {
+                    dropdown.style.display = 'none';
+                    arrow.style.transform = 'rotate(0deg)';
+                    button.classList.remove('active');
+                }
+            } catch (e) {
+                console.warn('Category dropdown toggle error:', e);
+            }
+        }
+
+        // Close category dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            try {
+                const button = document.querySelector('.vertical-menu-btn');
+                const dropdown = document.getElementById('category-dropdown');
+                const arrow = document.getElementById('category-arrow');
+                
+                if (button && dropdown && !button.contains(event.target)) {
+                    dropdown.style.display = 'none';
+                    arrow.style.transform = 'rotate(0deg)';
+                    button.classList.remove('active');
+                }
+            } catch (e) {
+                console.warn('Category dropdown close error:', e);
+            }
+        });
 
         function toggleMobileSearch() {
             try {

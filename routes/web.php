@@ -102,6 +102,11 @@ Route::get('/test-products', function() {
     return view('test-products', compact('products'));
 });
 
+// Test route for layout changes
+Route::get('/test-layout', function() {
+    return view('test-layout');
+});
+
 // Test route for home controller
 Route::get('/test-home', [\App\Http\Controllers\HomeController::class, 'index']);
 
