@@ -31,8 +31,6 @@ jobs:
 
             sudo chown -R apache:apache /var/www/html/trackgo
 
-            cd /var/www/html/trackgo
-
             sudo -u apache composer install --no-dev --optimize-autoloader
 
             sudo -u apache php artisan key:generate --force || true
