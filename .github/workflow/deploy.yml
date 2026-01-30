@@ -1,0 +1,39 @@
+name: Deploy Laravel to EC2
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2.pem
+          chmod 600 ~/.ssh/ec2.pem
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/ec2.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd ${{ secrets.EC2_PATH }}
+
+            git pull origin main || git pull origin master
+
+            composer install --no-dev --optimize-autoloader
+
+            sudo -u apache php artisan migrate --force || true
+            sudo -u apache php artisan config:clear
+            sudo -u apache php artisan cache:clear
+            sudo -u apache php artisan view:clear
+
+            sudo chown -R apache:apache storage bootstrap/cache
+          EOF
