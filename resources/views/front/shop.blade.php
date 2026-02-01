@@ -549,6 +549,10 @@
             width: 35px;
             height: 35px;
             font-size: 0.8rem;
+        }btn-icon-action {
+            width: 35px;
+            height: 35px;
+            font-size: 0.8rem;
         }
     }
 
