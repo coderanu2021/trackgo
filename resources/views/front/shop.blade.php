@@ -1,5 +1,3 @@
-<h1 style="color:red">SERVER SHOP VERSION</h1>
-
 @extends('layouts.front')
 
 @section('title', 'Shop Premium Products - ' . ($settings['site_name'] ?? 'TrackGo'))
