@@ -133,14 +133,14 @@
 </form>
 
 <!-- Settings Modal -->
-<div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: var(--shadow-lg);">
             <div class="modal-header" style="border-bottom: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
                 <h5 class="modal-title" style="font-weight: 700; color: var(--text-main);">Block Settings</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" style="padding: 2rem;">
+            <div class="modal-body" style="padding: 2rem; max-height: 60vh; overflow-y: auto;">
                 <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
                         <label>Background Color</label>
@@ -190,8 +190,134 @@
     </div>
 </div>
 
+<style>
+/* Fix modal positioning and scrolling issues */
+.modal {
+    z-index: 1055 !important;
+}
+
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
+
+.modal-body {
+    position: relative;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+    overflow: hidden !important;
+    padding-right: 0 !important;
+}
+
+/* Fix form styling in modal */
+.modal .form-row {
+    display: grid;
+    margin-bottom: 1rem;
+}
+
+.modal .form-group {
+    margin-bottom: 1rem;
+}
+
+.modal .form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+    display: block;
+}
+
+.modal .form-control {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.modal .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25);
+}
+
+/* Column management buttons */
+.btn-icon-xs {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: var(--bg-main);
+    color: var(--text-muted);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon-xs:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.column-wrapper {
+    transition: all 0.3s ease;
+}
+
+.column-wrapper:hover {
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.02);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
+.btn-outline-secondary {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.btn-outline-secondary:hover {
+    background: var(--bg-main);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+</style>
+
 <script>
-    let blocks = @json($page->content ?? []);
+    // Initialize blocks with proper error handling
+    let blocks = [];
+    try {
+        const pageContent = @json($page->content ?? []);
+        blocks = Array.isArray(pageContent) ? pageContent : [];
+        console.log('Loaded blocks:', blocks);
+    } catch (error) {
+        console.error('Error loading page content:', error);
+        blocks = [];
+    }
+    
+    // Ensure blocks is available globally
+    window.blocks = blocks;
+    
+    // Initialize the page builder when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.renderBlocks === 'function') {
+            window.renderBlocks();
+        } else {
+            console.warn('renderBlocks function not available yet');
+        }
+    });
 </script>
 @include('admin.pages.script')
 <script>

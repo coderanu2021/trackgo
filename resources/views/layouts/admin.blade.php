@@ -8,11 +8,69 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6.5.1 from multiple CDNs for reliability -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     
     <style>
+        /* Ensure Font Awesome icons display properly */
+        .fas, .far, .fab, .fal, .fad, .fa {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro", "FontAwesome" !important;
+            font-weight: 900;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .far {
+            font-weight: 400;
+        }
+        
+        .fab {
+            font-weight: 400;
+            font-family: "Font Awesome 6 Brands", "Font Awesome 5 Brands" !important;
+        }
+        
+        /* Fallback for missing icons */
+        .fas:before, .far:before, .fab:before {
+            display: inline-block;
+            text-decoration: inherit;
+        }
+        
+        /* Icon fallbacks with text for page builder */
+        .fa-font:before { content: "T"; }
+        .fa-image:before { content: "🖼"; }
+        .fa-link:before { content: "🔗"; }
+        .fa-columns:before { content: "⚏"; }
+        .fa-cog:before { content: "⚙"; }
+        .fa-trash:before { content: "🗑"; }
+        .fa-plus:before { content: "+"; }
+        .fa-minus:before { content: "-"; }
+        .fa-upload:before { content: "↑"; }
+        .fa-check:before { content: "✓"; }
+        .fa-spinner:before { content: "⟳"; }
+        .fa-cubes:before { content: "⚏"; }
+        .fa-chart-line:before { content: "📊"; }
+        .fa-clock-rotate-left:before { content: "🕐"; }
+        .fa-list-check:before { content: "☑"; }
+        .fa-folder-tree:before { content: "📁"; }
+        .fa-layer-group:before { content: "⚏"; }
+        .fa-external-link-alt:before { content: "↗"; }
+        .fa-save:before { content: "💾"; }
+        .fa-bars:before { content: "☰"; }
+        .fa-angle-down:before { content: "▼"; }
+        
+        /* Ensure icons are visible */
+        .fas, .far, .fab {
+            min-width: 1em;
+            text-align: center;
+        }
+        
         :root {
             /* Dynamic overrides if needed from backend settings */
             --primary: {{ $settings['site_primary_color'] ?? '#f37021' }};
@@ -89,6 +147,33 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
+    <!-- Font Awesome Fallback Check -->
+    <script>
+        // Check if Font Awesome is loaded and provide fallback
+        document.addEventListener('DOMContentLoaded', function() {
+            // Test if Font Awesome is loaded by checking for a common icon
+            const testIcon = document.createElement('i');
+            testIcon.className = 'fas fa-home';
+            testIcon.style.position = 'absolute';
+            testIcon.style.left = '-9999px';
+            document.body.appendChild(testIcon);
+            
+            const computedStyle = window.getComputedStyle(testIcon, ':before');
+            const content = computedStyle.getPropertyValue('content');
+            
+            // If Font Awesome isn't loaded, add fallback
+            if (!content || content === 'none' || content === '""') {
+                console.warn('Font Awesome not loaded, adding fallback...');
+                const fallbackLink = document.createElement('link');
+                fallbackLink.rel = 'stylesheet';
+                fallbackLink.href = 'https://use.fontawesome.com/releases/v6.0.0/css/all.css';
+                document.head.appendChild(fallbackLink);
+            }
+            
+            document.body.removeChild(testIcon);
+        });
+    </script>
 </head>
 <body>
     <div class="admin-layout">
