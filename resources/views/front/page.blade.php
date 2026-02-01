@@ -290,9 +290,160 @@
         flex: 1;
         min-width: 0;
     }
+    
+    /* Text Block Styling */
+    .block-text {
+        background: white;
+        padding: 3rem;
+        margin: 2rem auto;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        max-width: 900px; /* Reduced from 1200px to 900px */
+        border: 1px solid #f1f5f9;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .block-text:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+    
+    .block-text::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary) 0%, #ff8c42 100%);
+    }
+    
+    .block-text h2 {
+        color: var(--secondary);
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid var(--primary);
+        display: inline-block;
+        background: linear-gradient(135deg, var(--secondary) 0%, #4a5568 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .block-text h3 {
+        color: var(--secondary);
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 2rem 0 1rem 0;
+        padding-left: 1rem;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .block-text p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #4a5568;
+        margin-bottom: 1.5rem;
+        text-align: justify;
+    }
+    
+    .block-text ul {
+        margin: 1.5rem 0;
+        padding-left: 0;
+        list-style: none;
+    }
+    
+    .block-text ul li {
+        background: #f8fafc;
+        margin: 0.75rem 0;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary);
+        font-size: 1rem;
+        color: #2d3748;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    
+    .block-text ul li:hover {
+        background: #edf2f7;
+        transform: translateX(5px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .block-text ul li:before {
+        content: "✓";
+        color: var(--primary);
+        font-weight: bold;
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    /* Container improvements - Only for page template */
+    .page-container {
+        max-width: 1000px; /* Reduced from 1400px */
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+    
+    /* Main content area */
+    main {
+        background: #f8fafc;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    /* Block wrapper improvements */
+    .block-wrapper {
+        margin-bottom: 1rem;
+    }
+    
+    /* Image block styling */
+    .block-image {
+        background: white;
+        padding: 2rem;
+        margin: 2rem auto;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        max-width: 900px; /* Reduced from 1200px */
+        text-align: center;
+    }
+    
+    .block-image img {
+        border-radius: 12px;
+        box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Button block styling */
+    .block-button {
+        background: white;
+        padding: 2rem;
+        margin: 2rem auto;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        max-width: 900px; /* Reduced from 1200px */
+    }
+    
     @media (max-width: 768px) {
         .columns-container {
             flex-direction: column;
+        }
+        .block-text {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        .block-text h2 {
+            font-size: 2rem;
+        }
+        .block-text h3 {
+            font-size: 1.5rem;
+        }
+        .page-container {
+            padding: 0 1rem;
         }
     }
 
@@ -352,7 +503,7 @@
     </div>
     @endif
 
-    <main>
+    <main style="background: #f8fafc; min-height: 100vh; padding: 2rem 0;">
         @if(session('success'))
             <div class="container" style="margin-top: 2rem;">
                 <div style="background: #ecfdf5; color: #065f46; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid #10b981; display: flex; align-items: center; gap: 0.75rem; font-weight: 600;">
@@ -382,17 +533,17 @@
                             echo '<div class="block-wrapper" ' . $styleAttr . '>';
                             
                             if ($block['type'] === 'text') {
-                                echo '<div class="block block-text container">' . ($block['data']['content'] ?? '') . '</div>';
+                                echo '<div class="block block-text page-container">' . ($block['data']['content'] ?? $block['content'] ?? '') . '</div>';
                             } elseif ($block['type'] === 'image') {
-                                echo '<div class="block block-image container"><img src="' . ($block['data']['url'] ?? '') . '" alt="Project Image" style="width: 100%; border-radius: inherit;"></div>';
+                                echo '<div class="block block-image page-container"><img src="' . ($block['data']['url'] ?? $block['url'] ?? '') . '" alt="Project Image" style="width: 100%; border-radius: inherit;"></div>';
                             } elseif ($block['type'] === 'button') {
-                                echo '<div class="block block-button container" style="text-align: center;">
-                                        <a href="' . ($block['data']['url'] ?? '#') . '" class="btn-purchase btn-buynow" style="display: inline-flex; width: auto; min-width: 250px; border-radius: inherit;">
-                                            ' . ($block['data']['text'] ?? 'Click Here') . '
+                                echo '<div class="block block-button page-container" style="text-align: center;">
+                                        <a href="' . ($block['data']['url'] ?? $block['url'] ?? '#') . '" class="btn-purchase btn-buynow" style="display: inline-flex; width: auto; min-width: 250px; border-radius: inherit;">
+                                            ' . ($block['data']['text'] ?? $block['text'] ?? 'Click Here') . '
                                         </a>
                                     </div>';
                             } elseif ($block['type'] === 'columns') {
-                                echo '<div class="columns-container container">';
+                                echo '<div class="columns-container page-container">';
                                 foreach ($block['data']['columns'] ?? [] as $column) {
                                     echo '<div class="column">';
                                     renderProjectBlocks($column['blocks'] ?? [], $pageId);
@@ -401,7 +552,7 @@
                                 echo '</div>';
                             } elseif ($block['type'] === 'tabs') {
                                 $idx = rand(100, 999);
-                                echo '<div class="block block-tabs container">
+                                echo '<div class="block block-tabs page-container">
                                         <div class="tabs-header">';
                                 foreach($block['data']['tabs'] ?? [] as $index => $tab) {
                                     $active = $index === 0 ? 'active' : '';
@@ -414,7 +565,7 @@
                                 }
                                 echo '</div></div>';
                             } elseif ($block['type'] === 'features') {
-                                echo '<div class="block container">
+                                echo '<div class="block page-container">
                                         <div class="features-grid">';
                                 foreach($block['data']['items'] ?? [] as $feature) {
                                     echo '<div class="feature-card">
@@ -424,7 +575,7 @@
                                 }
                                 echo '</div></div>';
                             } elseif ($block['type'] === 'hero_stats') {
-                                echo '<div class="hero-stats container">
+                                echo '<div class="hero-stats page-container">
                                         <div class="hero-stats-content">
                                             <h2>' . ($block['data']['title'] ?? '') . '</h2>
                                             <p>' . ($block['data']['description'] ?? '') . '</p>
@@ -441,7 +592,7 @@
                                         </div>
                                     </div>';
                             } elseif ($block['type'] === 'timeline') {
-                                echo '<div class="timeline-section container">
+                                echo '<div class="timeline-section page-container">
                                         <div class="timeline">';
                                 foreach($block['data']['events'] ?? [] as $event) {
                                     echo '<div class="timeline-item">
@@ -456,7 +607,7 @@
                                 echo '</div></div>';
                             } elseif ($block['type'] === 'split_content') {
                                 $reverse = ($block['data']['position'] ?? 'left') === 'right' ? 'reverse' : '';
-                                echo '<div class="split-section container">
+                                echo '<div class="split-section page-container">
                                         <div class="split-container ' . $reverse . '">
                                             <div class="split-image">
                                                 <img src="' . ($block['data']['image'] ?? '') . '" alt="Split Image">

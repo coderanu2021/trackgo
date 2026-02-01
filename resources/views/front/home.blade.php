@@ -29,16 +29,7 @@
         background: white;
         border-radius: var(--radius-md);
         box-shadow: var(--shadow-sm);
-        overflow: hidden;
-        border: 1px solid var(--border);
-    }
-
-    /* Category Sidebar */
-    .category-sidebar {
-        background: white;
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
+        overflow: visible; /* Changed from hidden to visible for dropdowns */
         border: 1px solid var(--border);
     }
     .cat-header {
@@ -57,6 +48,12 @@
         display: flex;
         flex-direction: column;
     }
+    
+    /* Category Item Container */
+    .category-item {
+        position: relative;
+    }
+    
     .cat-link {
         padding: 0.85rem 1rem;
         border-bottom: 1px solid var(--border-soft);
@@ -72,6 +69,53 @@
         background: #f9f9f9;
         color: var(--primary);
         padding-left: 1.25rem;
+    }
+    
+    /* Category hover effects */
+    .category-item:hover .cat-link {
+        background: #f9f9f9;
+        color: var(--primary);
+        padding-left: 1.25rem;
+    }
+    
+    .category-item:hover .category-arrow {
+        color: var(--primary) !important;
+        transform: rotate(90deg);
+    }
+    
+    .category-item:hover .subcategory-dropdown {
+        display: block !important;
+    }
+    
+    /* Subcategory Dropdown */
+    .subcategory-dropdown {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        width: 200px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .subcategory-dropdown .cat-link {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-soft);
+        font-size: 0.85rem;
+    }
+    
+    .subcategory-dropdown .cat-link:hover {
+        background: var(--primary-soft);
+        color: var(--primary);
+        padding-left: 1.25rem;
+    }
+    
+    .subcategory-dropdown .cat-link:last-child {
+        border-bottom: none;
     }
 
     /* Slider */
@@ -111,12 +155,6 @@
         background-size: cover;
         background-position: center;
         box-shadow: var(--shadow-sm);
-    }
-    .promo-banner::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
     }
     .promo-content {
         position: relative;
@@ -438,21 +476,36 @@
         <div class="category-sidebar" style="border-top-left-radius: 0; border-top-right-radius: 0; border-top: none;">
             <div class="cat-list">
                 @if(isset($categories))
-                    @foreach($categories->take(8) as $cat)
-                    <a href="{{ route('category.show', $cat->slug) }}" class="cat-link">
-                        <span style="display:flex; align-items:center; gap:0.75rem;">
-                            @if($cat->icon) <i class="{{ $cat->icon }}" style="width:20px; text-align:center;"></i> @endif
-                            {{ $cat->name }}
-                        </span>
-                        @if($cat->children->count() > 0)
-                            <i class="fas fa-chevron-right" style="font-size: 0.7rem; color: #ccc;"></i>
-                        @endif
-                    </a>
+                    @foreach($categories as $cat)
+                        <div class="category-item">
+                            <a href="{{ route('category.show', $cat->slug) }}" class="cat-link">
+                                <span style="display:flex; align-items:center; gap:0.75rem;">
+                                    @if($cat->icon) <i class="{{ $cat->icon }}" style="width:20px; text-align:center;"></i> @endif
+                                    {{ $cat->name }}
+                                </span>
+                                @if($cat->children->count() > 0)
+                                    <i class="fas fa-chevron-right category-arrow" style="font-size: 0.7rem; color: #ccc; transition: all 0.3s ease;"></i>
+                                @endif
+                            </a>
+                            
+                            @if($cat->children->count() > 0)
+                                <div class="subcategory-dropdown" style="display: none; position: absolute; left: 100%; top: 0; width: 200px; background: white; border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 1000;">
+                                    @foreach($cat->children as $child)
+                                        <a href="{{ route('category.show', $child->slug) }}" class="cat-link" style="border-bottom: 1px solid var(--border-soft); font-size: 0.85rem;">
+                                            <span style="display:flex; align-items:center; gap:0.75rem;">
+                                                @if($child->icon)
+                                                    <i class="{{ $child->icon }}" style="width:16px; text-align:center; color: var(--primary);"></i>
+                                                @else
+                                                    <i class="fas fa-arrow-right" style="width:16px; text-align:center; color: var(--text-muted); font-size: 0.6rem;"></i>
+                                                @endif
+                                                {{ $child->name }}
+                                            </span>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
                     @endforeach
-                    <a href="{{ route('shop') }}" class="cat-link" style="font-weight:700; color:var(--primary);">
-                        <span>View All Categories</span>
-                        <i class="fas fa-plus-circle"></i>
-                    </a>
                 @endif
             </div>
         </div>
@@ -504,21 +557,21 @@
 
         <!-- Right Banners -->
         <div class="hero-banners" style="margin-top: 15px;">
-            <div class="promo-banner" style="background-image: url('{{ isset($settings['site_footer_bg']) ? asset($settings['site_footer_bg']) : asset('uploads/footer-bg.jpg') }}'); background-size: cover; background-position: center;">
-                <div class="promo-content">
-                    <div style="color: #ffc107; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">New Arrival</div>
-                    <h3 style="font-size: 1.5rem; line-height: 1.2; margin-bottom: 1rem; color: white;">Galaxy S24 Ultra</h3>
-                    <a href="{{ route('shop') }}" style="color: white; text-decoration: underline; font-size: 0.9rem;">Shop Now</a>
-                </div>
+            <div class="promo-banner" style="background-image: url('{{ isset($settings['promo_banner_1']) ? asset($settings['promo_banner_1']) : asset('uploads/footer-bg.jpg') }}'); background-size: cover; background-position: center; cursor: pointer; transition: all 0.3s ease;" onclick="window.location.href='{{ route('shop') }}'">
+                <!-- Pure image banner - no text content -->
             </div>
-            <div class="promo-banner" style="background-image: url('{{ isset($settings['site_footer_bg']) ? asset($settings['site_footer_bg']) : asset('uploads/footer-bg.jpg') }}'); background-size: cover; background-position: center;">
-                <div class="promo-content">
-                    <div style="color: rgba(255,255,255,0.9); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">Best Seller</div>
-                    <h3 style="font-size: 1.5rem; line-height: 1.2; margin-bottom: 1rem; color: white;">Headphone Pro</h3>
-                    <a href="{{ route('shop') }}" style="color: white; text-decoration: underline; font-size: 0.9rem;">Shop Now</a>
-                </div>
+            <div class="promo-banner" style="background-image: url('{{ isset($settings['promo_banner_2']) ? asset($settings['promo_banner_2']) : asset('uploads/footer-bg.jpg') }}'); background-size: cover; background-position: center; cursor: pointer; transition: all 0.3s ease;" onclick="window.location.href='{{ route('shop') }}'">
+                <!-- Pure image banner - no text content -->
             </div>
         </div>
+        
+        <style>
+            .promo-banner:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                border-radius: 12px;
+            }
+        </style>
     </div>
 </section>
 
@@ -557,30 +610,80 @@
     </div>
 </section>
 
-<!-- Top Brands -->
+<!-- Our Partners -->
 @if(isset($brands) && $brands->count() > 0)
-<section style="padding-bottom: 4rem;">
+<section style="padding: 4rem 0; background: #f8fafc;">
     <div class="container">
-    <div class="section-header">
-        <div class="section-title">
-            <h2>Top Brands</h2>
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <div class="section-title">
+                <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary); margin-bottom: 2rem;">Our Trusted Partners</h2>
+            </div>
+        </div>
+        
+        <div class="brands-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem;">
+            @foreach($brands as $brand)
+                <div class="brand-item" style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; display: flex; align-items: center; justify-content: center; height: 120px; transition: all 0.3s ease; position: relative; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    @if($brand->url)
+                        <a href="{{ $brand->url }}" target="_blank" title="{{ $brand->name }}" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+                            <img src="{{ Str::startsWith($brand->logo, ['http://', 'https://']) ? $brand->logo : asset($brand->logo) }}" 
+                                 alt="{{ $brand->name }}" 
+                                 style="max-width: 85%; max-height: 85%; object-fit: contain; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s ease;">
+                        </a>
+                    @else
+                        <img src="{{ Str::startsWith($brand->logo, ['http://', 'https://']) ? $brand->logo : asset($brand->logo) }}" 
+                             alt="{{ $brand->name }}" 
+                             style="max-width: 85%; max-height: 85%; object-fit: contain; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s ease;">
+                    @endif
+                </div>
+            @endforeach
         </div>
     </div>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem;">
-        @foreach($brands as $brand)
-            <a href="{{ $brand->url ?? '#' }}" class="brand-item" title="{{ $brand->name }}" target="{{ $brand->url ? '_blank' : '_self' }}"
-               style="background: white; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; justify-content: center; height: 90px; transition: all 0.3s; position: relative; overflow: hidden;">
-                <img src="{{ Str::startsWith($brand->logo, ['http://', 'https://']) ? $brand->logo : asset($brand->logo) }}" alt="{{ $brand->name }}" style="max-width: 80%; max-height: 80%; object-fit: contain; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s;">
-                <style>
-                    .brand-item:hover { border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.05); transform: translateY(-3px); }
-                    .brand-item:hover img { filter: grayscale(0); opacity: 1; }
-                </style>
-            </a>
-        @endforeach
-    </div>
-    </div>
 </section>
+
+<style>
+    .brand-item:hover {
+        border-color: var(--primary);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
+    }
+    
+    .brand-item:hover img {
+        filter: grayscale(0);
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    
+    @media (max-width: 1200px) {
+        .brands-grid {
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .brands-grid {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        
+        .brand-item {
+            height: 100px;
+            padding: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .brands-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .brand-item {
+            height: 80px;
+            padding: 1rem;
+        }
+    }
+</style>
 @endif
 
 <!-- Latest Products -->
@@ -600,8 +703,8 @@
                 @foreach($products->take(8) as $product)
                     <div class="product-card">
                         <div class="p-img-container">
-                            @if($product->thumbnail)
-                                <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" loading="lazy">
+                            @if($product->hero_image)
+                                <img src="{{ asset($product->hero_image) }}" alt="{{ $product->title }}" loading="lazy">
                             @else
                                 <div style="width: 100%; height: 100%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #999;">
                                     <i class="fas fa-image" style="font-size: 2rem;"></i>

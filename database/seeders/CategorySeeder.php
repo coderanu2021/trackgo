@@ -110,5 +110,109 @@ class CategorySeeder extends Seeder
                 'parent_id' => $industrial->id
             ]);
         }
+
+        // 4. GPS Devices
+        $gpsDevices = \App\Models\Category::create([
+            'name' => 'GPS Devices',
+            'slug' => 'gps-devices',
+            'icon' => 'fas fa-satellite-dish',
+            'is_active' => true,
+            'parent_id' => null
+        ]);
+
+        $deviceChildren = [
+            'Handheld GPS',
+            'Marine GPS',
+            'Aviation GPS',
+            'Fitness GPS Watches'
+        ];
+
+        foreach ($deviceChildren as $child) {
+            \App\Models\Category::create([
+                'name' => $child,
+                'slug' => \Illuminate\Support\Str::slug($child),
+                'icon' => 'fas fa-device-mobile',
+                'is_active' => true,
+                'parent_id' => $gpsDevices->id
+            ]);
+        }
+
+        // 5. Security Systems
+        $security = \App\Models\Category::create([
+            'name' => 'Security Systems',
+            'slug' => 'security-systems',
+            'icon' => 'fas fa-shield-alt',
+            'is_active' => true,
+            'parent_id' => null
+        ]);
+
+        $securityChildren = [
+            'CCTV Cameras',
+            'Access Control',
+            'Alarm Systems',
+            'Biometric Systems'
+        ];
+
+        foreach ($securityChildren as $child) {
+            \App\Models\Category::create([
+                'name' => $child,
+                'slug' => \Illuminate\Support\Str::slug($child),
+                'icon' => 'fas fa-lock',
+                'is_active' => true,
+                'parent_id' => $security->id
+            ]);
+        }
+
+        // 6. Fleet Management
+        $fleet = \App\Models\Category::create([
+            'name' => 'Fleet Management',
+            'slug' => 'fleet-management',
+            'icon' => 'fas fa-truck',
+            'is_active' => true,
+            'parent_id' => null
+        ]);
+
+        $fleetChildren = [
+            'Vehicle Tracking',
+            'Driver Monitoring',
+            'Fuel Management',
+            'Route Optimization'
+        ];
+
+        foreach ($fleetChildren as $child) {
+            \App\Models\Category::create([
+                'name' => $child,
+                'slug' => \Illuminate\Support\Str::slug($child),
+                'icon' => 'fas fa-route',
+                'is_active' => true,
+                'parent_id' => $fleet->id
+            ]);
+        }
+
+        // 7. IoT Solutions
+        $iot = \App\Models\Category::create([
+            'name' => 'IoT Solutions',
+            'slug' => 'iot-solutions',
+            'icon' => 'fas fa-wifi',
+            'is_active' => true,
+            'parent_id' => null
+        ]);
+
+        $iotChildren = [
+            'Smart Sensors',
+            'Environmental Monitoring',
+            'Asset Tracking',
+            'Remote Control Systems'
+        ];
+
+        foreach ($iotChildren as $child) {
+            \App\Models\Category::create([
+                'name' => $child,
+                'slug' => \Illuminate\Support\Str::slug($child),
+                'icon' => 'fas fa-microchip',
+                'is_active' => true,
+                'parent_id' => $iot->id
+            ]);
+        }
     }
 }

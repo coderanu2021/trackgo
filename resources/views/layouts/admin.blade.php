@@ -115,6 +115,60 @@
             font-style: normal !important;
         }
         
+        /* DataTables styling fixes */
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        #builder-table {
+            width: 100% !important;
+            border-collapse: collapse;
+        }
+        
+        #builder-table th,
+        #builder-table td {
+            padding: 1rem !important;
+            border-bottom: 1px solid var(--border-soft) !important;
+            vertical-align: middle !important;
+        }
+        
+        #builder-table th {
+            background: var(--bg-light) !important;
+            font-weight: 600 !important;
+            color: var(--text-main) !important;
+            text-transform: uppercase !important;
+            font-size: 0.75rem !important;
+            letter-spacing: 0.05em !important;
+        }
+        
+        #builder-table tbody tr:hover {
+            background: var(--bg-light) !important;
+        }
+        
+        /* Ensure operations column is visible */
+        #builder-table th:last-child,
+        #builder-table td:last-child {
+            min-width: 120px !important;
+            width: 120px !important;
+        }
+        
+        /* DataTables controls styling */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            margin: 1rem !important;
+        }
+        
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid var(--border-soft) !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 1rem !important;
+        }
+        
         :root {
             /* Dynamic overrides if needed from backend settings */
             --primary: {{ $settings['site_primary_color'] ?? '#f37021' }};
@@ -254,6 +308,33 @@
                     icon.style.fontFamily = '"Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro", "FontAwesome", sans-serif';
                 });
             }, 500);
+            
+            // Ensure DataTables are properly initialized
+            setTimeout(() => {
+                if (typeof $.fn.DataTable !== 'undefined') {
+                    // Reinitialize any DataTables that might not have loaded properly
+                    $('table[id$="-table"]').each(function() {
+                        if (!$.fn.DataTable.isDataTable(this)) {
+                            console.log('Reinitializing DataTable for:', this.id);
+                            $(this).DataTable({
+                                "pageLength": 10,
+                                "ordering": true,
+                                "info": true,
+                                "responsive": true,
+                                "autoWidth": false,
+                                "language": {
+                                    "search": "",
+                                    "searchPlaceholder": "Search repository...",
+                                    "paginate": {
+                                        "previous": "<i class='fas fa-chevron-left'></i>",
+                                        "next": "<i class='fas fa-chevron-right'></i>"
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }, 1000);
         });
     </script>
 </head>
@@ -283,7 +364,7 @@
                 <div class="sidebar-label">Page Builders</div>
                 
                 <a href="{{ route('admin.products.index') }}" class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                    <i class="fas fa-boxes-stacked"></i> <span>Product Page Builder</span>
+                    <i class="fas fa-boxes-stacked"></i> <span>Product Builder</span>
                 </a>
                 <a href="{{ route('admin.pages.index') }}" class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
                     <i class="fas fa-file-invoice"></i> <span>Page Builder</span>

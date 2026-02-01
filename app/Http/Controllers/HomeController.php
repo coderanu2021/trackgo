@@ -3,13 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Page;
+use App\Models\ProductPage;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $products = Page::where('is_active', true)->latest()->take(8)->get();
+        // Fetch actual products from ProductPage model, not Page model
+        $products = ProductPage::where('is_published', true)
+            ->with('category')
+            ->latest()
+            ->take(8)
+            ->get();
+            
         $categories = \App\Models\Category::where('is_active', true)->whereNull('parent_id')->with('children')->get();
         $blogs = \App\Models\Blog::where('is_published', true)->latest()->take(3)->get();
         $hero_slides = \App\Models\Banner::where('is_active', true)->orderBy('order')->get();

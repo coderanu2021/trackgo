@@ -82,7 +82,7 @@ class SettingsController extends Controller
         }
 
         // Branding Assets
-        foreach (['site_logo', 'site_favicon', 'site_footer_bg'] as $field) {
+        foreach (['site_logo', 'site_favicon', 'site_footer_bg', 'promo_banner_1', 'promo_banner_2'] as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
                 $filename = 'branding_' . time() . '_' . $field . '.' . $file->getClientOriginalExtension();

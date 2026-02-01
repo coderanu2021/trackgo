@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Page;
+use App\Models\ProductPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -11,7 +11,7 @@ class ProductController extends Controller
     // Frontend: Shop page
     public function shop(Request $request)
     {
-        $query = Page::where('is_active', true);
+        $query = ProductPage::where('is_published', true);
         
         // Filter by category if provided
         if ($request->filled('category')) {
@@ -31,7 +31,7 @@ class ProductController extends Controller
             });
         }
         
-        $products = $query->latest()->paginate(12);
+        $products = $query->with('category')->latest()->paginate(12);
         $categories = \App\Models\Category::where('is_active', true)->get();
         
         return view('front.shop', compact('products', 'categories'));
@@ -40,7 +40,7 @@ class ProductController extends Controller
     // Frontend: Single product page
     public function show($slug)
     {
-        $page = Page::where('slug', $slug)->where('is_active', true)->with(['reviews' => function($q) {
+        $page = ProductPage::where('slug', $slug)->where('is_published', true)->with(['reviews' => function($q) {
             $q->where('is_approved', true)->latest();
         }])->firstOrFail();
 
@@ -58,7 +58,7 @@ class ProductController extends Controller
     // Admin: List all products
     public function index()
     {
-        $pages = Page::latest()->get();
+        $pages = ProductPage::with('category')->latest()->get();
         return view('admin.products.index', compact('pages'));
     }
 
@@ -75,7 +75,7 @@ class ProductController extends Controller
         $request->validate([
             'category_id' => 'nullable|exists:categories,id',
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:pages',
+            'slug' => 'nullable|string|max:255|unique:product_pages',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'blocks' => 'required|json',
@@ -83,21 +83,18 @@ class ProductController extends Controller
 
         $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->title);
 
-        Page::create([
+        ProductPage::create([
             'category_id' => $request->category_id,
             'title' => $request->title,
             'slug' => $slug,
             'price' => $request->price ?? 0,
-            'discount' => $request->discount ?? 0,
             'stock' => $request->stock ?? 0,
-            'thumbnail' => $request->thumbnail,
-            'gallery' => $request->gallery ? json_decode($request->gallery, true) : [],
+            'hero_image' => $request->hero_image,
             'content' => json_decode($request->blocks, true),
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
-            'is_active' => true,
-            'is_enquiry' => $request->has('is_enquiry'),
+            'is_published' => true,
         ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
@@ -106,7 +103,7 @@ class ProductController extends Controller
     // Admin: Edit product form
     public function edit($id)
     {
-        $page = Page::findOrFail($id);
+        $page = ProductPage::findOrFail($id);
         $categories = \App\Models\Category::where('is_active', true)->get();
         return view('admin.products.edit', compact('page', 'categories'));
     }
@@ -114,12 +111,12 @@ class ProductController extends Controller
     // Admin: Update product
     public function update(Request $request, $id)
     {
-        $page = Page::findOrFail($id);
+        $page = ProductPage::findOrFail($id);
 
         $request->validate([
             'category_id' => 'nullable|exists:categories,id',
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:pages,slug,' . $id,
+            'slug' => 'nullable|string|max:255|unique:product_pages,slug,' . $id,
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'blocks' => 'required|json',
@@ -132,15 +129,12 @@ class ProductController extends Controller
             'title' => $request->title,
             'slug' => $slug,
             'price' => $request->price ?? 0,
-            'discount' => $request->discount ?? 0,
             'stock' => $request->stock ?? 0,
-            'thumbnail' => $request->thumbnail,
-            'gallery' => $request->gallery ? json_decode($request->gallery, true) : [],
+            'hero_image' => $request->hero_image,
             'content' => json_decode($request->blocks, true),
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
-            'is_enquiry' => $request->has('is_enquiry'),
         ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
@@ -149,7 +143,7 @@ class ProductController extends Controller
     // Admin: Delete product
     public function destroy($id)
     {
-        $page = Page::findOrFail($id);
+        $page = ProductPage::findOrFail($id);
         $page->delete();
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
     }

@@ -161,7 +161,7 @@
         .vertical-menu-btn {
             background: var(--primary);
             color: white;
-            width: 260px;
+            width: 219px;
             padding: 0 20px;
             font-weight: 700;
             text-transform: uppercase;
@@ -184,7 +184,7 @@
             position: absolute;
             top: 100%;
             left: 0;
-            width: 260px;
+            width: 219px;
             background: white;
             border: 1px solid var(--border);
             border-top: none;
@@ -567,7 +567,8 @@
                 <span><i class="fas fa-bars" style="margin-right:10px;"></i> All Categories</span>
                 <i class="fas fa-angle-down" id="category-arrow"></i>
                 
-                <!-- Category Dropdown -->
+                <!-- Category Dropdown (Hidden on Home Page) -->
+                @if(!Request::is('/'))
                 <div class="category-dropdown" id="category-dropdown" style="display: none;">
                     <div class="cat-dropdown-list">
                         @foreach($categories_global as $category)
@@ -597,6 +598,7 @@
                         @endforeach
                     </div>
                 </div>
+                @endif
             </div>
 
             <!-- Main Nav -->
@@ -606,9 +608,7 @@
                 <li><a href="{{ route('blogs.index') }}" class="menu-link">Blog</a></li>
                 <li><a href="{{ route('about') }}" class="menu-link">About Us</a></li>
                 <li><a href="{{ route('contact') }}" class="menu-link">Contact</a></li>
-                <li style="margin-left:20px; color:var(--primary); font-weight:700; padding:15px 0;">
-                    <i class="fas fa-tags"></i> SPECIAL OFFER
-                </li>
+                <li><a href="{{ route('faqs') }}" class="menu-link">FAQ</a></li>
             </ul>
         </div>
     </div>
@@ -694,6 +694,11 @@
                 const arrow = document.getElementById('category-arrow');
                 const button = document.querySelector('.vertical-menu-btn');
                 
+                // If dropdown doesn't exist (home page), do nothing
+                if (!dropdown) {
+                    return;
+                }
+                
                 if (dropdown.style.display === 'none' || dropdown.style.display === '') {
                     dropdown.style.display = 'block';
                     arrow.style.transform = 'rotate(180deg)';
@@ -715,7 +720,12 @@
                 const dropdown = document.getElementById('category-dropdown');
                 const arrow = document.getElementById('category-arrow');
                 
-                if (button && dropdown && !button.contains(event.target)) {
+                // If dropdown doesn't exist (home page), do nothing
+                if (!dropdown || !button) {
+                    return;
+                }
+                
+                if (!button.contains(event.target)) {
                     dropdown.style.display = 'none';
                     arrow.style.transform = 'rotate(0deg)';
                     button.classList.remove('active');

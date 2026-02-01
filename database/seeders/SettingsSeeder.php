@@ -44,6 +44,8 @@ class SettingsSeeder extends Seeder
             ['key' => 'site_currency', 'value' => 'INR'],
             ['key' => 'site_currency_symbol', 'value' => '₹'],
             ['key' => 'site_footer_bg', 'value' => 'uploads/footer-bg.jpg'],
+            ['key' => 'promo_banner_1', 'value' => 'uploads/footer-bg.jpg'],
+            ['key' => 'promo_banner_2', 'value' => 'uploads/footer-bg.jpg'],
         ];
 
         foreach ($settings as $setting) {
