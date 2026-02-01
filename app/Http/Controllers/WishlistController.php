@@ -14,14 +14,14 @@ class WishlistController extends Controller
 
     public function add(Request $request, $id)
     {
-        $product = \App\Models\Page::findOrFail($id);
+        $product = \App\Models\ProductPage::findOrFail($id);
         $wishlist = session()->get('wishlist', []);
 
         if(!isset($wishlist[$id])) {
             $wishlist[$id] = [
                 "title" => $product->title,
                 "price" => $product->price,
-                "image" => $product->thumbnail,
+                "image" => $product->hero_image, // Changed from thumbnail to hero_image
                 "slug" => $product->slug
             ];
         }

@@ -68,31 +68,5 @@ class AboutPageSeeder extends Seeder
                 'meta_keywords' => 'about etrackgo, gps tracking company, technology solutions, government projects, vehicle tracking'
             ]
         );
-
-        // Create Contact page
-        Page::updateOrCreate(
-            ['slug' => 'contact'],
-            [
-                'title' => 'Contact Us',
-                'content' => [
-                    [
-                        'type' => 'text',
-                        'data' => [
-                            'content' => '<h2>Get in Touch</h2><p>We\'d love to hear from you. Contact us for any inquiries about our GPS tracking solutions and technology services.</p>'
-                        ]
-                    ],
-                    [
-                        'type' => 'text',
-                        'data' => [
-                            'content' => '<h3>Contact Information</h3><p>Reach out to us through any of the following channels:</p>'
-                        ]
-                    ]
-                ],
-                'is_active' => true,
-                'meta_title' => 'Contact Us - Etrackgo',
-                'meta_description' => 'Contact Etrackgo for GPS tracking solutions and technology services. Get in touch with our expert team.',
-                'meta_keywords' => 'contact etrackgo, gps tracking support, technology services contact'
-            ]
-        );
     }
 }

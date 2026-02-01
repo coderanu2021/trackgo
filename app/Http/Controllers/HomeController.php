@@ -50,13 +50,19 @@ class HomeController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
+            'subject' => 'required|string|max:255',
             'message' => 'required|string',
-            'product_id' => 'nullable|exists:pages,id'
         ]);
 
         // Logic to send email or save enquiry could go here.
         // For now, we'll just simulate success.
 
-        return back()->with('success', 'Thank you for your enquiry! We will get back to you shortly.');
+        return back()->with('success', 'Thank you for your message! We will get back to you shortly.');
+    }
+
+    public function contact()
+    {
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        return view('front.contact', compact('settings'));
     }
 }

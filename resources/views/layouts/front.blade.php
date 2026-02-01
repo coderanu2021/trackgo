@@ -48,6 +48,13 @@
         
         .container { max-width: 1400px; margin: 0 auto; padding: 0 15px; }
 
+        /* Hide mobile elements by default */
+        .mobile-menu-btn,
+        .mobile-nav-overlay,
+        .mobile-nav {
+            display: none;
+        }
+
 
         
         /* 2. MIDDLE HEADER (Logo & Search) */
@@ -55,11 +62,29 @@
             padding: 10px 0;
             background: var(--white);
         }
+        /* Base Desktop Styles - Default */
         .hm-flex {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 30px;
+        }
+        
+        .logo {
+            order: 0;
+        }
+        
+        .zenis-search {
+            flex: 1;
+            max-width: 700px;
+            position: relative;
+        }
+        
+        .header-icons {
+            order: 0;
+            display: flex;
+            gap: 25px;
+            align-items: center;
         }
         .logo img { height: 68px; }
         
@@ -154,6 +179,7 @@
             background: var(--nav-bg); /* Use separate variable for navigation */
             color: white;
             position: relative;
+            z-index: 1000; /* Ensure header is above content */
         }
         .hb-flex { display: flex; align-items: stretch; height: 50px; } /* Stretch items to full height */
         
@@ -161,8 +187,8 @@
         .vertical-menu-btn {
             background: var(--primary);
             color: white;
-            width: 219px;
-            padding: 0 20px;
+            width: 280px;
+            padding: 0 1.25rem;
             font-weight: 700;
             text-transform: uppercase;
             display: flex;
@@ -173,10 +199,25 @@
             flex-shrink: 0;
             transition: all 0.3s ease;
             height: 50px;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            z-index: 1001; /* Ensure button is above content but below dropdown */
         }
         
         .vertical-menu-btn:hover {
             background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(243, 112, 33, 0.3);
+        }
+        
+        .vertical-menu-btn .menu-icon {
+            margin-right: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .vertical-menu-btn .menu-text {
+            flex: 1;
+            text-align: left;
         }
         
         /* Simple Category Dropdown */
@@ -184,15 +225,16 @@
             position: absolute;
             top: 100%;
             left: 0;
-            width: 219px;
+            width: 280px;
             background: white;
             border: 1px solid var(--border);
             border-top: none;
             border-radius: 0 0 var(--radius-md) var(--radius-md);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            z-index: 1000;
-            max-height: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 9999; /* Increased z-index to appear above everything */
+            max-height: 500px;
             overflow-y: auto;
+            overflow-x: visible; /* Allow subcategories to show outside */
         }
         
         .cat-dropdown-list {
@@ -200,7 +242,12 @@
             flex-direction: column;
         }
         
-        .cat-dropdown-link {
+        /* Category Item Container - Using exact home page structure */
+        .category-item {
+            position: relative;
+        }
+        
+        .cat-link {
             padding: 0.85rem 1rem;
             border-bottom: 1px solid var(--border);
             font-size: 0.9rem;
@@ -211,28 +258,153 @@
             transition: 0.2s;
         }
         
-        .cat-dropdown-link:last-child { 
+        .cat-link:last-child { 
             border-bottom: none; 
         }
         
-        .cat-dropdown-link:hover {
+        .cat-link:hover {
             background: linear-gradient(135deg, var(--primary-soft), rgba(243, 112, 33, 0.05));
             color: var(--primary);
             padding-left: 1.25rem;
             transform: translateX(2px);
         }
         
-        .cat-dropdown-link i {
+        .cat-link i {
             transition: all 0.2s ease;
         }
         
-        .cat-dropdown-link:hover i {
+        .cat-link:hover i {
             transform: scale(1.1);
+        }
+        
+        /* Category hover effects - Enhanced for better reliability */
+        .category-dropdown .category-item:hover .cat-link {
+            background: #f9f9f9 !important;
+            color: var(--primary) !important;
+            padding-left: 1.25rem !important;
+        }
+        
+        .category-dropdown .category-item:hover .category-arrow {
+            color: var(--primary) !important;
+            transform: rotate(90deg) !important;
+        }
+        
+        .category-dropdown .category-item:hover > .subcategory-dropdown {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Ensure subcategory dropdown stays visible when hovering over it */
+        .category-dropdown .subcategory-dropdown:hover {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Keep parent category highlighted when hovering over subcategories */
+        .category-dropdown .category-item:hover .subcategory-dropdown:hover ~ .cat-link,
+        .category-dropdown .category-item .subcategory-dropdown:hover + .cat-link {
+            background: #f9f9f9 !important;
+            color: var(--primary) !important;
+            padding-left: 1.25rem !important;
+        }
+        
+        /* Enhanced subcategory positioning and visibility */
+        .category-dropdown .subcategory-dropdown {
+            visibility: hidden !important;
+            opacity: 0 !important;
+            transition: all 0.2s ease !important;
+            pointer-events: auto !important;
+        }
+        
+        /* Debug: Ensure hover areas are working */
+        .category-dropdown .category-item {
+            position: relative !important;
+        }
+        
+        .category-dropdown .category-item .cat-link {
+            position: relative !important;
+            z-index: 1 !important;
+        }
+        
+        /* Ensure subcategory dropdown appears above everything */
+        .category-dropdown .subcategory-dropdown {
+            z-index: 10001 !important;
+        }
+        
+        /* Subcategory Dropdown - Exact copy from home page */
+        .subcategory-dropdown {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            width: 200px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 10000; /* Higher than parent dropdown */
+            max-height: 300px;
+            overflow-y: auto;
+            display: none !important; /* Initially hidden */
+        }
+        
+        .subcategory-dropdown .cat-link {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-soft);
+            font-size: 0.85rem;
+        }
+        
+        .subcategory-dropdown .cat-link:hover {
+            background: var(--primary-soft);
+            color: var(--primary);
+            padding-left: 1.25rem;
+        }
+        
+        .subcategory-dropdown .cat-link:last-child {
+            border-bottom: none;
         }
         
         /* Arrow rotation */
         .vertical-menu-btn.active #category-arrow {
             transform: rotate(180deg);
+        }
+        
+        .vertical-menu-btn.active {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(243, 112, 33, 0.3);
+        }
+        
+        /* Category dropdown animation */
+        .category-dropdown {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Subcategory dropdown animation */
+        .subcategory-dropdown-desktop {
+            animation: slideRight 0.3s ease-out;
+        }
+        
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         /* Main Menu */
@@ -262,14 +434,304 @@
         /* Responsive */
         @media (min-width: 993px) {
             .cat-select { display: block; }
+            
+            /* Hide mobile elements on desktop */
+            .mobile-menu-btn,
+            .mobile-nav-overlay,
+            .mobile-nav {
+                display: none !important;
+            }
+            
+            /* Force desktop header layout - Override any mobile styles */
+            .header-middle {
+                padding: 10px 0;
+                background: var(--white);
+            }
+            
+            .hm-flex {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 30px !important;
+                flex-wrap: nowrap !important;
+                grid-template-columns: none !important;
+                padding: 0 !important;
+            }
+            
+            .logo {
+                order: 0 !important;
+                justify-self: unset !important;
+                margin: 0 !important;
+                flex: none !important;
+            }
+            
+            .zenis-search {
+                order: 0 !important;
+                flex: 1 !important;
+                max-width: 700px !important;
+                margin: 0 !important;
+                grid-column: unset !important;
+                width: auto !important;
+                position: relative !important;
+            }
+            
+            .header-icons {
+                order: 0 !important;
+                justify-self: unset !important;
+                margin-left: 0 !important;
+                display: flex !important;
+                gap: 25px !important;
+                align-items: center !important;
+                flex: none !important;
+                grid-column: unset !important;
+            }
+            
+            .header-icons .icon-box {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                font-size: 12px !important;
+                color: var(--text-main) !important;
+                position: relative !important;
+                min-width: auto !important;
+            }
+            
+            .header-icons .icon-wrap {
+                position: relative !important;
+                font-size: 24px !important;
+                margin-bottom: 2px !important;
+                color: var(--secondary) !important;
+            }
+            
+            .header-icons .icon-box span {
+                font-weight: 600 !important;
+                font-size: 12px !important;
+                white-space: nowrap !important;
+            }
         }
         @media (max-width: 992px) {
             .top-bar { display: none; }
-            .header-bottom { display: none; } /* Mobile Menu converts this */
-            .zenis-search { margin: 0 10px; order: 3; width: 100%; max-width: 100%; margin-top: 15px; }
-            .hm-flex { flex-wrap: wrap; }
-            .logo { order: 1; }
-            .header-icons { order: 2; margin-left: auto; }
+            .header-bottom { display: none; } /* Desktop navigation hidden on mobile */
+            
+            /* Mobile-only header layout */
+            .header-middle .hm-flex { 
+                display: grid !important;
+                grid-template-columns: auto auto auto auto 1fr !important;
+                align-items: center !important;
+                gap: 8px !important;
+                flex-wrap: wrap !important;
+                padding: 0 10px !important;
+                justify-content: unset !important;
+            }
+            
+            .header-middle .logo { 
+                order: 5 !important; 
+                justify-self: end !important;
+                flex: none !important;
+            }
+            
+            .header-middle .header-icons { 
+                order: 2 !important; 
+                justify-self: start !important;
+                display: flex !important;
+                gap: 8px !important;
+                grid-column: 2 / 5 !important;
+            }
+            
+            /* Mobile icon styling */
+            .header-middle .header-icons .icon-box {
+                flex-direction: column !important;
+                align-items: center !important;
+                font-size: 10px !important;
+                min-width: auto !important;
+            }
+            
+            .header-middle .header-icons .icon-wrap {
+                font-size: 20px !important;
+                margin-bottom: 2px !important;
+            }
+            
+            .header-middle .header-icons .icon-box span {
+                font-size: 9px !important;
+                font-weight: 500 !important;
+                white-space: nowrap !important;
+            }
+            
+            .header-middle .zenis-search { 
+                order: 6 !important; 
+                grid-column: 1 / -1 !important;
+                width: 100% !important; 
+                max-width: 100% !important; 
+                margin: 15px 0 0 0 !important;
+                flex: none !important;
+            }
+            
+            /* Mobile Menu Button - Only show on mobile, positioned on left */
+            .mobile-menu-btn {
+                display: flex !important;
+                order: 1 !important;
+                justify-self: start !important;
+                background: none !important;
+                border: none !important;
+                font-size: 1.5rem !important;
+                color: var(--secondary) !important;
+                cursor: pointer !important;
+                padding: 0.5rem !important;
+                border-radius: 8px !important;
+                transition: all 0.3s ease !important;
+            }
+            .mobile-menu-btn:hover {
+                background: #f3f4f6;
+                color: var(--primary);
+            }
+            
+            /* Mobile Navigation Overlay - Only show on mobile */
+            .mobile-nav-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 998;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                display: block;
+            }
+            .mobile-nav-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            /* Mobile Navigation Menu - Only show on mobile */
+            .mobile-nav {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 280px;
+                height: 100%;
+                background: white;
+                z-index: 999;
+                transition: all 0.3s ease;
+                box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+                overflow-y: auto;
+                display: block;
+            }
+            .mobile-nav.active {
+                left: 0;
+            }
+            
+            .mobile-nav-header {
+                padding: 1.5rem;
+                border-bottom: 1px solid #e5e7eb;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: var(--primary);
+                color: white;
+            }
+            
+            .mobile-nav-title {
+                font-size: 1.25rem;
+                font-weight: 700;
+                margin: 0;
+                display: flex;
+                align-items: center;
+            }
+            
+            .mobile-nav-logo {
+                height: 35px;
+                max-width: 120px;
+                object-fit: contain;
+            }
+            
+            .mobile-nav-close {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+                cursor: pointer;
+                padding: 0.25rem;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+            .mobile-nav-close:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            .mobile-nav-menu {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+            }
+            
+            .mobile-nav-item {
+                border-bottom: 1px solid #f3f4f6;
+            }
+            
+            .mobile-nav-link {
+                display: block;
+                padding: 1rem 1.5rem;
+                color: #374151;
+                text-decoration: none;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            .mobile-nav-link:hover {
+                background: #f9fafb;
+                color: var(--primary);
+                padding-left: 2rem;
+            }
+            
+            .mobile-nav-link i {
+                width: 20px;
+                text-align: center;
+                color: var(--primary);
+            }
+            
+            /* Categories in Mobile Menu */
+            .mobile-categories {
+                padding: 1rem 0;
+                border-top: 2px solid #f3f4f6;
+                margin-top: 1rem;
+            }
+            
+            .mobile-categories-title {
+                padding: 0 1.5rem 1rem;
+                font-size: 0.875rem;
+                font-weight: 700;
+                color: #6b7280;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            
+            .mobile-category-link {
+                display: block;
+                padding: 0.75rem 1.5rem;
+                color: #6b7280;
+                text-decoration: none;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .mobile-category-link:hover {
+                background: #f9fafb;
+                color: var(--primary);
+                padding-left: 2rem;
+            }
+            
+            .mobile-category-link i {
+                width: 16px;
+                text-align: center;
+                font-size: 0.8rem;
+                color: var(--primary);
+            }
         }
 
         /* Footer - Always Dark */
@@ -556,6 +1018,11 @@
                     <span style="font-weight:600;">My Cart</span>
                 </a>
             </div>
+            
+            <!-- Mobile Menu Button (Hidden on Desktop) -->
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" style="display: none;">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </div>
 
@@ -564,8 +1031,11 @@
         <div class="container hb-flex">
             <!-- Vertical Menu Button with Categories Dropdown -->
             <div class="vertical-menu-btn" onclick="toggleCategoryDropdown()">
-                <span><i class="fas fa-bars" style="margin-right:10px;"></i> All Categories</span>
-                <i class="fas fa-angle-down" id="category-arrow"></i>
+                <div style="display: flex; align-items: center;">
+                    <i class="fas fa-bars menu-icon"></i>
+                    <span class="menu-text">All Categories</span>
+                </div>
+                <i class="fas fa-angle-down" id="category-arrow" style="transition: all 0.3s ease;"></i>
                 
                 <!-- Category Dropdown (Hidden on Home Page) -->
                 @if(!Request::is('/'))
@@ -573,27 +1043,35 @@
                     <div class="cat-dropdown-list">
                         @foreach($categories_global as $category)
                             @if($category->parent_id == null)
-                                <!-- Parent Category -->
-                                <a href="{{ route('category.show', $category->slug) }}" class="cat-dropdown-link">
-                                    @if($category->icon)
-                                        <i class="{{ $category->icon }}" style="margin-right: 8px; color: var(--primary);"></i>
-                                    @endif
-                                    {{ $category->name }}
-                                    @if($category->children->count() > 0)
-                                        <i class="fas fa-angle-right" style="font-size: 0.8rem; color: var(--text-muted);"></i>
-                                    @endif
-                                </a>
-                                <!-- Child Categories -->
-                                @foreach($category->children as $child)
-                                    <a href="{{ route('category.show', $child->slug) }}" class="cat-dropdown-link" style="padding-left: 2rem; font-size: 0.85rem;">
-                                        @if($child->icon)
-                                            <i class="{{ $child->icon }}" style="margin-right: 8px; color: var(--primary);"></i>
-                                        @else
-                                            <i class="fas fa-arrow-right" style="margin-right: 8px; color: var(--text-muted); font-size: 0.7rem;"></i>
+                                <!-- Parent Category - Using exact home page structure -->
+                                <div class="category-item">
+                                    <a href="{{ route('category.show', $category->slug) }}" class="cat-link">
+                                        <span style="display:flex; align-items:center; gap:0.75rem;">
+                                            @if($category->icon) <i class="{{ $category->icon }}" style="width:20px; text-align:center;"></i> @endif
+                                            {{ $category->name }}
+                                        </span>
+                                        @if($category->children->count() > 0)
+                                            <i class="fas fa-chevron-right category-arrow" style="font-size: 0.7rem; color: #ccc; transition: all 0.3s ease;"></i>
                                         @endif
-                                        {{ $child->name }}
                                     </a>
-                                @endforeach
+                                    
+                                    @if($category->children->count() > 0)
+                                        <div class="subcategory-dropdown" style="display: none; visibility: hidden; opacity: 0; position: absolute; left: 100%; top: 0; width: 200px; background: white; border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 10000; max-height: 300px; overflow-y: auto; transition: all 0.2s ease;">
+                                            @foreach($category->children as $child)
+                                                <a href="{{ route('category.show', $child->slug) }}" class="cat-link" style="border-bottom: 1px solid var(--border-soft); font-size: 0.85rem;">
+                                                    <span style="display:flex; align-items:center; gap:0.75rem;">
+                                                        @if($child->icon)
+                                                            <i class="{{ $child->icon }}" style="width:16px; text-align:center; color: var(--primary);"></i>
+                                                        @else
+                                                            <i class="fas fa-arrow-right" style="width:16px; text-align:center; color: var(--text-muted); font-size: 0.6rem;"></i>
+                                                        @endif
+                                                        {{ $child->name }}
+                                                    </span>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             @endif
                         @endforeach
                     </div>
@@ -611,6 +1089,103 @@
                 <li><a href="{{ route('contact') }}" class="menu-link">Contact</a></li>
                 <li><a href="{{ route('faqs') }}" class="menu-link">FAQ</a></li>
             </ul>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" onclick="toggleMobileMenu()"></div>
+    
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-header">
+            <div class="mobile-nav-title">
+                @if(isset($settings['site_logo']))
+                    <img src="{{ asset($settings['site_logo']) }}" alt="{{ $settings['site_name'] ?? 'TrackGo' }}" class="mobile-nav-logo">
+                @else
+                    <span style="font-family:'Outfit'; font-weight:800; font-size:24px; color:white;">
+                        {{ $settings['site_name'] ?? 'TrackGo' }}<span style="color:#fff;">.</span>
+                    </span>
+                @endif
+            </div>
+            <button class="mobile-nav-close" onclick="toggleMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <ul class="mobile-nav-menu">
+            <li class="mobile-nav-item">
+                <a href="{{ url('/') }}" class="mobile-nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{{ route('shop') }}" class="mobile-nav-link">
+                    <i class="fas fa-shopping-bag"></i>
+                    Shop
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{{ route('pricing') }}" class="mobile-nav-link">
+                    <i class="fas fa-tags"></i>
+                    Pricing
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{{ route('blogs.index') }}" class="mobile-nav-link">
+                    <i class="fas fa-blog"></i>
+                    Blog
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{{ route('about') }}" class="mobile-nav-link">
+                    <i class="fas fa-info-circle"></i>
+                    About Us
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{{ route('contact') }}" class="mobile-nav-link">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{{ route('faqs') }}" class="mobile-nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    FAQ
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Categories in Mobile Menu -->
+        <div class="mobile-categories">
+            <div class="mobile-categories-title">Categories</div>
+            @foreach($categories_global->take(5) as $category)
+                @if($category->parent_id == null)
+                    <a href="{{ route('category.show', $category->slug) }}" class="mobile-category-link">
+                        @if($category->icon)
+                            <i class="{{ $category->icon }}"></i>
+                        @else
+                            <i class="fas fa-folder"></i>
+                        @endif
+                        {{ $category->name }}
+                    </a>
+                    <!-- Child Categories -->
+                    @foreach($category->children->take(3) as $child)
+                        <a href="{{ route('category.show', $child->slug) }}" class="mobile-category-link" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                            <i class="fas fa-arrow-right"></i>
+                            {{ $child->name }}
+                        </a>
+                    @endforeach
+                @endif
+            @endforeach
+            
+            @if($categories_global->count() > 5)
+                <a href="{{ route('shop') }}" class="mobile-category-link" style="font-weight: 600; color: var(--primary);">
+                    <i class="fas fa-th-large"></i>
+                    View All Categories
+                </a>
+            @endif
         </div>
     </div>
 
@@ -674,11 +1249,24 @@
     <script>
         function toggleMobileMenu() {
             try {
-                const navLinks = document.querySelector('.nav-links');
-                const overlay = document.querySelector('.mobile-overlay');
-                if (navLinks) navLinks.classList.toggle('active');
-                if (overlay) overlay.classList.toggle('active');
-                document.body.style.overflow = document.body.style.overflow === 'hidden' ? 'auto' : 'hidden';
+                const mobileNav = document.querySelector('.mobile-nav');
+                const overlay = document.querySelector('.mobile-nav-overlay');
+                
+                if (mobileNav && overlay) {
+                    const isActive = mobileNav.classList.contains('active');
+                    
+                    if (isActive) {
+                        // Close menu
+                        mobileNav.classList.remove('active');
+                        overlay.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    } else {
+                        // Open menu
+                        mobileNav.classList.add('active');
+                        overlay.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                }
             } catch (e) {
                 console.warn('Mobile menu toggle error:', e);
             }
@@ -728,6 +1316,28 @@
                 }
             } catch (e) {
                 console.warn('Category dropdown close error:', e);
+            }
+        });
+
+        // Close mobile menu when clicking on menu links
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const mobileNavLinks = document.querySelectorAll('.mobile-nav-link, .mobile-category-link');
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        // Close mobile menu when navigating
+                        const mobileNav = document.querySelector('.mobile-nav');
+                        const overlay = document.querySelector('.mobile-nav-overlay');
+                        
+                        if (mobileNav && overlay) {
+                            mobileNav.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = 'auto';
+                        }
+                    });
+                });
+            } catch (e) {
+                console.warn('Mobile menu link handler error:', e);
             }
         });
 
@@ -786,6 +1396,77 @@
                         $(this).find('#category-arrow').removeClass('rotated');
                     }
                 );
+
+                // Enhanced subcategory hover functionality for header dropdown
+                $('.category-dropdown .category-item').each(function() {
+                    const $categoryItem = $(this);
+                    const $subcategoryDropdown = $categoryItem.find('.subcategory-dropdown');
+                    
+                    if ($subcategoryDropdown.length > 0) {
+                        let showTimeout, hideTimeout;
+                        
+                        // Show subcategory on hover with slight delay
+                        $categoryItem.on('mouseenter', function() {
+                            clearTimeout(hideTimeout);
+                            showTimeout = setTimeout(function() {
+                                $subcategoryDropdown.css({
+                                    'display': 'block',
+                                    'visibility': 'visible',
+                                    'opacity': '1'
+                                });
+                            }, 100);
+                        });
+                        
+                        // Hide subcategory when leaving parent (with delay to allow moving to subcategory)
+                        $categoryItem.on('mouseleave', function(e) {
+                            clearTimeout(showTimeout);
+                            const relatedTarget = e.relatedTarget;
+                            
+                            // Don't hide if moving to subcategory
+                            if (!$subcategoryDropdown.is(relatedTarget) && !$subcategoryDropdown.has(relatedTarget).length) {
+                                hideTimeout = setTimeout(function() {
+                                    $subcategoryDropdown.css({
+                                        'display': 'none',
+                                        'visibility': 'hidden',
+                                        'opacity': '0'
+                                    });
+                                }, 200);
+                            }
+                        });
+                        
+                        // Keep subcategory visible when hovering over it
+                        $subcategoryDropdown.on('mouseenter', function() {
+                            clearTimeout(hideTimeout);
+                            $(this).css({
+                                'display': 'block',
+                                'visibility': 'visible',
+                                'opacity': '1'
+                            });
+                        });
+                        
+                        // Hide subcategory when leaving it
+                        $subcategoryDropdown.on('mouseleave', function() {
+                            hideTimeout = setTimeout(function() {
+                                $subcategoryDropdown.css({
+                                    'display': 'none',
+                                    'visibility': 'hidden',
+                                    'opacity': '0'
+                                });
+                            }, 200);
+                        });
+                    }
+                });
+
+                // Force refresh subcategory positioning on window resize
+                $(window).on('resize', function() {
+                    $('.category-dropdown .subcategory-dropdown').each(function() {
+                        $(this).css({
+                            'display': 'none',
+                            'visibility': 'hidden',
+                            'opacity': '0'
+                        });
+                    });
+                });
 
             } catch (error) {
                 console.warn('Script initialization error:', error);

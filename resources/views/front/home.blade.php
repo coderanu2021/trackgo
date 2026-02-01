@@ -22,6 +22,39 @@
     @media (max-width: 992px) {
         .hero-grid { grid-template-columns: 1fr; }
         .category-sidebar { display: none; }
+        
+        /* Mobile hero slider adjustments */
+        .hero-slider-container {
+            margin-top: 0;
+        }
+        
+        .hero-slide img {
+            height: 250px; /* Smaller height for mobile */
+        }
+        
+        /* Mobile promo banners */
+        .hero-banners {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .promo-banner {
+            height: 100px; /* Smaller promo banners */
+            padding: 0.75rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-slide img {
+            height: 200px; /* Even smaller on phones */
+        }
+        
+        .promo-banner {
+            height: 80px;
+            padding: 0.5rem;
+        }
     }
 
     /* Category Sidebar */
@@ -175,7 +208,51 @@
         .features-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 640px) {
-        .features-grid { grid-template-columns: 1fr; gap: 1rem; }
+        .features-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+        
+        .feature-item {
+            padding: 0.75rem;
+            text-align: center;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .feature-icon {
+            font-size: 1.75rem; /* Smaller icons */
+            width: 45px;
+            height: 45px;
+        }
+        
+        .feature-item div:last-child div:first-child {
+            font-size: 0.9rem; /* Smaller feature titles */
+        }
+        
+        .feature-item div:last-child div:last-child {
+            font-size: 0.8rem; /* Smaller feature descriptions */
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .features-grid { gap: 0.5rem; }
+        
+        .feature-item {
+            padding: 0.6rem;
+            gap: 0.6rem;
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .feature-item div:last-child div:first-child {
+            font-size: 0.85rem;
+        }
+        
+        .feature-item div:last-child div:last-child {
+            font-size: 0.75rem;
+        }
     }
     .feature-item {
         display: flex;
@@ -278,6 +355,35 @@
     .view-all-btn:hover { 
         color: var(--primary); 
     }
+    
+    /* Mobile Section Headers */
+    @media (max-width: 768px) {
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title h2 {
+            font-size: 1.2rem; /* Smaller heading on mobile */
+        }
+        
+        .view-all-btn {
+            font-size: 0.75rem;
+            align-self: flex-end;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .section-title h2 {
+            font-size: 1.1rem; /* Even smaller on very small screens */
+        }
+        
+        .view-all-btn {
+            font-size: 0.7rem;
+        }
+    }
 
     /* Product Card - Zenis Premium (Existing) */
     .product-card {
@@ -307,6 +413,7 @@
         max-width: 90%;
         max-height: 90%;
         transition: 0.5s;
+        object-fit: contain;
     }
     .product-card:hover .p-img-container img {
         transform: scale(1.08);
@@ -336,6 +443,8 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         font-size: 0.9rem;
         transition: 0.2s;
+        border: none;
+        cursor: pointer;
     }
     .p-action-btn:hover {
         background: var(--primary);
@@ -391,10 +500,122 @@
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 1.5rem;
     }
+    
+    /* Mobile Responsive Improvements */
     @media (max-width: 768px) {
         .product-grid-compact {
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .product-card {
+            border-radius: 8px;
+        }
+        
+        .p-img-container {
+            height: 140px; /* Smaller height for mobile */
+        }
+        
+        .p-img-container img {
+            max-width: 85%;
+            max-height: 85%;
+        }
+        
+        .p-details {
+            padding: 0.75rem; /* Reduced padding */
+        }
+        
+        .p-title {
+            font-size: 0.85rem; /* Smaller font size */
+            white-space: normal; /* Allow text wrapping on mobile */
+            overflow: visible;
+            text-overflow: unset;
+            line-height: 1.2;
+            height: 2.4em; /* Fixed height for 2 lines */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 0.4rem;
+        }
+        
+        .p-cat {
+            font-size: 0.7rem; /* Smaller category font */
+            margin-bottom: 0.25rem;
+        }
+        
+        .p-price {
+            font-size: 0.9rem; /* Smaller price font */
+        }
+        
+        /* Hide hover actions on mobile, show bottom actions instead */
+        .p-actions {
+            display: none;
+        }
+        
+        .product-actions-home {
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .btn-cart-icon,
+        .btn-wishlist-icon,
+        .btn-view-icon {
+            width: 30px; /* Smaller buttons */
+            height: 30px;
+            font-size: 0.75rem;
+        }
+        
+        .p-footer {
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: stretch;
+            margin-top: 0.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .product-grid-compact {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .product-card {
+            max-width: 100%;
+        }
+        
+        .p-img-container {
+            height: 120px; /* Even smaller for very small screens */
+        }
+        
+        .p-details {
+            padding: 0.6rem;
+        }
+        
+        .p-title {
+            font-size: 0.8rem;
+            height: 2.2em;
+        }
+        
+        .p-cat {
+            font-size: 0.65rem;
+        }
+        
+        .p-price {
+            font-size: 0.85rem;
+        }
+        
+        .btn-cart-icon,
+        .btn-wishlist-icon,
+        .btn-view-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 0.7rem;
+        }
+        
+        .product-actions-home {
+            gap: 0.4rem;
         }
     }
     
@@ -662,7 +883,7 @@
     
     @media (max-width: 768px) {
         .brands-grid {
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(2, 1fr) !important;
             gap: 1rem;
         }
         
@@ -670,17 +891,36 @@
             height: 100px;
             padding: 1.5rem;
         }
+        
+        /* Partners section mobile heading */
+        .section-header h2 {
+            font-size: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .section-header {
+            margin-bottom: 2rem !important;
+        }
     }
     
     @media (max-width: 480px) {
         .brands-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem;
         }
         
         .brand-item {
             height: 80px;
             padding: 1rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.3rem !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .section-header {
+            margin-bottom: 1.5rem !important;
         }
     }
 </style>
@@ -713,9 +953,9 @@
     
                             
                             <div class="p-actions">
-                                <a href="#" class="p-action-btn" title="Add to Wishlist">
+                                <button onclick="addToWishlistAjax({{ $product->id }})" class="p-action-btn" title="Add to Wishlist">
                                     <i class="far fa-heart"></i>
-                                </a>
+                                </button>
                                 <a href="{{ route('products.show', $product->slug) }}" class="p-action-btn" title="Quick View">
                                     <i class="far fa-eye"></i>
                                 </a>
@@ -774,7 +1014,7 @@
         </a>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2.5rem;">
+    <div class="blog-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2.5rem;">
         @forelse($blogs as $blog)
         <article style="background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s;" 
                  onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.05)';"
@@ -832,6 +1072,63 @@
     @keyframes fadeEffect {
         from {opacity: 0.4;} 
         to {opacity: 1;}
+    }
+    
+    /* Mobile Blog Grid */
+    @media (max-width: 768px) {
+        .blog-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+        }
+        
+        /* Mobile container padding */
+        .container {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        
+        /* Mobile section padding */
+        section {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        .features-section {
+            padding: 1.5rem 0; /* More compact */
+        }
+        
+        /* Mobile hero section */
+        .hero-section {
+            padding: 1rem 0;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .blog-grid {
+            gap: 1rem !important;
+        }
+        
+        .container {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        
+        .features-section {
+            padding: 1rem 0;
+        }
+        
+        .hero-section {
+            padding: 0.75rem 0;
+        }
+        
+        /* Compact section spacing */
+        section {
+            padding-bottom: 2rem !important;
+        }
+        
+        section:last-child {
+            padding-bottom: 1rem !important;
+        }
     }
 </style>
 

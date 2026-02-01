@@ -20,6 +20,7 @@
         border-radius: 0 0 50px 50px;
         position: relative;
         overflow: hidden;
+        z-index: 1; /* Lower z-index to stay behind dropdown */
     }
     .shop-hero::before {
         content: '';
@@ -48,7 +49,7 @@
     /* Layout */
     .shop-layout {
         display: grid;
-        grid-template-columns: 300px 1fr;
+        grid-template-columns: 1fr;
         gap: 3rem;
         align-items: start;
     }
@@ -59,15 +60,20 @@
         .shop-hero h1 { font-size: 2.5rem; }
     }
 
-    /* Sidebar Filters */
+    /* Sidebar Filters - Hidden on Desktop, Mobile Only */
     .filter-sidebar {
         background: white;
         padding: 2rem;
         border-radius: 20px;
         border: 1px solid #e2e8f0;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        position: sticky;
-        top: 120px;
+        display: none; /* Hidden by default on desktop */
+    }
+    
+    @media (max-width: 992px) {
+        .filter-sidebar {
+            display: block; /* Show on mobile */
+        }
     }
 
     .filter-title {
@@ -389,6 +395,7 @@
     @media (max-width: 992px) {
         .btn-filter-mobile { display: flex !important; }
         .filter-sidebar {
+            display: block; /* Show on mobile */
             position: fixed;
             top: 0;
             left: -100%;

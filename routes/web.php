@@ -126,7 +126,7 @@ Route::get('shop', [\App\Http\Controllers\ProductController::class, 'shop'])->na
 Route::get('category/{slug}', [CategoryController::class, 'show'])->name('category.show');
 Route::get('products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 Route::get('about', [PageBuilderController::class, 'showBySlug'])->name('about');
-Route::get('contact', [PageBuilderController::class, 'showBySlug'])->name('contact');
+Route::get('contact', [\App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
 Route::post('contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 Route::get('pages/{slug}', [PageBuilderController::class, 'show'])->name('pages.show');
 Route::get('blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
