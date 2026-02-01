@@ -605,6 +605,7 @@
             <ul class="main-menu">
                 <li><a href="{{ url('/') }}" class="menu-link">Home</a></li>
                 <li><a href="{{ route('shop') }}" class="menu-link">Shop</a></li>
+                <li><a href="{{ route('pricing') }}" class="menu-link">Pricing</a></li>
                 <li><a href="{{ route('blogs.index') }}" class="menu-link">Blog</a></li>
                 <li><a href="{{ route('about') }}" class="menu-link">About Us</a></li>
                 <li><a href="{{ route('contact') }}" class="menu-link">Contact</a></li>
@@ -648,16 +649,11 @@
                     </ul>
                 </div>
                 <div>
-                    <div class="footer-title">Company</div>
+                    <div class="footer-title">Categories</div>
                     <ul class="footer-links">
-                        @php $companyLinks = json_decode($settings['footer_company_links'] ?? '[]', true); @endphp
-                        @forelse($companyLinks as $link)
-                            <li><a href="{{ $link['url'] }}">{{ $link['label'] }}</a></li>
-                        @empty
-                            <li><a href="#">Career Opportunities</a></li>
-                            <li><a href="#">Privacy Framework</a></li>
-                            <li><a href="#">Legal Terms</a></li>
-                        @endforelse
+                        @foreach($categories_global->take(4) as $category)
+                            <li><a href="{{ route('category.show', $category->slug) }}">{{ $category->name }}</a></li>
+                        @endforeach
                     </ul>
                 </div>
                 <div>

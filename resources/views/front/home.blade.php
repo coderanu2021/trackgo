@@ -134,7 +134,7 @@
     .hero-slide img {
         width: 100%;
         height: 420px;
-        object-fit: cover;
+        object-fit: fill; /* Changed from cover to fill to stretch image */
     }
 
     /* Right Banners */
@@ -517,7 +517,7 @@
                 @if($banner->link) <a href="{{ $banner->link }}" style="display:block; height:100%;"> @endif
                 
                 @if($banner->image)
-                    <img src="{{ $banner->image }}" alt="{{ $banner->title ?? 'Banner' }}" style="width: 100%; height: 420px; object-fit: cover;">
+                    <img src="{{ $banner->image }}" alt="{{ $banner->title ?? 'Banner' }}" style="width: 100%; height: 420px; object-fit: fill;">
                 @else
                     <div style="width: 100%; height: 420px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); display: flex; align-items: center; justify-content: center; color: white;">
                         <div style="text-align: center; padding: 2rem;">
