@@ -9,6 +9,7 @@ class Review extends Model
     protected $fillable = [
         'user_id',
         'page_id',
+        'product_page_id',
         'name',
         'email',
         'rating',
@@ -30,5 +31,10 @@ class Review extends Model
     public function product()
     {
         return $this->belongsTo(Page::class, 'page_id');
+    }
+
+    public function productPage()
+    {
+        return $this->belongsTo(ProductPage::class, 'product_page_id');
     }
 }

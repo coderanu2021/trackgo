@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
             PlanSeeder::class,
             FaqSeeder::class,
             BannerSeeder::class,
-            GeneralPageSeeder::class,
+            AboutPageSeeder::class, // Proper about page seeder
+            // GeneralPageSeeder::class, // Removed to prevent products going to pages table
             DummyLayoutSeeder::class,
             PaymentGatewaySeeder::class, // Payment gateways
         ]);

@@ -216,13 +216,13 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         border-bottom: 2px solid var(--border);
-        padding-bottom: 10px;
+        padding-bottom: 8px;
     }
     .section-title { margin: 0; }
     .section-title h2 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         font-weight: 800;
         color: #1a1a1a; /* Force black color for headings */
         margin: 0;
@@ -232,7 +232,7 @@
     .section-title h2::after {
         content: '';
         position: absolute;
-        bottom: -12px; /* connects to border-bottom of container */
+        bottom: -10px; /* connects to border-bottom of container */
         left: 0;
         width: 100%;
         height: 2px;
