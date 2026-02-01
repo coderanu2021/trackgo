@@ -607,6 +607,7 @@
                                     <i class="fas fa-image" style="font-size: 2rem;"></i>
                                 </div>
                             @endif
+    
                             
                             <div class="p-actions">
                                 <a href="#" class="p-action-btn" title="Add to Wishlist">

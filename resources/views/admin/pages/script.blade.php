@@ -289,6 +289,48 @@
                 }
             }
         };
+
+        // Banner image upload function
+        window.uploadBannerImage = function(input) {
+            if (input.files && input.files[0]) {
+                const formData = new FormData();
+                formData.append('image', input.files[0]);
+                formData.append('_token', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '');
+
+                // Show loading state
+                const uploadBtn = input.parentElement.querySelector('button');
+                const originalText = uploadBtn.innerHTML;
+                uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+                uploadBtn.disabled = true;
+
+                fetch('{{ route("admin.pages.upload") }}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        document.getElementById('hero_image').value = data.url;
+                        // Show success message
+                        uploadBtn.innerHTML = '<i class="fas fa-check"></i> Uploaded!';
+                        uploadBtn.style.background = '#10b981';
+                        setTimeout(() => {
+                            uploadBtn.innerHTML = originalText;
+                            uploadBtn.style.background = '';
+                            uploadBtn.disabled = false;
+                        }, 2000);
+                    } else {
+                        throw new Error(data.error || 'Upload failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Upload error:', error);
+                    alert('Upload failed: ' + error.message);
+                    uploadBtn.innerHTML = originalText;
+                    uploadBtn.disabled = false;
+                });
+            }
+        };
     })();
 </script>
 

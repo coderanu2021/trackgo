@@ -105,8 +105,26 @@
             </div>
 
             <div class="form-group mb-0">
-                <label>Hero Image URL</label>
-                <input type="url" name="hero_image" class="form-control" value="{{ $page->hero_image }}">
+                <label>Banner Image</label>
+                <div style="display: flex; gap: 1rem; align-items: end;">
+                    <div style="flex: 1;">
+                        <input type="url" name="hero_image" id="hero_image" class="form-control" value="{{ $page->thumbnail }}" placeholder="https://... or upload below">
+                    </div>
+                    <div>
+                        <input type="file" name="banner_upload" id="banner_upload" accept="image/*" style="display: none;" onchange="uploadBannerImage(this)">
+                        <button type="button" onclick="document.getElementById('banner_upload').click()" class="btn btn-secondary" style="white-space: nowrap;">
+                            <i class="fas fa-upload"></i> Upload
+                        </button>
+                    </div>
+                </div>
+                <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.5rem; display: block;">
+                    Upload an image or enter a URL. Recommended size: 1200x250px for best results.
+                </small>
+                @if($page->thumbnail)
+                    <div style="margin-top: 1rem;">
+                        <img src="{{ $page->thumbnail }}" alt="Current banner" style="max-width: 200px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
+                    </div>
+                @endif
             </div>
         </div>
     </div>

@@ -4,33 +4,37 @@
 
 @push('styles')
 <style>
-    /* Hero Section */
-    .hero {
+    /* Banner Section - 250px height */
+    .page-banner {
         background-size: cover;
         background-position: center;
-        padding: 10rem 0;
+        height: 250px;
         position: relative;
         color: white;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .hero::before {
+    .page-banner::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0,0,0,0.4);
     }
-    .hero-content {
+    .banner-content {
         position: relative;
         z-index: 2;
+        text-align: center;
     }
-    .hero-content h1 {
-        font-size: 4rem;
+    .banner-content h1 {
+        font-size: 2.5rem;
         font-weight: 800;
-        margin-bottom: 1.5rem;
-        letter-spacing: -0.04em;
+        margin: 0;
+        letter-spacing: -0.02em;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     /* Hero Stats Block */
@@ -300,6 +304,12 @@
     .tab-pane.active { display: block; }
 
     @media (max-width: 768px) {
+        .page-banner {
+            height: 200px;
+        }
+        .banner-content h1 {
+            font-size: 2rem;
+        }
         .hero-stats, .split-container {
             grid-template-columns: 1fr;
             flex-direction: column !important;
@@ -326,14 +336,14 @@
 
 @section('content')
     @if($page->thumbnail)
-    <div class="hero" style="background-image: url('{{ $page->thumbnail }}');">
-        <div class="hero-content container">
+    <div class="page-banner" style="background-image: url('{{ $page->thumbnail }}');">
+        <div class="banner-content">
             <h1>{{ $page->title }}</h1>
         </div>
     </div>
     @else
-    <div class="hero" style="background: linear-gradient(135deg, #4f46e5 0%, #0f172a 100%);">
-        <div class="hero-content container">
+    <div class="page-banner" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+        <div class="banner-content">
             <h1>{{ $page->title }}</h1>
         </div>
     </div>
