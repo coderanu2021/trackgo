@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Page;
+use App\Models\ProductPage;
 use App\Models\Category;
 use Illuminate\Support\Str;
 
@@ -191,23 +192,16 @@ class GpsProductSeeder extends Seeder
                 ]
             ];
 
-            Page::updateOrCreate(
+            ProductPage::updateOrCreate(
                 ['slug' => Str::slug($productData['title'])],
                 [
                     'category_id' => $gpsCategory->id,
                     'title' => $productData['title'],
                     'price' => $productData['price'],
-                    'discount' => $productData['discount'],
                     'stock' => $productData['stock'],
-                    'thumbnail' => $productData['thumbnail'],
-                    'gallery' => [
-                        $productData['thumbnail'],
-                        'https://images.unsplash.com/photo-1551808525-51a94da548ce?w=800',
-                        'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=800',
-                        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800'
-                    ],
+                    'hero_image' => $productData['thumbnail'],
                     'content' => $content,
-                    'is_active' => true,
+                    'is_published' => true,
                     'meta_title' => $productData['title'] . ' - RK Enterprises GPS Solutions',
                     'meta_description' => $productData['description'],
                     'meta_keywords' => 'GPS, tracking, RK Enterprises, vehicle tracker, asset tracking, fleet management'

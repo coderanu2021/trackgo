@@ -2,11 +2,11 @@
 <div class="product-card" data-aos="fade-up">
     <div class="product-img-wrapper">
         <a href="{{ route('products.show', $product->slug) }}">
-            @if($product->thumbnail)
-                @if(Str::startsWith($product->thumbnail, ['http://', 'https://']))
-                    <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="product-image" loading="lazy">
+            @if($product->hero_image)
+                @if(Str::startsWith($product->hero_image, ['http://', 'https://']))
+                    <img src="{{ $product->hero_image }}" alt="{{ $product->title }}" class="product-image" loading="lazy">
                 @else
-                    <img src="{{ asset($product->thumbnail) }}" alt="{{ $product->title }}" class="product-image" loading="lazy">
+                    <img src="{{ asset($product->hero_image) }}" alt="{{ $product->title }}" class="product-image" loading="lazy">
                 @endif
             @else
                 <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display: flex; align-items: center; justify-content: center; color: #94a3b8;">

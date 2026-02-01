@@ -262,13 +262,10 @@
         <div class="product-grid">
             <!-- Image Gallery -->
             <div class="gallery-container">
-                <img id="main-view" src="{{ $page->thumbnail ?? ($page->gallery[0] ?? '/placeholder.png') }}" class="main-image" alt="{{ $page->title }}">
-                @if(!empty($page->gallery))
+                <img id="main-view" src="{{ $page->hero_image ?? '/placeholder.png' }}" class="main-image" alt="{{ $page->title }}">
+                @if($page->hero_image)
                     <div class="thumbnails">
-                        <img src="{{ $page->thumbnail }}" class="thumb active" onclick="updatePreview(this.src, this)">
-                        @foreach($page->gallery as $img)
-                            <img src="{{ $img }}" class="thumb" onclick="updatePreview(this.src, this)">
-                        @endforeach
+                        <img src="{{ $page->hero_image }}" class="thumb active" onclick="updatePreview(this.src, this)">
                     </div>
                 @endif
             </div>
