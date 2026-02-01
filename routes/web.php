@@ -125,8 +125,8 @@ Route::get('/home-simple', function() {
 Route::get('shop', [\App\Http\Controllers\ProductController::class, 'shop'])->name('shop');
 Route::get('category/{slug}', [CategoryController::class, 'show'])->name('category.show');
 Route::get('products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
-Route::view('about', 'front.about')->name('about');
-Route::view('contact', 'front.contact')->name('contact');
+Route::get('about', [PageBuilderController::class, 'showBySlug'])->name('about');
+Route::get('contact', [PageBuilderController::class, 'showBySlug'])->name('contact');
 Route::post('contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 Route::get('pages/{slug}', [PageBuilderController::class, 'show'])->name('pages.show');
 Route::get('blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');

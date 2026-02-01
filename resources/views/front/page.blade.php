@@ -325,8 +325,8 @@
 @endpush
 
 @section('content')
-    @if($page->hero_image)
-    <div class="hero" style="background-image: url('{{ $page->hero_image }}');">
+    @if($page->thumbnail)
+    <div class="hero" style="background-image: url('{{ $page->thumbnail }}');">
         <div class="hero-content container">
             <h1>{{ $page->title }}</h1>
         </div>

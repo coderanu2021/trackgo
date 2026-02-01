@@ -116,7 +116,7 @@
         content: '';
         position: absolute;
         inset: 0;
-        background: rgba(0,0,0,0.3);
+        background: rgba(0,0,0,0.5);
     }
     .promo-content {
         position: relative;
@@ -504,17 +504,17 @@
 
         <!-- Right Banners -->
         <div class="hero-banners" style="margin-top: 15px;">
-            <div class="promo-banner" style="background-color: #1a1a1a; background-image: url('{{ asset('uploads/banners/promo1.jpg') }}');">
+            <div class="promo-banner" style="background-image: url('{{ asset('uploads/footer-bg.jpg') }}'); background-size: cover; background-position: center;">
                 <div class="promo-content">
                     <div style="color: #ffc107; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">New Arrival</div>
-                    <h3 style="font-size: 1.5rem; line-height: 1.2; margin-bottom: 1rem;">Galaxy S24 Ultra</h3>
+                    <h3 style="font-size: 1.5rem; line-height: 1.2; margin-bottom: 1rem; color: white;">Galaxy S24 Ultra</h3>
                     <a href="{{ route('shop') }}" style="color: white; text-decoration: underline; font-size: 0.9rem;">Shop Now</a>
                 </div>
             </div>
-            <div class="promo-banner" style="background-color: #FF6B00; background-image: url('{{ asset('uploads/banners/promo2.jpg') }}');">
+            <div class="promo-banner" style="background-image: url('{{ asset('uploads/footer-bg.jpg') }}'); background-size: cover; background-position: center;">
                 <div class="promo-content">
-                    <div style="color: rgba(255,255,255,0.8); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">Best Seller</div>
-                    <h3 style="font-size: 1.5rem; line-height: 1.2; margin-bottom: 1rem;">Headphone Pro</h3>
+                    <div style="color: rgba(255,255,255,0.9); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">Best Seller</div>
+                    <h3 style="font-size: 1.5rem; line-height: 1.2; margin-bottom: 1rem; color: white;">Headphone Pro</h3>
                     <a href="{{ route('shop') }}" style="color: white; text-decoration: underline; font-size: 0.9rem;">Shop Now</a>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductPage;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -11,14 +11,30 @@ class PageBuilderController extends Controller
     // Frontend: Show general page (About, Contact, etc.)
     public function show($slug)
     {
-        $page = ProductPage::where('slug', $slug)->where('is_published', true)->firstOrFail();
+        $page = Page::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        return view('front.page', compact('page'));
+    }
+
+    // Frontend: Show page by route name (for about, contact, etc.)
+    public function showBySlug(Request $request)
+    {
+        $routeName = $request->route()->getName();
+        $slug = $routeName; // Use route name as slug (about, contact, etc.)
+        
+        $page = Page::where('slug', $slug)->where('is_active', true)->first();
+        
+        if (!$page) {
+            // If no dynamic page exists, fall back to static view
+            return view('front.' . $slug);
+        }
+        
         return view('front.page', compact('page'));
     }
 
     // Admin: List all general pages
     public function index()
     {
-        $pages = ProductPage::latest()->get();
+        $pages = Page::where('is_enquiry', false)->latest()->get();
         return view('admin.pages.index', compact('pages'));
     }
 
@@ -33,19 +49,20 @@ class PageBuilderController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:product_pages',
+            'slug' => 'nullable|string|max:255|unique:pages',
             'hero_image' => 'nullable|url',
             'blocks' => 'required|json',
         ]);
 
         $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->title);
 
-        ProductPage::create([
+        Page::create([
             'title' => $request->title,
             'slug' => $slug,
-            'hero_image' => $request->hero_image,
+            'thumbnail' => $request->hero_image,
             'content' => json_decode($request->blocks, true),
-            'is_published' => true,
+            'is_active' => true,
+            'is_enquiry' => false,
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
@@ -57,18 +74,18 @@ class PageBuilderController extends Controller
     // Admin: Edit general page form
     public function edit($id)
     {
-        $page = ProductPage::findOrFail($id);
+        $page = Page::findOrFail($id);
         return view('admin.pages.edit', compact('page'));
     }
 
     // Admin: Update general page
     public function update(Request $request, $id)
     {
-        $page = ProductPage::findOrFail($id);
+        $page = Page::findOrFail($id);
 
         $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:product_pages,slug,' . $id,
+            'slug' => 'nullable|string|max:255|unique:pages,slug,' . $id,
             'hero_image' => 'nullable|url',
             'blocks' => 'required|json',
         ]);
@@ -78,7 +95,7 @@ class PageBuilderController extends Controller
         $page->update([
             'title' => $request->title,
             'slug' => $slug,
-            'hero_image' => $request->hero_image,
+            'thumbnail' => $request->hero_image,
             'content' => json_decode($request->blocks, true),
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
@@ -91,7 +108,7 @@ class PageBuilderController extends Controller
     // Admin: Delete general page
     public function destroy($id)
     {
-        $page = ProductPage::findOrFail($id);
+        $page = Page::findOrFail($id);
         $page->delete();
         return redirect()->route('admin.pages.index')->with('success', 'Page deleted successfully!');
     }
