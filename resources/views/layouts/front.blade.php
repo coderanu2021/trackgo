@@ -1475,10 +1475,12 @@
 
         // Global AJAX Add to Cart Function
         function addToCartAjax(productId) {
+            console.log('Adding product to cart:', productId);
+            
             // Show loading state
             const button = event.target.closest('button') || event.target.closest('a');
             const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             button.disabled = true;
 
             // AJAX request to add to cart
@@ -1494,30 +1496,32 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update cart count in header
-                    const cartBadge = document.querySelector('.icon-badge');
-                    if (cartBadge) {
-                        cartBadge.textContent = data.cart_count;
-                    }
+                    // Update cart count in header - find the cart badge specifically
+                    const cartBadges = document.querySelectorAll('.icon-badge');
+                    cartBadges.forEach(badge => {
+                        if (badge.closest('.icon-box').querySelector('.fa-shopping-bag')) {
+                            badge.textContent = data.cart_count;
+                        }
+                    });
 
                     // Show success message
                     showNotification('success', data.message);
 
                     // Reset button
-                    button.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    button.innerHTML = '<i class="fas fa-check"></i>';
                     button.style.background = 'var(--success)';
                     
                     setTimeout(() => {
                         button.innerHTML = originalText;
                         button.style.background = '';
                         button.disabled = false;
-                    }, 2000);
+                    }, 1500);
                 } else {
                     throw new Error(data.message || 'Failed to add to cart');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Cart AJAX Error:', error);
                 showNotification('error', 'Failed to add product to cart. Please try again.');
                 
                 // Reset button

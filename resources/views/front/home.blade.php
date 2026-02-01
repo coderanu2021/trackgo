@@ -19,6 +19,21 @@
         .hero-grid { grid-template-columns: 240px 1fr; }
         .hero-banners { display: none; } /* Hide right banners on medium screens */
     }
+    
+    /* Tablet view - show banners below main content */
+    @media (max-width: 1200px) and (min-width: 769px) {
+        .hero-banners {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            grid-column: 1 / -1; /* Span full width */
+        }
+        .promo-banner {
+            height: 160px;
+            padding: 1rem;
+        }
+    }
     @media (max-width: 992px) {
         .hero-grid { grid-template-columns: 1fr; }
         .category-sidebar { display: none; }
@@ -30,6 +45,26 @@
         
         .hero-slide img {
             height: 250px; /* Smaller height for mobile */
+            object-fit: scale-down !important; /* Scale down to fit, maintain aspect ratio */
+            object-position: center !important;
+            background: #f8f9fa; /* Light background */
+            width: 100% !important;
+        }
+        
+        /* Banner container responsive */
+        .hero-slider-container {
+            height: 250px !important;
+            background: #f8f9fa; /* Match image background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-slide {
+            height: 250px !important;
+            background: #f8f9fa; /* Match image background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         /* Mobile promo banners */
@@ -41,19 +76,47 @@
         }
         
         .promo-banner {
-            height: 100px; /* Smaller promo banners */
+            height: 140px; /* Increased from 100px */
             padding: 0.75rem;
+            border-radius: 8px;
         }
     }
     
     @media (max-width: 480px) {
         .hero-slide img {
             height: 200px; /* Even smaller on phones */
+            object-fit: scale-down !important; /* Scale down to fit, maintain aspect ratio */
+            object-position: center !important;
+            background: #f8f9fa; /* Light background */
+            width: 100% !important;
+        }
+        
+        /* Banner container responsive for phones */
+        .hero-slider-container {
+            height: 200px !important;
+            background: #f8f9fa; /* Match image background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-slide {
+            height: 200px !important;
+            background: #f8f9fa; /* Match image background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Single column promo banners on small phones */
+        .hero-banners {
+            grid-template-columns: 1fr !important;
+            gap: 1rem;
         }
         
         .promo-banner {
-            height: 80px;
+            height: 120px; /* Increased from 80px */
             padding: 0.5rem;
+            border-radius: 8px;
         }
     }
 
@@ -157,12 +220,35 @@
         overflow: hidden;
         box-shadow: var(--shadow-sm);
         position: relative;
+        height: 420px;
     }
     .hero-slide {
         display: none;
         width: 100%;
         height: 100%;
         animation: fade 1s;
+    }
+    .hero-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top; /* Show top portion of image */
+        display: block;
+    }
+    
+    /* Alternative mobile-first approach */
+    @media (max-width: 992px) {
+        .hero-slide img {
+            object-fit: contain !important; /* Show full image on mobile */
+            background: #f8f9fa;
+        }
+        .hero-slider-container {
+            background: #f8f9fa;
+        }
+        .hero-slide {
+            background: #f8f9fa;
+        }
+    }
     }
     .hero-slide img {
         width: 100%;
@@ -188,6 +274,7 @@
         background-size: cover;
         background-position: center;
         box-shadow: var(--shadow-sm);
+        min-height: 180px; /* Ensure minimum height on desktop */
     }
     .promo-content {
         position: relative;
@@ -738,7 +825,7 @@
                 @if($banner->link) <a href="{{ $banner->link }}" style="display:block; height:100%;"> @endif
                 
                 @if($banner->image)
-                    <img src="{{ $banner->image }}" alt="{{ $banner->title ?? 'Banner' }}" style="width: 100%; height: 420px; object-fit: fill;">
+                    <img src="{{ $banner->image }}" alt="{{ $banner->title ?? 'Banner' }}" style="width: 100%; height: 420px; object-fit: cover; object-position: center;">
                 @else
                     <div style="width: 100%; height: 420px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); display: flex; align-items: center; justify-content: center; color: white;">
                         <div style="text-align: center; padding: 2rem;">

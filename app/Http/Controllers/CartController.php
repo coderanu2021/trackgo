@@ -14,7 +14,7 @@ class CartController extends Controller
 
     public function add(Request $request, $id)
     {
-        $product = \App\Models\Page::findOrFail($id);
+        $product = \App\Models\ProductPage::findOrFail($id);
         $cart = session()->get('cart', []);
 
         if(isset($cart[$id])) {
@@ -24,7 +24,7 @@ class CartController extends Controller
                 "title" => $product->title,
                 "quantity" => 1,
                 "price" => $product->price,
-                "image" => $product->thumbnail
+                "image" => $product->hero_image
             ];
         }
 
@@ -41,7 +41,7 @@ class CartController extends Controller
                 'success' => true,
                 'message' => 'Product added to cart successfully!',
                 'cart_count' => $cartCount,
-                'cart_total' => $cartTotal,
+                'cart_total' => number_format($cartTotal, 2),
                 'product' => [
                     'id' => $id,
                     'title' => $product->title,
