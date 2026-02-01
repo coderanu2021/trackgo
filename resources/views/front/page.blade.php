@@ -336,7 +336,11 @@
 
 @section('content')
     @if($page->thumbnail)
-    <div class="page-banner" style="background-image: url('{{ $page->thumbnail }}');">
+    @php
+        $imageUrl = Str::startsWith($page->thumbnail, ['http://', 'https://']) ? $page->thumbnail : asset($page->thumbnail);
+    @endphp
+    <!-- Debug: Image URL = {{ $imageUrl }} -->
+    <div class="page-banner" style="background-image: url('{{ $imageUrl }}');">
         <div class="banner-content">
             <h1>{{ $page->title }}</h1>
         </div>
