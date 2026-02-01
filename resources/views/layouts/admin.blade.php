@@ -9,8 +9,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome 6.5.1 from multiple CDNs for reliability -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://use.fontawesome.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.1/css/all.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0/css/all.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     
@@ -25,6 +28,8 @@
             line-height: 1;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            display: inline-block;
+            text-decoration: inherit;
         }
         
         .far {
@@ -36,39 +41,78 @@
             font-family: "Font Awesome 6 Brands", "Font Awesome 5 Brands" !important;
         }
         
-        /* Fallback for missing icons */
+        /* Enhanced fallback system for missing icons */
         .fas:before, .far:before, .fab:before {
             display: inline-block;
             text-decoration: inherit;
+            width: 1em;
+            text-align: center;
         }
         
-        /* Icon fallbacks with text for page builder */
+        /* Comprehensive icon fallbacks for admin panel */
+        .fa-layer-group:before { content: "⚏"; font-size: 1.1em; }
+        .fa-boxes-stacked:before { content: "📦"; }
+        .fa-file-invoice:before { content: "📄"; }
+        .fa-pen-nib:before { content: "✏️"; }
+        .fa-tags:before { content: "🏷️"; }
+        .fa-star:before { content: "⭐"; }
+        .fa-flag:before { content: "🚩"; }
+        .fa-question-circle:before { content: "❓"; }
+        .fa-bag-shopping:before { content: "🛍️"; }
+        .fa-user-group:before { content: "👥"; }
+        .fa-calendar-check:before { content: "📅"; }
+        .fa-sliders:before { content: "🎛️"; }
+        .fa-grid-2:before { content: "⚏"; }
+        .fa-fingerprint:before { content: "👆"; }
+        .fa-compass:before { content: "🧭"; }
+        .fa-pencil-square:before { content: "✏️"; }
+        .fa-arrow-right-from-bracket:before { content: "🚪"; }
+        .fa-sidebar:before { content: "⚏"; }
+        .fa-bell:before { content: "🔔"; }
+        .fa-circle-check:before { content: "✅"; }
+        .fa-bars-staggered:before { content: "☰"; }
+        .fa-chevron-right:before { content: "▶"; }
+        .fa-save:before { content: "💾"; }
+        .fa-check-circle:before { content: "✅"; }
+        .fa-trash-can:before { content: "🗑️"; }
+        .fa-times:before { content: "✖"; }
+        .fa-circle-info:before { content: "ℹ️"; }
+        
+        /* Common page builder icons */
         .fa-font:before { content: "T"; }
-        .fa-image:before { content: "🖼"; }
+        .fa-image:before { content: "🖼️"; }
         .fa-link:before { content: "🔗"; }
         .fa-columns:before { content: "⚏"; }
-        .fa-cog:before { content: "⚙"; }
-        .fa-trash:before { content: "🗑"; }
+        .fa-cog:before { content: "⚙️"; }
+        .fa-trash:before { content: "🗑️"; }
         .fa-plus:before { content: "+"; }
         .fa-minus:before { content: "-"; }
-        .fa-upload:before { content: "↑"; }
+        .fa-upload:before { content: "⬆️"; }
         .fa-check:before { content: "✓"; }
         .fa-spinner:before { content: "⟳"; }
         .fa-cubes:before { content: "⚏"; }
         .fa-chart-line:before { content: "📊"; }
         .fa-clock-rotate-left:before { content: "🕐"; }
-        .fa-list-check:before { content: "☑"; }
+        .fa-list-check:before { content: "☑️"; }
         .fa-folder-tree:before { content: "📁"; }
-        .fa-layer-group:before { content: "⚏"; }
         .fa-external-link-alt:before { content: "↗"; }
-        .fa-save:before { content: "💾"; }
         .fa-bars:before { content: "☰"; }
         .fa-angle-down:before { content: "▼"; }
         
-        /* Ensure icons are visible */
+        /* Ensure icons are visible and properly sized */
         .fas, .far, .fab {
             min-width: 1em;
             text-align: center;
+            vertical-align: middle;
+        }
+        
+        /* Force icon display for critical elements */
+        .sidebar .nav-link i,
+        .btn i,
+        .icon-wrap i {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro", "FontAwesome", sans-serif !important;
+            font-weight: 900 !important;
+            font-style: normal !important;
         }
         
         :root {
@@ -148,30 +192,68 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     
-    <!-- Font Awesome Fallback Check -->
+    <!-- Font Awesome Fallback Check and Enhancement -->
     <script>
-        // Check if Font Awesome is loaded and provide fallback
+        // Enhanced Font Awesome loading check
         document.addEventListener('DOMContentLoaded', function() {
-            // Test if Font Awesome is loaded by checking for a common icon
-            const testIcon = document.createElement('i');
-            testIcon.className = 'fas fa-home';
-            testIcon.style.position = 'absolute';
-            testIcon.style.left = '-9999px';
-            document.body.appendChild(testIcon);
+            // Test multiple Font Awesome icons to ensure proper loading
+            const testIcons = ['fas fa-home', 'fas fa-layer-group', 'fas fa-boxes-stacked'];
+            let fontAwesomeLoaded = false;
             
-            const computedStyle = window.getComputedStyle(testIcon, ':before');
-            const content = computedStyle.getPropertyValue('content');
+            testIcons.forEach(iconClass => {
+                const testIcon = document.createElement('i');
+                testIcon.className = iconClass;
+                testIcon.style.position = 'absolute';
+                testIcon.style.left = '-9999px';
+                testIcon.style.fontSize = '16px';
+                document.body.appendChild(testIcon);
+                
+                const computedStyle = window.getComputedStyle(testIcon, ':before');
+                const content = computedStyle.getPropertyValue('content');
+                const fontFamily = computedStyle.getPropertyValue('font-family');
+                
+                // Check if Font Awesome is properly loaded
+                if (content && content !== 'none' && content !== '""' && 
+                    (fontFamily.includes('Font Awesome') || fontFamily.includes('FontAwesome'))) {
+                    fontAwesomeLoaded = true;
+                }
+                
+                document.body.removeChild(testIcon);
+            });
             
-            // If Font Awesome isn't loaded, add fallback
-            if (!content || content === 'none' || content === '""') {
-                console.warn('Font Awesome not loaded, adding fallback...');
+            // If Font Awesome isn't loaded properly, add additional fallbacks
+            if (!fontAwesomeLoaded) {
+                console.warn('Font Awesome not fully loaded, adding additional fallbacks...');
+                
+                // Add additional CSS fallbacks
+                const fallbackCSS = document.createElement('style');
+                fallbackCSS.textContent = `
+                    .fas, .far, .fab { 
+                        font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", sans-serif !important; 
+                        font-weight: 900 !important;
+                    }
+                    .far { font-weight: 400 !important; }
+                    .fab { font-family: "Font Awesome 6 Brands", "Font Awesome 5 Brands", sans-serif !important; }
+                `;
+                document.head.appendChild(fallbackCSS);
+                
+                // Try loading from additional CDN
                 const fallbackLink = document.createElement('link');
                 fallbackLink.rel = 'stylesheet';
-                fallbackLink.href = 'https://use.fontawesome.com/releases/v6.0.0/css/all.css';
+                fallbackLink.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/6.0.0/css/all.min.css';
+                fallbackLink.crossOrigin = 'anonymous';
                 document.head.appendChild(fallbackLink);
+            } else {
+                console.log('Font Awesome loaded successfully');
             }
             
-            document.body.removeChild(testIcon);
+            // Force refresh of icon rendering after a short delay
+            setTimeout(() => {
+                const allIcons = document.querySelectorAll('.fas, .far, .fab');
+                allIcons.forEach(icon => {
+                    icon.style.fontFamily = '"Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro", "FontAwesome", sans-serif';
+                });
+            }, 500);
         });
     </script>
 </head>

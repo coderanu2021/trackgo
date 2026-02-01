@@ -274,7 +274,7 @@
 
         /* Footer - Always Dark */
         footer {
-            background: linear-gradient(rgba(26, 26, 26, 0.85), rgba(26, 26, 26, 0.85)), url('{{ asset('uploads/footer-bg.jpg') }}') center/cover no-repeat;
+            background: linear-gradient(rgba(26, 26, 26, 0.85), rgba(26, 26, 26, 0.85)), url('{{ isset($settings['site_footer_bg']) ? asset($settings['site_footer_bg']) : asset('uploads/footer-bg.jpg') }}') center/cover no-repeat;
             color: #b0b0b0;
             padding: 5rem 0 2rem;
             font-size: 0.95rem;

@@ -230,6 +230,19 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Footer Background Image</label>
+                    <div style="border: 2px dashed #e2e8f0; border-radius: 16px; padding: 1.5rem; text-align: center; background: #fff; min-height: 120px; display: flex; flex-direction: column; justify-content: center;">
+                        @if(isset($settings['site_footer_bg']))
+                            <div style="margin-bottom: 1rem;">
+                                <img src="{{ asset($settings['site_footer_bg']) }}" style="max-height: 60px; border-radius: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));" alt="Footer Background Preview">
+                            </div>
+                        @endif
+                        <input type="file" name="site_footer_bg" class="form-control" accept="image/*" style="border: none; box-shadow: none; background: transparent; padding: 0; font-size: 0.8rem;">
+                        <small style="color: var(--text-muted); margin-top: 0.5rem;">Recommended: 1920x400px or larger for best quality</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label>Contact Page Map Embed (Iframe Code)</label>
                     <textarea name="site_contact_map" class="form-control" rows="4" placeholder="Paste Google Maps iframe code here...">{{ $settings['site_contact_map'] ?? '' }}</textarea>
                 </div>
