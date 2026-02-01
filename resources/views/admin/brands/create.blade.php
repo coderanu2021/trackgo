@@ -9,6 +9,16 @@
         <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-top: 0.5rem;">Add New Brand</h2>
     </div>
 
+    @if ($errors->any())
+        <div class="alert alert-danger" style="margin-bottom: 2rem;">
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="card">
         <form action="{{ route('admin.brands.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -16,23 +26,32 @@
             <div class="row g-4">
                 <div class="col-12">
                     <label class="form-label">Brand Name</label>
-                    <input type="text" name="name" class="form-control" required value="{{ old('name') }}" placeholder="e.g. Acme Corp">
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" required value="{{ old('name') }}" placeholder="e.g. Acme Corp">
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="col-12">
                     <label class="form-label">Brand Logo</label>
-                    <input type="file" name="logo" class="form-control" required accept="image/*">
-                    <div class="form-text">Recommended size: 200x100px. formats: png, jpg, svg.</div>
+                    <input type="file" name="logo" class="form-control @error('logo') is-invalid @enderror" required accept="image/*,.svg">
+                    <div class="form-text">Recommended size: 200x100px. Formats: PNG, JPG, GIF, SVG.</div>
+                    @error('logo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label">Recite URL (Optional)</label>
-                    <input type="url" name="url" class="form-control" value="{{ old('url') }}" placeholder="https://example.com">
+                    <label class="form-label">Website URL (Optional)</label>
+                    <input type="url" name="url" class="form-control @error('url') is-invalid @enderror" value="{{ old('url') }}" placeholder="https://example.com">
+                    @error('url')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="col-12">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="status" id="status" checked>
+                        <input class="form-check-input" type="checkbox" name="status" id="status" value="1" {{ old('status', true) ? 'checked' : '' }}>
                         <label class="form-check-label" for="status">Active Status</label>
                     </div>
                 </div>

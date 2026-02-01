@@ -33,18 +33,20 @@ class BrandController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'url' => 'nullable|url',
         ]);
 
-        $data = $request->all();
+        $data = [
+            'name' => $request->name,
+            'url' => $request->url,
+            'status' => $request->has('status') ? true : false,
+        ];
 
         if ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('brands', 'public');
             $data['logo'] = 'storage/' . $path;
         }
-
-        $data['status'] = $request->has('status');
 
         Brand::create($data);
 
@@ -66,11 +68,15 @@ class BrandController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'url' => 'nullable|url',
         ]);
 
-        $data = $request->all();
+        $data = [
+            'name' => $request->name,
+            'url' => $request->url,
+            'status' => $request->has('status') ? true : false,
+        ];
 
         if ($request->hasFile('logo')) {
             // Delete old logo
@@ -82,8 +88,6 @@ class BrandController extends Controller
             $path = $request->file('logo')->store('brands', 'public');
             $data['logo'] = 'storage/' . $path;
         }
-
-        $data['status'] = $request->has('status');
 
         $brand->update($data);
 

@@ -52,7 +52,7 @@
         
         /* 2. MIDDLE HEADER (Logo & Search) */
         .header-middle {
-            padding: 25px 0;
+            padding: 10px 0;
             background: var(--white);
         }
         .hm-flex {
@@ -61,7 +61,7 @@
             justify-content: space-between;
             gap: 30px;
         }
-        .logo img { height: 45px; }
+        .logo img { height: 68px; }
         
         /* Search Box */
         .zenis-search {
