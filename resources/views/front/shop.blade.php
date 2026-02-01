@@ -1,3 +1,5 @@
+<h1 style="color:red">SERVER SHOP VERSION</h1>
+
 @extends('layouts.front')
 
 @section('title', 'Shop Premium Products - ' . ($settings['site_name'] ?? 'TrackGo'))
@@ -546,6 +548,10 @@
             font-size: 0.95rem;
         }
         .btn-icon-action {
+            width: 35px;
+            height: 35px;
+            font-size: 0.8rem;
+        }btn-icon-action {
             width: 35px;
             height: 35px;
             font-size: 0.8rem;
