@@ -47,6 +47,10 @@
         ul { list-style: none; padding: 0; margin: 0; }
         
         .container { max-width: 1400px; margin: 0 auto; padding: 0 15px; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 0 10px; }
+        }
 
         /* Hide mobile elements by default */
         .mobile-menu-btn,
@@ -72,6 +76,7 @@
         
         .logo {
             order: 0;
+            flex-shrink: 0; /* Prevent logo from shrinking */
         }
         
         .zenis-search {
@@ -85,8 +90,13 @@
             display: flex;
             gap: 25px;
             align-items: center;
+            flex-shrink: 0; /* Prevent icons from shrinking */
         }
-        .logo img { height: 68px; }
+        .logo img { 
+            height: 68px; 
+            max-width: 200px;
+            object-fit: contain;
+        }
         
         /* Search Box */
         .zenis-search {
@@ -528,6 +538,19 @@
                 order: 5 !important; 
                 justify-self: end !important;
                 flex: none !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+            
+            .header-middle .logo img {
+                height: 45px !important; /* Ensure logo is visible on mobile */
+                max-width: 150px !important;
+                object-fit: contain !important;
+            }
+            
+            .header-middle .logo h2 {
+                font-size: 24px !important; /* Smaller text logo on mobile */
+                margin: 0 !important;
             }
             
             .header-middle .header-icons { 
@@ -731,6 +754,43 @@
                 text-align: center;
                 font-size: 0.8rem;
                 color: var(--primary);
+            }
+        }
+        
+        /* Extra small screens - ensure logo is always visible */
+        @media (max-width: 480px) {
+            .header-middle .hm-flex { 
+                grid-template-columns: auto 1fr auto !important;
+                gap: 5px !important;
+            }
+            
+            .header-middle .logo { 
+                order: 3 !important; 
+                justify-self: end !important;
+            }
+            
+            .header-middle .logo img {
+                height: 40px !important;
+                max-width: 120px !important;
+            }
+            
+            .header-middle .logo h2 {
+                font-size: 20px !important;
+            }
+            
+            .header-middle .header-icons { 
+                order: 2 !important; 
+                justify-self: center !important;
+                grid-column: 2 / 3 !important;
+                gap: 5px !important;
+            }
+            
+            .header-middle .header-icons .icon-box span {
+                font-size: 8px !important;
+            }
+            
+            .header-middle .header-icons .icon-wrap {
+                font-size: 18px !important;
             }
         }
 

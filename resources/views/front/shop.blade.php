@@ -1,5 +1,3 @@
-<h1 style="color:red">SERVER SHOP VERSION</h1>
-
 @extends('layouts.front')
 
 @section('title', 'Shop Premium Products - ' . ($settings['site_name'] ?? 'TrackGo'))
@@ -12,11 +10,11 @@
         min-height: 100vh;
     }
     
-    /* Hero Section - Zenis Style */
+    /* Hero Section - Orange Theme */
     .shop-hero {
         text-align: center;
         padding: 4rem 0 5rem;
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
         color: white;
         margin-bottom: 4rem;
         position: relative;
@@ -108,16 +106,18 @@
     .filter-title {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #2c3e50;
+        color: white;
         margin-bottom: 1.5rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid #e9ecef;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+        border-radius: 8px 8px 0 0;
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
     }
     .filter-title i {
-        color: #3498db;
+        color: white;
         font-size: 1rem;
     }
 
@@ -143,30 +143,31 @@
     
     .filter-link:hover { 
         background: #f8f9fa; 
-        color: #3498db;
+        color: var(--primary);
         border-color: #e9ecef;
     }
     .filter-link.active { 
-        background: #3498db;
+        background: var(--primary);
         color: white;
-        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 2px 8px rgba(243, 112, 33, 0.3);
     }
 
-    /* Toolbar - Zenis Style */
+    /* Toolbar - Orange Theme */
     .shop-toolbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
         padding: 1.5rem 2rem;
-        background: white;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
         border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        border: 1px solid #e9ecef;
+        box-shadow: 0 4px 15px rgba(243, 112, 33, 0.2);
+        border: 1px solid var(--primary);
+        color: white;
     }
 
     .results-info {
-        color: #6c757d;
+        color: white;
         font-size: 0.9rem;
         font-weight: 500;
         display: flex;
@@ -174,7 +175,7 @@
         gap: 0.5rem;
     }
     .results-info i {
-        color: #3498db;
+        color: white;
     }
 
     /* Product Grid - Zenis Style */
@@ -205,7 +206,7 @@
     .product-card:hover { 
         transform: translateY(-3px); 
         box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        border-color: #3498db;
+        border-color: var(--primary);
     }
 
     .product-img-wrapper {
@@ -226,7 +227,7 @@
         position: absolute;
         top: 0.75rem;
         left: 0.75rem;
-        background: #e74c3c;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
         color: white;
         padding: 0.25rem 0.6rem;
         border-radius: 4px;
@@ -234,10 +235,11 @@
         font-weight: 600;
         z-index: 2;
         text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(243, 112, 33, 0.3);
     }
 
     .product-badge.new {
-        background: #27ae60;
+        background: linear-gradient(135deg, #27ae60 0%, #219a52 100%);
     }
 
     .product-overlay {
@@ -287,12 +289,12 @@
     }
     .product-cat-label { 
         font-size: 0.7rem; 
-        color: #3498db; 
+        color: var(--primary); 
         text-transform: uppercase; 
         font-weight: 600; 
         letter-spacing: 0.05em; 
         margin-bottom: 0.4rem;
-        background: rgba(52, 152, 219, 0.1);
+        background: rgba(243, 112, 33, 0.1);
         padding: 0.2rem 0.6rem;
         border-radius: 4px;
         display: inline-block;
@@ -315,7 +317,7 @@
         transition: color 0.3s ease;
     }
     .product-title-minimal a:hover {
-        color: #3498db;
+        color: var(--primary);
     }
 
     /* Star Rating */
@@ -351,7 +353,7 @@
     .price-current { 
         font-size: 1.1rem; 
         font-weight: 700; 
-        color: #2c3e50;
+        color: var(--primary);
     }
     .price-old { 
         font-size: 0.9rem; 
@@ -391,14 +393,14 @@
         box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3);
     }
     .btn-icon-action.cart:hover {
-        background: #3498db;
-        border-color: #3498db;
-        box-shadow: 0 3px 8px rgba(52, 152, 219, 0.3);
+        background: var(--primary);
+        border-color: var(--primary);
+        box-shadow: 0 3px 8px rgba(243, 112, 33, 0.3);
     }
     .btn-icon-action.view:hover {
-        background: #3498db;
-        border-color: #3498db;
-        box-shadow: 0 3px 8px rgba(52, 152, 219, 0.3);
+        background: var(--primary);
+        border-color: var(--primary);
+        box-shadow: 0 3px 8px rgba(243, 112, 33, 0.3);
     }
 
     /* Form Styling - Zenis Style */
@@ -413,14 +415,14 @@
     }
     .filter-form input:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(243, 112, 33, 0.1);
     }
 
     .filter-form button {
         width: 100%;
         padding: 0.75rem;
-        background: #3498db;
+        background: var(--primary);
         color: white;
         border: none;
         border-radius: 6px;
@@ -432,29 +434,30 @@
         letter-spacing: 0.5px;
     }
     .filter-form button:hover {
-        background: #2980b9;
+        background: var(--primary-hover);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 4px 12px rgba(243, 112, 33, 0.3);
     }
 
-    /* Mobile Filter - Zenis Style */
+    /* Mobile Filter - Orange Theme */
     .btn-filter-mobile {
         display: none;
-        background: white;
-        border: 1px solid #e9ecef;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+        border: 1px solid var(--primary);
         padding: 0.75rem 1.5rem;
         border-radius: 6px;
         font-weight: 600;
-        color: #2c3e50;
+        color: white;
         gap: 0.5rem;
         align-items: center;
         cursor: pointer;
         transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(243, 112, 33, 0.2);
     }
     .btn-filter-mobile:hover {
-        background: #f8f9fa;
-        border-color: #3498db;
-        color: #3498db;
+        background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(243, 112, 33, 0.3);
     }
 
     @media (max-width: 992px) {
@@ -488,7 +491,7 @@
         width: 40px;
         height: 40px;
         border: 3px solid #e9ecef;
-        border-top: 3px solid #3498db;
+        border-top: 3px solid var(--primary);
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin: 0 auto 1rem;
@@ -499,21 +502,25 @@
         100% { transform: rotate(360deg); } 
     }
 
-    /* Empty State - Zenis Style */
+    /* Empty State - Orange Theme */
     .empty-state {
         text-align: center;
         padding: 4rem 2rem;
         color: #6c757d;
+        background: linear-gradient(135deg, rgba(243, 112, 33, 0.05) 0%, rgba(243, 112, 33, 0.02) 100%);
+        border-radius: 12px;
+        border: 2px dashed rgba(243, 112, 33, 0.2);
     }
     .empty-state i {
         font-size: 4rem;
-        color: #dee2e6;
+        color: var(--primary);
         margin-bottom: 1.5rem;
+        opacity: 0.7;
     }
     .empty-state h3 {
         font-size: 1.5rem;
         font-weight: 600;
-        color: #2c3e50;
+        color: var(--primary);
         margin-bottom: 0.5rem;
     }
 
@@ -690,7 +697,7 @@
                         <i class="fas fa-search"></i>
                         <h3>No Products Found</h3>
                         <p>Try adjusting your filters or search terms to find what you're looking for.</p>
-                        <a href="{{ route('shop') }}" style="display: inline-block; margin-top: 1.5rem; padding: 0.75rem 2rem; background: var(--primary); color: white; text-decoration: none; border-radius: 12px; font-weight: 700;">View All Products</a>
+                        <a href="{{ route('shop') }}" style="display: inline-block; margin-top: 1.5rem; padding: 0.75rem 2rem; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(243, 112, 33, 0.3);">View All Products</a>
                     </div>
                 @endif
             </div>
