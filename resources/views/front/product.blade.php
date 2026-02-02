@@ -32,12 +32,30 @@
         object-fit: cover;
         border-radius: 24px;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        cursor: zoom-in;
+        transition: transform 0.3s ease;
+    }
+    .main-image:hover {
+        transform: scale(1.02);
     }
     .thumbnails {
         display: flex;
         gap: 1rem;
         overflow-x: auto;
         padding-bottom: 0.5rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary) #f1f1f1;
+    }
+    .thumbnails::-webkit-scrollbar {
+        height: 6px;
+    }
+    .thumbnails::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    .thumbnails::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 3px;
     }
     .thumb {
         width: 80px;
@@ -47,9 +65,15 @@
         cursor: pointer;
         border: 2px solid transparent;
         transition: all 0.2s;
+        flex-shrink: 0;
     }
-    .thumb:hover, .thumb.active {
+    .thumb:hover {
         border-color: var(--primary);
+        transform: scale(1.05);
+    }
+    .thumb.active {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
     }
 
     /* Info Styles */
@@ -223,6 +247,31 @@
         .reviews-section { padding: 3rem 0; }
         .reviews-section .container > div { grid-template-columns: 1fr !important; gap: 3rem !important; }
         .review-form-card { position: static; padding: 2rem; }
+        
+        /* Mobile gallery adjustments */
+        .thumbnails {
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+        .thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .main-image {
+            border-radius: 16px;
+        }
+        .thumbnails {
+            gap: 0.5rem;
+        }
+        .thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+        }
     }
 
     /* Modal Styles */
@@ -247,6 +296,76 @@
         color: #94a3b8; cursor: pointer;
     }
     .close-modal:hover { color: var(--text); }
+    
+    /* Image Lightbox */
+    .image-lightbox {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); z-index: 2000; display: none;
+        align-items: center; justify-content: center;
+        opacity: 0; transition: opacity 0.3s;
+    }
+    .image-lightbox.active { display: flex; opacity: 1; }
+    .lightbox-content {
+        position: relative;
+        max-width: 90vw;
+        max-height: 90vh;
+    }
+    .lightbox-image {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+    .lightbox-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    .lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        padding: 1rem;
+        cursor: pointer;
+        border-radius: 50%;
+        transition: background 0.3s;
+    }
+    .lightbox-nav:hover {
+        background: rgba(255,255,255,0.3);
+    }
+    .lightbox-prev {
+        left: -60px;
+    }
+    .lightbox-next {
+        right: -60px;
+    }
+    @media (max-width: 768px) {
+        .lightbox-nav {
+            font-size: 1.2rem;
+            padding: 0.75rem;
+        }
+        .lightbox-prev {
+            left: 10px;
+        }
+        .lightbox-next {
+            right: 10px;
+        }
+        .lightbox-close {
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+        }
+    }
 </style>
 @endpush
 
@@ -262,10 +381,32 @@
         <div class="product-grid">
             <!-- Image Gallery -->
             <div class="gallery-container">
-                <img id="main-view" src="{{ $page->hero_image ?? '/placeholder.png' }}" class="main-image" alt="{{ $page->title }}">
-                @if($page->hero_image)
+                @php
+                    $mainImage = $page->hero_image ?? $page->thumbnail ?? '/placeholder.png';
+                    $galleryImages = [];
+                    
+                    // Add main image to gallery
+                    if ($mainImage && $mainImage !== '/placeholder.png') {
+                        $galleryImages[] = $mainImage;
+                    }
+                    
+                    // Add gallery images
+                    if ($page->gallery && is_array($page->gallery)) {
+                        foreach ($page->gallery as $img) {
+                            if ($img && !in_array($img, $galleryImages)) {
+                                $galleryImages[] = $img;
+                            }
+                        }
+                    }
+                @endphp
+                
+                <img id="main-view" src="{{ $galleryImages[0] ?? '/placeholder.png' }}" class="main-image" alt="{{ $page->title }}" onclick="openLightbox(0)">
+                
+                @if(count($galleryImages) > 0)
                     <div class="thumbnails">
-                        <img src="{{ $page->hero_image }}" class="thumb active" onclick="updatePreview(this.src, this)">
+                        @foreach($galleryImages as $index => $image)
+                            <img src="{{ $image }}" class="thumb {{ $index === 0 ? 'active' : '' }}" onclick="updatePreview('{{ $image }}', this)" alt="Product image {{ $index + 1 }}">
+                        @endforeach
                     </div>
                 @endif
             </div>
@@ -557,6 +698,16 @@
 </section>
 @endsection
 
+<!-- Image Lightbox -->
+<div id="imageLightbox" class="image-lightbox">
+    <div class="lightbox-content">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <button class="lightbox-nav lightbox-prev" onclick="prevImage()" style="display: none;">&#8249;</button>
+        <img id="lightbox-image" src="" class="lightbox-image" alt="Product image">
+        <button class="lightbox-nav lightbox-next" onclick="nextImage()" style="display: none;">&#8250;</button>
+    </div>
+</div>
+
 <!-- Enquiry Modal -->
 <div id="enquiryModal" class="modal-overlay">
     <div class="modal-card">
@@ -595,11 +746,88 @@
 
 @push('scripts')
 <script>
+    let galleryImages = @json($galleryImages ?? []);
+    let currentImageIndex = 0;
+
     function updatePreview(url, el) {
         document.getElementById('main-view').src = url;
         document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
+        if (el) {
+            el.classList.add('active');
+        }
+        // Update current index for lightbox
+        currentImageIndex = galleryImages.indexOf(url);
     }
+
+    // Lightbox functionality
+    function openLightbox(index = 0) {
+        if (galleryImages.length === 0) return;
+        
+        currentImageIndex = index;
+        const lightbox = document.getElementById('imageLightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+        
+        lightboxImage.src = galleryImages[currentImageIndex];
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Show/hide navigation buttons
+        const prevBtn = document.querySelector('.lightbox-prev');
+        const nextBtn = document.querySelector('.lightbox-next');
+        
+        if (galleryImages.length > 1) {
+            prevBtn.style.display = 'block';
+            nextBtn.style.display = 'block';
+        } else {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('imageLightbox');
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function prevImage() {
+        if (galleryImages.length <= 1) return;
+        currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+        document.getElementById('lightbox-image').src = galleryImages[currentImageIndex];
+        
+        // Update main view and thumbnails
+        updatePreview(galleryImages[currentImageIndex], document.querySelector(`.thumb[onclick*="${galleryImages[currentImageIndex]}"]`));
+    }
+
+    function nextImage() {
+        if (galleryImages.length <= 1) return;
+        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+        document.getElementById('lightbox-image').src = galleryImages[currentImageIndex];
+        
+        // Update main view and thumbnails
+        updatePreview(galleryImages[currentImageIndex], document.querySelector(`.thumb[onclick*="${galleryImages[currentImageIndex]}"]`));
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        const lightbox = document.getElementById('imageLightbox');
+        if (!lightbox.classList.contains('active')) return;
+        
+        if (e.key === 'Escape') {
+            closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+            prevImage();
+        } else if (e.key === 'ArrowRight') {
+            nextImage();
+        }
+    });
+
+    // Close lightbox when clicking outside image
+    document.getElementById('imageLightbox').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLightbox();
+        }
+    });
 
     function switchTab(btn, targetId) {
         const header = btn.closest('.tabs-header');
