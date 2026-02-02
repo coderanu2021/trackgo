@@ -470,26 +470,58 @@
 
         // Tabs management functions
         window.addTabItem = function(blockId) {
+            console.log('Adding tab to block:', blockId);
             const block = allBlocks.get(blockId);
-            if (!block || !block.data.tabs) {
-                // Initialize if missing
-                if (block) {
-                    block.data.tabs = [];
-                } else {
-                    console.error('Block not found');
-                    return;
-                }
+            
+            if (!block) {
+                console.error('Block not found in allBlocks map:', blockId);
+                alert('Error: Could not find block. Please save and refresh the page.');
+                return;
+            }
+            
+            // Ensure data object exists
+            if (!block.data) {
+                block.data = {};
+            }
+            
+            // Ensure tabs array exists
+            if (!Array.isArray(block.data.tabs)) {
+                console.warn('Initializing tabs array for block:', blockId);
+                block.data.tabs = [];
             }
             
             block.data.tabs.push({ title: 'New Tab', content: 'Tab content...' });
+            console.log('Tab added, current tabs:', block.data.tabs.length);
+            
+            // Force save to input
+            if (document.getElementById('blocks-input')) {
+                document.getElementById('blocks-input').value = JSON.stringify(window.blocks);
+            }
+            
             window.renderBlocks();
         };
 
         window.removeTabItem = function(blockId, index) {
+            console.log('Removing tab from block:', blockId, 'Index:', index);
             const block = allBlocks.get(blockId);
-            if (!block || !block.data.tabs) return;
+            
+            if (!block) {
+                console.error('Block not found:', blockId);
+                return;
+            }
+            
+            if (!block.data || !Array.isArray(block.data.tabs)) {
+                console.warn('No tabs to remove for block:', blockId);
+                return;
+            }
             
             block.data.tabs.splice(index, 1);
+            
+            // Force save to input
+            if (document.getElementById('blocks-input')) {
+                document.getElementById('blocks-input').value = JSON.stringify(window.blocks);
+            }
+            
             window.renderBlocks();
         };
 
