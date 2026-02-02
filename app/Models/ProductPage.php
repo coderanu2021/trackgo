@@ -14,18 +14,24 @@ class ProductPage extends Model
         'slug',
         'content',
         'hero_image',
+        'thumbnail',
+        'gallery',
         'is_published',
         'category_id',
         'price',
+        'discount',
         'stock',
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'is_enquiry',
     ];
 
     protected $casts = [
         'content' => 'array',
+        'gallery' => 'array',
         'is_published' => 'boolean',
+        'is_enquiry' => 'boolean',
     ];
 
     public function category()

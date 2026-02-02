@@ -100,6 +100,25 @@
         font-weight: 400;
     }
     
+    /* Discount Badge Styles */
+    .product-discount-badge {
+        animation: pulse 2s infinite;
+    }
+    .discount-badge {
+        animation: slideInLeft 0.5s ease-out;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes slideInLeft {
+        0% { transform: translateX(-20px); opacity: 0; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+    
     .stock-status {
         display: inline-flex;
         align-items: center;
@@ -258,6 +277,18 @@
             height: 60px;
             border-radius: 8px;
         }
+        
+        /* Mobile discount badge adjustments */
+        .product-discount-badge {
+            top: 0.5rem;
+            left: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+        }
+        .discount-badge {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
     }
     
     @media (max-width: 480px) {
@@ -271,6 +302,28 @@
             width: 50px;
             height: 50px;
             border-radius: 6px;
+        }
+        
+        /* Small mobile discount adjustments */
+        .product-discount-badge {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+        }
+        .discount-badge {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            flex-direction: column;
+            text-align: center;
+            gap: 0.25rem;
+        }
+        .price-tag {
+            font-size: 1.5rem;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+        .price-old {
+            font-size: 1rem;
         }
     }
 
@@ -398,15 +451,36 @@
                             }
                         }
                     }
+                    
+                    // Debug: Show what we have
+                    // dd([
+                    //     'hero_image' => $page->hero_image,
+                    //     'thumbnail' => $page->thumbnail,
+                    //     'gallery' => $page->gallery,
+                    //     'galleryImages' => $galleryImages
+                    // ]);
                 @endphp
                 
-                <img id="main-view" src="{{ $galleryImages[0] ?? '/placeholder.png' }}" class="main-image" alt="{{ $page->title }}" onclick="openLightbox(0)">
+                <div style="position: relative;">
+                    <img id="main-view" src="{{ $galleryImages[0] ?? '/placeholder.png' }}" class="main-image" alt="{{ $page->title }}" onclick="openLightbox(0)">
+                    
+                    @if($page->discount > 0)
+                        <div class="product-discount-badge" style="position: absolute; top: 1rem; left: 1rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4); z-index: 10;">
+                            -{{ round(($page->discount / ($page->price + $page->discount)) * 100) }}%
+                        </div>
+                    @endif
+                </div>
                 
                 @if(count($galleryImages) > 0)
                     <div class="thumbnails">
                         @foreach($galleryImages as $index => $image)
                             <img src="{{ $image }}" class="thumb {{ $index === 0 ? 'active' : '' }}" onclick="updatePreview('{{ $image }}', this)" alt="Product image {{ $index + 1 }}">
                         @endforeach
+                    </div>
+                @else
+                    <div style="padding: 1rem; text-align: center; color: #6c757d; font-size: 0.9rem;">
+                        <i class="fas fa-image" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                        No additional gallery images available
                     </div>
                 @endif
             </div>
@@ -419,6 +493,13 @@
                     <div class="stock-status"><i class="fas fa-check"></i> In Stock: {{ $page->stock }} available</div>
                 @else
                     <div class="stock-status stock-out"><i class="fas fa-times"></i> Out of Stock</div>
+                @endif
+
+                @if($page->discount > 0)
+                    <div class="discount-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);">
+                        <i class="fas fa-tag"></i>
+                        {{ round(($page->discount / ($page->price + $page->discount)) * 100) }}% OFF - Save ₹{{ formatIndianPrice($page->discount, 2) }}
+                    </div>
                 @endif
 
                 <div class="price-tag">

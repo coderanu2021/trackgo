@@ -96,13 +96,17 @@ class ProductController extends Controller
             'title' => $request->title,
             'slug' => $slug,
             'price' => $request->price ?? 0,
+            'discount' => $request->discount ?? 0,
             'stock' => $request->stock ?? 0,
             'hero_image' => $request->hero_image,
+            'thumbnail' => $request->thumbnail,
+            'gallery' => $request->gallery ? json_decode($request->gallery, true) : [],
             'content' => json_decode($request->blocks, true),
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
             'is_published' => true,
+            'is_enquiry' => $request->boolean('is_enquiry'),
         ]);
 
         // Sync multiple categories
@@ -144,12 +148,16 @@ class ProductController extends Controller
             'title' => $request->title,
             'slug' => $slug,
             'price' => $request->price ?? 0,
+            'discount' => $request->discount ?? 0,
             'stock' => $request->stock ?? 0,
             'hero_image' => $request->hero_image,
+            'thumbnail' => $request->thumbnail,
+            'gallery' => $request->gallery ? json_decode($request->gallery, true) : [],
             'content' => json_decode($request->blocks, true),
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
+            'is_enquiry' => $request->boolean('is_enquiry'),
         ]);
 
         // Sync multiple categories
