@@ -2,6 +2,7 @@
 
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PageBuilderController;
@@ -271,4 +272,4 @@ Route::post('test-upload-no-auth', function(Request $request) {
     }
     
     return response()->json(['error' => 'No file received']);
-})->withoutMiddleware();
+})->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
