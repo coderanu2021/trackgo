@@ -334,7 +334,7 @@
         align-items: center; justify-content: center;
         opacity: 0; transition: opacity 0.3s;
     }
-    .modal-overlay.active { display: flex; opacity: 1; }
+    .modal-overlay.active { display: flex !important; opacity: 1; }
     .modal-card {
         background: white; width: 90%; max-width: 500px;
         padding: 2rem; border-radius: 16px;
@@ -357,7 +357,7 @@
         align-items: center; justify-content: center;
         opacity: 0; transition: opacity 0.3s;
     }
-    .image-lightbox.active { display: flex; opacity: 1; }
+    .image-lightbox.active { display: flex !important; opacity: 1; }
     .lightbox-content {
         position: relative;
         max-width: 90vw;
@@ -780,7 +780,7 @@
 @endsection
 
 <!-- Image Lightbox -->
-<div id="imageLightbox" class="image-lightbox">
+<div id="imageLightbox" class="image-lightbox" style="display:none;">
     <div class="lightbox-content">
         <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
         <button class="lightbox-nav lightbox-prev" onclick="prevImage()" style="display: none;">&#8249;</button>
@@ -790,7 +790,7 @@
 </div>
 
 <!-- Enquiry Modal -->
-<div id="enquiryModal" class="modal-overlay">
+<div id="enquiryModal" class="modal-overlay" style="display:none;">
     <div class="modal-card">
         <button class="close-modal" onclick="closeEnquiryModal()">&times;</button>
         <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">Enquire about {{ $page->title }}</h3>

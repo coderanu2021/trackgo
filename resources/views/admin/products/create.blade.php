@@ -14,6 +14,16 @@
 <form id="page-form" action="{{ route('admin.products.store') }}" method="POST">
     @csrf
     
+    @if($errors->any())
+        <div class="alert alert-danger" style="background: #fef2f2; border: 1px solid #fee2e2; color: #b91c1c; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
 
     <!-- Row 1: Content Designer (Full Width) -->
     <div class="card" style="margin-bottom: 2rem;">
@@ -192,7 +202,7 @@
         </div>
     </div>
 
-    <input type="hidden" name="blocks" id="blocks-input">
+    <input type="hidden" name="blocks" id="blocks-input" value="[]">
 </form>
 
 <!-- Settings Modal -->
