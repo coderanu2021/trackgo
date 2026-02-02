@@ -39,7 +39,21 @@
     </div>
     
     <div class="product-info-minimal">
-        <div class="product-cat-label">{{ $product->category->name ?? 'General' }}</div>
+        @if($product->category || $product->categories->count() > 0)
+            <div style="margin-bottom: 0.5rem;">
+                @if($product->category)
+                    <span class="product-cat-label">{{ $product->category->name }}</span>
+                @endif
+                @foreach($product->categories->take(2) as $category)
+                    <span class="product-cat-label" style="background: rgba(16, 185, 129, 0.1); color: #065f46;">{{ $category->name }}</span>
+                @endforeach
+                @if($product->categories->count() > 2)
+                    <span class="product-cat-label" style="background: rgba(107, 114, 128, 0.1); color: #374151;">+{{ $product->categories->count() - 2 }} more</span>
+                @endif
+            </div>
+        @else
+            <div class="product-cat-label">General</div>
+        @endif
         
         <h3 class="product-title-minimal">
             <a href="{{ route('products.show', $product->slug) }}">{{ $product->title }}</a>

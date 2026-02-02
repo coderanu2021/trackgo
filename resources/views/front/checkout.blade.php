@@ -130,10 +130,28 @@
             flex-direction: column !important;
             align-items: flex-start !important;
             gap: 0.5rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        aside > div > div:nth-child(2) > div:last-child {
+            border-bottom: none;
         }
         
         aside > div > div:nth-child(2) > div > div:last-child {
             align-self: flex-end;
+            font-size: 1.1rem;
+        }
+        
+        /* Form inputs full width */
+        input, textarea, select {
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+        
+        /* Button full width */
+        button[type="submit"] {
+            width: 100% !important;
         }
     }
     
@@ -150,9 +168,55 @@
             padding: 1.5rem !important;
         }
         
-        /* Form inputs full width on small screens */
-        input, textarea {
-            font-size: 16px !important; /* Prevent zoom on iOS */
+        /* Form inputs prevent zoom on iOS */
+        input, textarea, select {
+            font-size: 16px !important;
+        }
+        
+        /* Smaller form elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        /* Order summary items */
+        aside > div > div:nth-child(2) > div > div:first-child {
+            max-width: 100%;
+        }
+        
+        /* Total section */
+        aside > div > div:nth-child(3) {
+            padding: 1rem !important;
+        }
+        
+        aside > div > div:nth-child(3) > div:last-child {
+            font-size: 1.25rem !important;
+        }
+    }
+    
+    /* Additional mobile improvements */
+    @media (max-width: 640px) {
+        /* Security notice */
+        .container > div:nth-child(2) > div:first-child > form > div:nth-child(4) {
+            padding: 1rem !important;
+            font-size: 0.85rem;
+        }
+        
+        /* Order summary header */
+        aside > div > h3 {
+            font-size: 1.1rem !important;
+        }
+        
+        /* Responsive grid for name/email */
+        .container > div:nth-child(2) > div:first-child > form > div:first-child {
+            display: block !important;
+        }
+        
+        .container > div:nth-child(2) > div:first-child > form > div:first-child > div {
+            margin-bottom: 1rem;
+        }
+        
+        .container > div:nth-child(2) > div:first-child > form > div:first-child > div:last-child {
+            margin-bottom: 0;
         }
     }
 </style>

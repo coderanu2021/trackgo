@@ -91,7 +91,7 @@
             <div class="form-group">
                 <label>Main Product Image (Thumbnail)</label>
                 <div class="flex gap-2">
-                    <input type="url" name="thumbnail" id="thumbnail-input" class="form-control" placeholder="https://...">
+                    <input type="url" name="hero_image" id="thumbnail-input" class="form-control" placeholder="https://...">
                     <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0 1rem; height:48px; display:flex; align-items:center; border-radius:12px;">
                         <i class="fas fa-upload"></i> <input type="file" onchange="uploadMainImage(this)" accept="image/*" style="display:none;">
                     </label>
@@ -115,9 +115,9 @@
             
             <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
-                    <label>Product Category</label>
+                    <label>Primary Category</label>
                     <select name="category_id" class="form-control">
-                        <option value="">No Category</option>
+                        <option value="">No Primary Category</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
@@ -128,15 +128,30 @@
                     <input type="text" name="title" class="form-control" placeholder="e.g. Premium Wireless Headphones" required>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label>Additional Categories</label>
+                <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; background: var(--bg-light);">
+                    @foreach($categories as $category)
+                        <div style="margin-bottom: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                                <input type="checkbox" name="categories[]" value="{{ $category->id }}" style="margin: 0;">
+                                <span>{{ $category->name }}</span>
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+                <small style="color: var(--text-light);">Select multiple categories for this product (optional)</small>
+            </div>
             
             <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
-                    <label>Regular Price ($)</label>
-                    <input type="number" name="price" class="form-control" step="0.01" placeholder="e.g. 99.99">
+                    <label>Regular Price (₹)</label>
+                    <input type="number" name="price" class="form-control" step="0.01" placeholder="e.g. 2999.00">
                 </div>
                 <div class="form-group">
-                    <label>Discount Amount ($)</label>
-                    <input type="number" name="discount" class="form-control" step="0.01" placeholder="e.g. 10.00">
+                    <label>Discount Amount (₹)</label>
+                    <input type="number" name="discount" class="form-control" step="0.01" placeholder="e.g. 300.00">
                 </div>
                 <div class="form-group">
                     <label>Stock Count</label>
@@ -262,30 +277,66 @@
     async function uploadMainImage(input) {
         const file = input.files[0];
         if (!file) return;
+        
+        console.log('Starting upload for file:', file.name, 'Size:', file.size, 'Type:', file.type);
+        
+        // Show loading state
+        const thumbnailInput = document.getElementById('thumbnail-input');
+        const originalValue = thumbnailInput.value;
+        thumbnailInput.value = 'Uploading...';
+        thumbnailInput.disabled = true;
+        
         const formData = new FormData();
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
+        
         try {
+            console.log('Sending upload request to:', '{{ route('admin.pages.upload') }}');
             const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
+            console.log('Response status:', res.status);
+            
             const data = await res.json();
-            if (data.url) document.getElementById('thumbnail-input').value = data.url;
-        } catch(e) { console.error(e); alert('Upload failed'); }
+            console.log('Response data:', data);
+            
+            if (data.url) {
+                thumbnailInput.value = data.url;
+                console.log('Image uploaded successfully:', data.url);
+                alert('Image uploaded successfully!');
+            } else {
+                throw new Error(data.error || 'Upload failed');
+            }
+        } catch(e) { 
+            console.error('Upload error:', e); 
+            alert('Upload failed: ' + e.message);
+            thumbnailInput.value = originalValue;
+        } finally {
+            thumbnailInput.disabled = false;
+        }
     }
 
     async function uploadGalleryImage(input, index) {
         const file = input.files[0];
         if (!file) return;
+        
         const formData = new FormData();
         formData.append('image', file);
         formData.append('_token', '{{ csrf_token() }}');
+        
         try {
             const res = await fetch('{{ route('admin.pages.upload') }}', { method: 'POST', body: formData });
             const data = await res.json();
+            
             if (data.url) {
                 gallery[index] = data.url;
                 renderGallery();
+                console.log('Gallery image uploaded successfully:', data.url);
+            } else {
+                throw new Error(data.error || 'Upload failed');
             }
-        } catch(e) { console.error(e); alert('Upload failed'); }
+        } catch(e) { 
+            console.error('Gallery upload error:', e); 
+            alert('Gallery upload failed: ' + e.message);
+        }
     }
 </script>
 @include('admin.pages.script')

@@ -644,8 +644,8 @@
                     <form action="{{ route('shop') }}" method="GET" class="filter-form">
                         @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
                         <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
-                            <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min $">
-                            <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max $">
+                            <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min ₹">
+                            <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max ₹">
                         </div>
                         <button type="submit">Apply Filter</button>
                     </form>

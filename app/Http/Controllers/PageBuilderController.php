@@ -116,15 +116,107 @@ class PageBuilderController extends Controller
     // Admin: Upload image for page builder
     public function upload(Request $request)
     {
-        $request->validate([
-            'image' => 'required|image|max:2048',
+        // Log everything we can about the request
+        \Log::info('Upload request received', [
+            'method' => $request->method(),
+            'content_type' => $request->header('Content-Type'),
+            'content_length' => $request->header('Content-Length'),
+            'has_file_image' => $request->hasFile('image'),
+            'all_files' => $request->allFiles(),
+            'file_keys' => array_keys($request->allFiles()),
+            'input_keys' => array_keys($request->all()),
+            'raw_files' => $_FILES ?? [],
+            'server_content_length' => $_SERVER['CONTENT_LENGTH'] ?? 'not set',
+            'server_content_type' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
         ]);
 
-        if ($request->file('image')) {
-            $path = $request->file('image')->store('uploads', 'public');
-            return response()->json(['url' => asset('storage/' . $path)]);
+        // Check if we have any files at all
+        if (empty($request->allFiles())) {
+            \Log::error('No files in request at all');
+            return response()->json(['error' => 'No files in request'], 400);
         }
 
-        return response()->json(['error' => 'Upload failed'], 400);
+        // Check specifically for 'image' field
+        if (!$request->hasFile('image')) {
+            \Log::error('No image field in request', [
+                'available_files' => array_keys($request->allFiles())
+            ]);
+            return response()->json(['error' => 'No file uploaded in image field'], 400);
+        }
+
+        $file = $request->file('image');
+        
+        \Log::info('File received', [
+            'original_name' => $file->getClientOriginalName(),
+            'size' => $file->getSize(),
+            'mime_type' => $file->getMimeType(),
+            'error' => $file->getError(),
+            'is_valid' => $file->isValid(),
+            'temp_path' => $file->path(),
+        ]);
+        
+        // Check for upload errors
+        if ($file->getError() !== UPLOAD_ERR_OK) {
+            $errorMessages = [
+                UPLOAD_ERR_INI_SIZE => 'File too large (exceeds upload_max_filesize)',
+                UPLOAD_ERR_FORM_SIZE => 'File too large (exceeds MAX_FILE_SIZE)',
+                UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+                UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+                UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
+                UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+                UPLOAD_ERR_EXTENSION => 'File upload stopped by extension',
+            ];
+            
+            $errorMessage = $errorMessages[$file->getError()] ?? 'Unknown upload error';
+            \Log::error('File upload error: ' . $errorMessage);
+            return response()->json(['error' => $errorMessage], 400);
+        }
+
+        // Check if file is valid
+        if (!$file->isValid()) {
+            \Log::error('File is not valid');
+            return response()->json(['error' => 'Invalid file'], 400);
+        }
+
+        try {
+            // Validate file
+            $validator = \Validator::make($request->all(), [
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            ]);
+
+            if ($validator->fails()) {
+                \Log::error('Validation failed', $validator->errors()->toArray());
+                return response()->json([
+                    'error' => 'Validation failed: ' . implode(', ', $validator->errors()->all())
+                ], 422);
+            }
+
+            // Generate unique filename
+            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            
+            // Store file
+            $path = $file->storeAs('uploads', $filename, 'public');
+            
+            if (!$path) {
+                \Log::error('Failed to store file');
+                return response()->json(['error' => 'Failed to store file'], 500);
+            }
+            
+            $url = asset('storage/' . $path);
+            
+            \Log::info('File uploaded successfully', ['path' => $path, 'url' => $url]);
+            
+            return response()->json([
+                'success' => true,
+                'url' => $url,
+                'path' => $path
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Upload exception: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Upload failed: ' . $e->getMessage()], 500);
+        }
     }
 }

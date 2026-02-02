@@ -33,6 +33,11 @@ class ProductPage extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'product_page_categories');
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class, 'product_page_id');

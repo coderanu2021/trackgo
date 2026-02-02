@@ -68,7 +68,18 @@ class CategoryController extends Controller
     public function show($slug)
     {
         $category = Category::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        $products = $category->productPages()->where('is_published', true)->get();
+        
+        // Get products that have this category either as primary or additional category
+        $products = \App\Models\ProductPage::where('is_published', true)
+            ->where(function($query) use ($category) {
+                $query->where('category_id', $category->id)
+                      ->orWhereHas('categories', function($subQuery) use ($category) {
+                          $subQuery->where('categories.id', $category->id);
+                      });
+            })
+            ->with(['category', 'categories'])
+            ->get();
+            
         return view('front.category', compact('category', 'products'));
     }
 }

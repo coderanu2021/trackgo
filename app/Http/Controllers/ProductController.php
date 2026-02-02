@@ -17,7 +17,13 @@ class ProductController extends Controller
         if ($request->filled('category')) {
             $category = \App\Models\Category::where('slug', $request->category)->first();
             if ($category) {
-                $query->where('category_id', $category->id);
+                // Check both single category and multiple categories
+                $query->where(function($q) use ($category) {
+                    $q->where('category_id', $category->id)
+                      ->orWhereHas('categories', function($subQ) use ($category) {
+                          $subQ->where('categories.id', $category->id);
+                      });
+                });
             }
         }
         
@@ -31,7 +37,7 @@ class ProductController extends Controller
             });
         }
         
-        $products = $query->with('category')->latest()->paginate(12);
+        $products = $query->with(['category', 'categories'])->latest()->paginate(12);
         $categories = \App\Models\Category::where('is_active', true)->get();
         
         return view('front.shop', compact('products', 'categories'));
@@ -58,7 +64,7 @@ class ProductController extends Controller
     // Admin: List all products
     public function index()
     {
-        $pages = ProductPage::with('category')->latest()->get();
+        $pages = ProductPage::with(['category', 'categories'])->latest()->get();
         return view('admin.products.index', compact('pages'));
     }
 
@@ -74,6 +80,8 @@ class ProductController extends Controller
     {
         $request->validate([
             'category_id' => 'nullable|exists:categories,id',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:product_pages',
             'price' => 'required|numeric|min:0',
@@ -83,7 +91,7 @@ class ProductController extends Controller
 
         $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->title);
 
-        ProductPage::create([
+        $product = ProductPage::create([
             'category_id' => $request->category_id,
             'title' => $request->title,
             'slug' => $slug,
@@ -97,13 +105,18 @@ class ProductController extends Controller
             'is_published' => true,
         ]);
 
+        // Sync multiple categories
+        if ($request->filled('categories')) {
+            $product->categories()->sync($request->categories);
+        }
+
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
     }
 
     // Admin: Edit product form
     public function edit($id)
     {
-        $page = ProductPage::findOrFail($id);
+        $page = ProductPage::with('categories')->findOrFail($id);
         $categories = \App\Models\Category::where('is_active', true)->get();
         return view('admin.products.edit', compact('page', 'categories'));
     }
@@ -115,6 +128,8 @@ class ProductController extends Controller
 
         $request->validate([
             'category_id' => 'nullable|exists:categories,id',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:product_pages,slug,' . $id,
             'price' => 'required|numeric|min:0',
@@ -136,6 +151,13 @@ class ProductController extends Controller
             'meta_description' => $request->meta_description,
             'meta_keywords' => $request->meta_keywords,
         ]);
+
+        // Sync multiple categories
+        if ($request->filled('categories')) {
+            $page->categories()->sync($request->categories);
+        } else {
+            $page->categories()->detach();
+        }
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
     }

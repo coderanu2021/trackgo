@@ -152,9 +152,27 @@
         }
         
         /* Add labels for mobile */
-        td:nth-child(2):before { content: "Price: "; font-weight: 700; color: var(--text-muted); }
-        td:nth-child(3):before { content: "Quantity: "; font-weight: 700; color: var(--text-muted); }
-        td:nth-child(4):before { content: "Total: "; font-weight: 700; color: var(--text-muted); }
+        td:nth-child(2):before { 
+            content: "Price: "; 
+            font-weight: 700; 
+            color: var(--text-muted); 
+            display: inline-block;
+            width: 80px;
+        }
+        td:nth-child(3):before { 
+            content: "Quantity: "; 
+            font-weight: 700; 
+            color: var(--text-muted); 
+            display: inline-block;
+            width: 80px;
+        }
+        td:nth-child(4):before { 
+            content: "Total: "; 
+            font-weight: 700; 
+            color: var(--text-muted); 
+            display: inline-block;
+            width: 80px;
+        }
         
         /* Product details on mobile */
         td:first-child > div {
@@ -189,6 +207,12 @@
         .container > div:last-child > div:last-child > div:last-child {
             text-align: center !important;
         }
+        
+        /* Make buttons full width on mobile */
+        .container > div:last-child > div:last-child .btn {
+            width: 100%;
+            justify-content: center;
+        }
     }
     
     @media (max-width: 480px) {
@@ -204,6 +228,26 @@
         td:first-child > div > div:first-child {
             width: 60px;
             height: 60px;
+        }
+        
+        /* Smaller padding on very small screens */
+        tr {
+            padding: 1rem;
+        }
+        
+        /* Stack price and quantity info */
+        td:nth-child(2), td:nth-child(3), td:nth-child(4) {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0 !important;
+            border-bottom: 1px solid var(--border-soft);
+        }
+        
+        td:nth-child(4) {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
     }
 </style>

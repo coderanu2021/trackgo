@@ -31,7 +31,19 @@
                         <div style="width: 42px; height: 42px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-soft);">
                             <i class="fas fa-file-lines" style="color: var(--primary); font-size: 1rem;"></i>
                         </div>
-                        <div style="font-weight: 700; color: var(--text-main);">{{ $page->title }}</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--text-main);">{{ $page->title }}</div>
+                            @if($page->category || $page->categories->count() > 0)
+                                <div style="margin-top: 0.25rem;">
+                                    @if($page->category)
+                                        <span class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); font-size: 0.7rem; margin-right: 0.25rem;">{{ $page->category->name }}</span>
+                                    @endif
+                                    @foreach($page->categories as $category)
+                                        <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #065f46; font-size: 0.7rem; margin-right: 0.25rem;">{{ $category->name }}</span>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </td>
                 <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">/products/{{ $page->slug }}</td>

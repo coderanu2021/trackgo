@@ -75,6 +75,94 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('pages/{id}', [PageBuilderController::class, 'update'])->name('pages.update');
     Route::delete('pages/{id}', [PageBuilderController::class, 'destroy'])->name('pages.destroy');
     Route::post('pages/upload', [PageBuilderController::class, 'upload'])->name('pages.upload');
+    
+    // Simple test upload without validation
+    Route::post('test-simple-upload', function(Request $request) {
+        \Log::info('Simple upload test', [
+            'has_file' => $request->hasFile('image'),
+            'all_files' => $request->allFiles(),
+            'all_input' => $request->all(),
+        ]);
+        
+        if (!$request->hasFile('image')) {
+            return response()->json(['error' => 'No file in request'], 400);
+        }
+        
+        $file = $request->file('image');
+        
+        return response()->json([
+            'success' => true,
+            'file_info' => [
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType(),
+                'error' => $file->getError(),
+                'is_valid' => $file->isValid(),
+            ]
+        ]);
+    })->name('test-simple-upload');
+    
+    // Debug what Laravel receives
+    Route::post('debug-request', function(Request $request) {
+        return response()->json([
+            'method' => $request->method(),
+            'headers' => $request->headers->all(),
+            'content_type' => $request->header('Content-Type'),
+            'content_length' => $request->header('Content-Length'),
+            'has_files' => !empty($request->allFiles()),
+            'files' => $request->allFiles(),
+            'input' => $request->all(),
+            'server' => [
+                'CONTENT_LENGTH' => $_SERVER['CONTENT_LENGTH'] ?? 'not set',
+                'CONTENT_TYPE' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
+                'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD'] ?? 'not set',
+            ]
+        ]);
+    })->name('debug-request');
+    
+    // Very simple upload test
+    Route::post('very-simple-upload', function(Request $request) {
+        \Log::info('Very simple upload test', [
+            'method' => $request->method(),
+            'has_file' => $request->hasFile('image'),
+            'files_count' => count($request->allFiles()),
+            'all_files' => $request->allFiles(),
+        ]);
+        
+        return response()->json([
+            'received_files' => count($request->allFiles()),
+            'has_image' => $request->hasFile('image'),
+            'all_files' => $request->allFiles(),
+        ]);
+    })->name('very-simple-upload');
+    
+    // Test upload route for debugging
+    Route::get('test-upload', function() {
+        return view('admin.test-upload');
+    })->name('test-upload');
+    
+    // Simple upload test
+    Route::get('simple-upload-test', function() {
+        return view('admin.simple-upload-test');
+    })->name('simple-upload-test');
+    
+    // Debug upload info
+    Route::get('upload-info', function() {
+        return response()->json([
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+            'post_max_size' => ini_get('post_max_size'),
+            'max_file_uploads' => ini_get('max_file_uploads'),
+            'memory_limit' => ini_get('memory_limit'),
+            'uploads_dir_exists' => is_dir(storage_path('app/public/uploads')),
+            'uploads_dir_writable' => is_writable(storage_path('app/public/uploads')),
+            'storage_link_exists' => is_dir(public_path('storage')),
+        ]);
+    })->name('upload-info');
+    
+    // PHP info for debugging
+    Route::get('php-info', function() {
+        phpinfo();
+    })->name('php-info');
 
     // Orders Routes
     Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'update']);
@@ -164,3 +252,23 @@ Route::post('payment/{payment}/verify', [PaymentController::class, 'verify'])->n
 
 // Payment Webhooks (no auth required)
 Route::post('webhook/payment/{gateway}', [PaymentController::class, 'webhook'])->name('payment.webhook');
+
+// Test routes outside of admin middleware
+Route::post('test-upload-no-auth', function(Request $request) {
+    \Log::info('No auth upload test', [
+        'has_file' => $request->hasFile('image'),
+        'files' => $request->allFiles(),
+    ]);
+    
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        return response()->json([
+            'success' => true,
+            'file_received' => true,
+            'file_name' => $file->getClientOriginalName(),
+            'file_size' => $file->getSize(),
+        ]);
+    }
+    
+    return response()->json(['error' => 'No file received']);
+})->withoutMiddleware();

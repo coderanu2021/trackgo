@@ -891,7 +891,7 @@
             <div class="feature-icon"><i class="fas fa-shipping-fast"></i></div>
             <div>
                 <div style="font-weight:700; color:var(--secondary);">Free Shipping</div>
-                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:0.2rem;">On orders over $100</div>
+                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:0.2rem;">On orders over ₹5000</div>
             </div>
         </div>
         <div class="feature-item">

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Upload Debug Tests</h1>
+    
+    <div class="test">
+        <h2>Test 1: Simple PHP Upload (No Laravel)</h2>
+        <input type="file" id="php-file" accept="image/*">
+        <button onclick="testPHPUpload()">Test PHP Upload</button>
+        <div id="php-result" class="result"></div>
+    </div>
+    
+    <div class="test">
+        <h2>Test 2: Laravel Upload (No Auth)</h2>
+        <input type="file" id="no-auth-file" accept="image/*">
+        <button onclick="testNoAuthUpload()">Test No Auth Upload</button>
+        <div id="no-auth-result" class="result"></div>
+    </div>
+    
+    <div class="test">
+        <h2>Test 3: Laravel Upload (With Auth)</h2>
+        <input type="file" id="auth-file" accept="image/*">
+        <button onclick="testAuthUpload()">Test Auth Upload</button>
+        <div id="auth-result" class="result"></div>
+    </div>
+    
+    <script>
+        async function testPHPUpload() {
+            const fileInput = document.getElementById('php-file');
+            const file = fileInput.files[0];
+            const resultDiv = document.getElementById('php-result');
+            
+            if (!file) {
+                resultDiv.innerHTML = '<p class="error">Please select a file</p>';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const response = await fetch('/simple-upload-test.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const text = await response.text();
+                const data = JSON.parse(text);
+                
+                if (data.has_files) {
+                    resultDiv.innerHTML = `<p class="success">PHP Upload: File received successfully</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">PHP Upload: No file received</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">PHP Upload Error: ${error.message}</p>`;
+            }
+        }
+        
+        async function testNoAuthUpload() {
+            const fileInput = document.getElementById('no-auth-file');
+            const file = fileInput.files[0];
+            const resultDiv = document.getElementById('no-auth-result');
+            
+            if (!file) {
+                resultDiv.innerHTML = '<p class="error">Please select a file</p>';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const response = await fetch('/test-upload-no-auth', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const text = await response.text();
+                const data = JSON.parse(text);
+                
+                if (data.file_received) {
+                    resultDiv.innerHTML = `<p class="success">Laravel No Auth: File received successfully</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">Laravel No Auth: ${data.error}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Laravel No Auth Error: ${error.message}</p>`;
+            }
+        }
+        
+        async function testAuthUpload() {
+            const fileInput = document.getElementById('auth-file');
+            const file = fileInput.files[0];
+            const resultDiv = document.getElementById('auth-result');
+            
+            if (!file) {
+                resultDiv.innerHTML = '<p class="error">Please select a file</p>';
+                return;
+            }
+            
+            // First get CSRF token
+            try {
+                const tokenResponse = await fetch('/admin/upload-info');
+                // This will fail if not authenticated, but that's expected
+            } catch (e) {
+                resultDiv.innerHTML = '<p class="error">Not authenticated - please login to admin first</p>';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            // Note: CSRF token would be needed for real auth test
+            
+            try {
+                const response = await fetch('/admin/very-simple-upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const text = await response.text();
+                const data = JSON.parse(text);
+                
+                if (data.has_image) {
+                    resultDiv.innerHTML = `<p class="success">Laravel Auth: File received successfully</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">Laravel Auth: No file received</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Laravel Auth Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
