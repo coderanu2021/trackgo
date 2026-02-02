@@ -27,7 +27,7 @@
             @foreach($plans as $plan)
             <tr>
                 <td><strong>{{ $plan->name }}</strong></td>
-                <td>{{ $plan->currency }} {{ number_format($plan->price, 2) }}</td>
+                <td>{{ $plan->currency }} {{ formatIndianPrice($plan->price, 2) }}</td>
                 <td><span class="badge" style="background:#e2e8f0; color:#475569;">{{ ucfirst($plan->cycle) }}</span></td>
                 <td>
                     @if($plan->is_featured)

@@ -41,7 +41,7 @@ class CartController extends Controller
                 'success' => true,
                 'message' => 'Product added to cart successfully!',
                 'cart_count' => $cartCount,
-                'cart_total' => number_format($cartTotal, 2),
+                'cart_total' => formatIndianPrice($cartTotal, 2),
                 'product' => [
                     'id' => $id,
                     'title' => $product->title,

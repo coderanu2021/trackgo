@@ -71,7 +71,7 @@
     }
     .price-old {
         font-size: 1.25rem;
-        color: var(--text-muted);
+        color: #ef4444;
         text-decoration: line-through;
         font-weight: 400;
     }
@@ -282,9 +282,9 @@
 
                 <div class="price-tag">
                     @if($page->discount > 0)
-                        <span class="price-old">₹{{ number_format($page->price + $page->discount, 2) }}</span>
+                        <span class="price-old" style="color: #ef4444; text-decoration: line-through; font-size: 1.1rem; margin-right: 0.5rem;">₹{{ formatIndianPrice($page->price + $page->discount, 2) }}</span>
                     @endif
-                    <span>₹{{ number_format($page->price, 2) }}</span>
+                    <span style="color: var(--primary); font-weight: 700; font-size: 1.3rem;">₹{{ formatIndianPrice($page->price, 2) }}</span>
                 </div>
 
                 <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">

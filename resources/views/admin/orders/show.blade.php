@@ -63,9 +63,9 @@
                     @foreach($order->items as $item)
                     <tr>
                         <td style="padding: 1rem; font-weight: 600;">{{ $item->product->title ?? 'Deleted Product' }}</td>
-                        <td style="padding: 1rem;">₹{{ number_format($item->price, 2) }}</td>
+                        <td style="padding: 1rem;">₹{{ formatIndianPrice($item->price, 2) }}</td>
                         <td style="padding: 1rem;">{{ $item->quantity }}</td>
-                        <td style="padding: 1rem; text-align: right; font-weight: 600;">₹{{ number_format($item->price * $item->quantity, 2) }}</td>
+                        <td style="padding: 1rem; text-align: right; font-weight: 600;">₹{{ formatIndianPrice($item->price * $item->quantity, 2) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -74,11 +74,11 @@
                 <div style="width: 200px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                         <span style="color: var(--text-muted);">Subtotal</span>
-                        <span>₹{{ number_format($order->total_amount, 2) }}</span>
+                        <span>₹{{ formatIndianPrice($order->total_amount, 2) }}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.25rem; color: var(--text-main);">
                         <span>Total</span>
-                        <span>₹{{ number_format($order->total_amount, 2) }}</span>
+                        <span>₹{{ formatIndianPrice($order->total_amount, 2) }}</span>
                     </div>
                 </div>
             </div>

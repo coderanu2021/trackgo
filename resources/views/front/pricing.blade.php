@@ -28,7 +28,7 @@
             <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--secondary);">{{ $plan->name }}</h3>
             <div style="display: flex; align-items: baseline; gap: 0.25rem; margin-bottom: 2rem;">
                 <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-muted);">₹</span>
-                <span style="font-size: 3.5rem; font-weight: 800; color: var(--secondary); font-family: 'Outfit', sans-serif;">{{ number_format($plan->price, 0) }}</span>
+                <span style="font-size: 3.5rem; font-weight: 800; color: var(--secondary); font-family: 'Outfit', sans-serif;">{{ formatIndianPrice($plan->price, 0) }}</span>
                 <span style="color: var(--text-muted); font-weight: 600;">/{{ $plan->cycle }}</span>
             </div>
 

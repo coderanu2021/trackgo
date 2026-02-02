@@ -86,7 +86,7 @@
                 <div style="border-top: 1px solid var(--border); margin: 2rem 0; padding-top: 2rem;">
                     <div class="order-row total-row">
                         <span style="font-size: 1.25rem; font-weight: 800;">Total Amount:</span>
-                        <span style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">₹{{ number_format($order->total_amount, 2) }}</span>
+                        <span style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">₹{{ formatIndianPrice($order->total_amount, 2) }}</span>
                     </div>
                 </div>
 

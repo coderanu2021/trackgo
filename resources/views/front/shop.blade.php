@@ -357,8 +357,9 @@
     }
     .price-old { 
         font-size: 0.9rem; 
-        color: #95a5a6; 
+        color: #ef4444; 
         text-decoration: line-through;
+        margin-right: 0.5rem;
     }
 
 

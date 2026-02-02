@@ -31,7 +31,7 @@
             
             <div class="detail-row">
                 <span>Amount:</span>
-                <span style="font-weight: 700;">₹{{ number_format($payment->amount, 2) }}</span>
+                <span style="font-weight: 700;">₹{{ formatIndianPrice($payment->amount, 2) }}</span>
             </div>
             
             <div class="detail-row">

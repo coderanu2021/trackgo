@@ -18,7 +18,7 @@
         @forelse($products->take(8) as $product)
             <div class="product-card">
                 <div class="product-title">{{ $product->title }}</div>
-                <div class="product-price">₹{{ number_format($product->price, 2) }}</div>
+                <div class="product-price">₹{{ formatIndianPrice($product->price, 2) }}</div>
                 <p>Category: {{ $product->category->name ?? 'General' }}</p>
                 <p>Stock: {{ $product->stock }}</p>
                 @if($product->thumbnail)

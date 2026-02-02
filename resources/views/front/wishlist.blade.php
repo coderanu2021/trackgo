@@ -33,7 +33,7 @@
                         <h3 class="wishlist-title">
                             <a href="{{ route('products.show', $details['slug']) }}">{{ $details['title'] }}</a>
                         </h3>
-                        <div class="wishlist-price">₹{{ number_format($details['price'], 2) }}</div>
+                        <div class="wishlist-price">₹{{ formatIndianPrice($details['price'], 2) }}</div>
                         <div class="wishlist-actions">
                             <button onclick="addToCartAjax({{ $id }})" class="btn-cart-icon-large" title="Add to Cart">
                                 <i class="fas fa-shopping-cart"></i>

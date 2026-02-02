@@ -62,7 +62,7 @@
                                 <div style="font-weight: 600;">{{ $details['title'] }}</div>
                                 <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">QTY: {{ $details['quantity'] }}</div>
                             </div>
-                            <div style="font-family: 'Outfit', sans-serif; font-weight: 700;">₹{{ number_format($details['price'] * $details['quantity'], 2) }}</div>
+                            <div style="font-family: 'Outfit', sans-serif; font-weight: 700;">₹{{ formatIndianPrice($details['price'] * $details['quantity'], 2) }}</div>
                         </div>
                     @endforeach
                 </div>
@@ -70,7 +70,7 @@
                 <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
                     <div class="flex justify-between" style="margin-bottom: 0.75rem; font-size: 0.9rem; color: rgba(255,255,255,0.6);">
                         <span>Subtotal</span>
-                        <span>₹{{ number_format($total, 2) }}</span>
+                        <span>₹{{ formatIndianPrice($total, 2) }}</span>
                     </div>
                     <div class="flex justify-between" style="margin-bottom: 0.75rem; font-size: 0.9rem; color: rgba(255,255,255,0.6);">
                         <span>Processing Fee</span>
@@ -78,7 +78,7 @@
                     </div>
                     <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; font-weight: 800; font-size: 1.5rem;">
                         <span>Final Total</span>
-                        <span style="color: var(--primary);">₹{{ number_format($total, 2) }}</span>
+                        <span style="color: var(--primary);">₹{{ formatIndianPrice($total, 2) }}</span>
                     </div>
                 </div>
 
@@ -101,17 +101,18 @@
     
     @media (max-width: 768px) {
         .container {
-            padding: 3rem 1rem !important;
+            padding: 2rem 1rem !important;
         }
         
         .container > div:nth-child(2) {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr !important;
             gap: 2rem;
         }
         
         /* Form responsive */
         .container > div:nth-child(2) > div:first-child {
-            padding: 2rem !important;
+            padding: 1.5rem !important;
+            margin-bottom: 1rem;
         }
         
         .container > div:nth-child(2) > div:first-child > form > div:first-child {
@@ -120,9 +121,13 @@
         }
         
         /* Order summary responsive */
+        aside {
+            order: -1; /* Show order summary first on mobile */
+        }
+        
         aside > div {
             position: static !important;
-            padding: 2rem !important;
+            padding: 1.5rem !important;
         }
         
         /* Order items responsive */
@@ -130,7 +135,7 @@
             flex-direction: column !important;
             align-items: flex-start !important;
             gap: 0.5rem;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
@@ -141,72 +146,90 @@
         aside > div > div:nth-child(2) > div > div:last-child {
             align-self: flex-end;
             font-size: 1.1rem;
+            font-weight: 700;
         }
         
         /* Form inputs full width */
         input, textarea, select {
             width: 100% !important;
-            box-sizing: border-box;
+            box-sizing: border-box !important;
+            font-size: 16px !important; /* Prevent zoom on iOS */
         }
         
         /* Button full width */
         button[type="submit"] {
             width: 100% !important;
+            padding: 1rem !important;
+            font-size: 1rem !important;
+        }
+        
+        /* Form labels */
+        label {
+            font-size: 0.8rem !important;
+        }
+        
+        /* Security notice */
+        .container > div:nth-child(2) > div:first-child > form > div:nth-child(4) {
+            padding: 1rem !important;
+            font-size: 0.85rem !important;
         }
     }
     
     @media (max-width: 480px) {
+        .container {
+            padding: 1rem 0.5rem !important;
+        }
+        
         h1 {
-            font-size: 2rem !important;
+            font-size: 1.8rem !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .container > div:nth-child(1) {
+            margin-bottom: 2rem !important;
         }
         
         .container > div:nth-child(2) > div:first-child {
-            padding: 1.5rem !important;
+            padding: 1rem !important;
         }
         
         aside > div {
-            padding: 1.5rem !important;
-        }
-        
-        /* Form inputs prevent zoom on iOS */
-        input, textarea, select {
-            font-size: 16px !important;
+            padding: 1rem !important;
         }
         
         /* Smaller form elements */
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1rem !important;
         }
         
-        /* Order summary items */
-        aside > div > div:nth-child(2) > div > div:first-child {
-            max-width: 100%;
-        }
-        
-        /* Total section */
-        aside > div > div:nth-child(3) {
-            padding: 1rem !important;
-        }
-        
-        aside > div > div:nth-child(3) > div:last-child {
-            font-size: 1.25rem !important;
-        }
-    }
-    
-    /* Additional mobile improvements */
-    @media (max-width: 640px) {
-        /* Security notice */
-        .container > div:nth-child(2) > div:first-child > form > div:nth-child(4) {
-            padding: 1rem !important;
-            font-size: 0.85rem;
+        input, textarea {
+            padding: 0.75rem 1rem !important;
+            font-size: 16px !important;
         }
         
         /* Order summary header */
         aside > div > h3 {
             font-size: 1.1rem !important;
+            margin-bottom: 1.5rem !important;
         }
         
-        /* Responsive grid for name/email */
+        /* Order summary items */
+        aside > div > div:nth-child(2) > div > div:first-child {
+            max-width: 100%;
+            font-size: 0.9rem;
+        }
+        
+        /* Total section */
+        aside > div > div:nth-child(3) {
+            padding: 1rem !important;
+            margin-top: 1rem;
+        }
+        
+        aside > div > div:nth-child(3) > div:last-child {
+            font-size: 1.2rem !important;
+        }
+        
+        /* Form grid on very small screens */
         .container > div:nth-child(2) > div:first-child > form > div:first-child {
             display: block !important;
         }
@@ -217,6 +240,52 @@
         
         .container > div:nth-child(2) > div:first-child > form > div:first-child > div:last-child {
             margin-bottom: 0;
+        }
+        
+        /* Security notice improvements */
+        .container > div:nth-child(2) > div:first-child > form > div:nth-child(4) > div {
+            flex-direction: column !important;
+            text-align: center;
+            gap: 0.5rem !important;
+        }
+        
+        .container > div:nth-child(2) > div:first-child > form > div:nth-child(4) > div > i {
+            font-size: 1.5rem !important;
+        }
+    }
+    
+    /* Extra small screens */
+    @media (max-width: 360px) {
+        .container {
+            padding: 1rem 0.25rem !important;
+        }
+        
+        .container > div:nth-child(2) > div:first-child,
+        aside > div {
+            padding: 0.75rem !important;
+        }
+        
+        input, textarea {
+            padding: 0.6rem 0.8rem !important;
+        }
+        
+        button[type="submit"] {
+            padding: 0.8rem !important;
+        }
+    }
+    
+    /* Landscape mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .container {
+            padding: 1rem !important;
+        }
+        
+        .container > div:nth-child(2) {
+            gap: 1.5rem;
+        }
+        
+        aside > div {
+            padding: 1rem !important;
         }
     }
 </style>

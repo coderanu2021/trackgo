@@ -1056,7 +1056,10 @@
                             </h3>
                             <div class="p-footer">
                                 <div class="p-price">
-                                    ₹{{ number_format($product->price, 2) }}
+                                    @if($product->discount && $product->discount > 0)
+                                        <span style="color: #ef4444; text-decoration: line-through; font-size: 0.9rem; margin-right: 0.5rem;">₹{{ formatIndianPrice($product->price + $product->discount, 2) }}</span>
+                                    @endif
+                                    <span style="color: var(--primary);">₹{{ formatIndianPrice($product->price, 2) }}</span>
                                 </div>
                                 <div class="product-actions-home">
                                     <button onclick="addToCartAjax({{ $product->id }})" class="btn-cart-icon" title="Add to Cart">

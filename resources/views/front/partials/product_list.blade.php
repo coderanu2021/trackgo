@@ -83,9 +83,9 @@
         
         <div class="product-price-minimal">
             @if($product->discount && $product->discount > 0)
-                <span class="price-old">₹{{ number_format($product->price + $product->discount, 2) }}</span>
+                <span class="price-old" style="color: #ef4444; text-decoration: line-through; font-size: 0.9rem;">₹{{ formatIndianPrice($product->price + $product->discount, 2) }}</span>
             @endif
-            <span class="price-current">₹{{ number_format($product->price, 2) }}</span>
+            <span class="price-current" style="color: var(--primary); font-weight: 700;">₹{{ formatIndianPrice($product->price, 2) }}</span>
         </div>
 
         <div class="product-actions-inline">
