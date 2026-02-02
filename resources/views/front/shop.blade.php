@@ -14,7 +14,8 @@
     .shop-hero {
         text-align: center;
         padding: 4rem 0 5rem;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+        background-color: #f37021; /* Fallback */
+        background-color: var(--primary) !important;
         color: white;
         margin-bottom: 4rem;
         position: relative;

@@ -20,6 +20,7 @@
             /* Dynamic Colors from Admin Settings */
             --primary: {{ $settings['site_primary_color'] ?? '#f37021' }}; /* Primary Color */
             --primary-dark: #d65d14; /* Keep static for now */
+            --primary-hover: var(--primary-dark);
             --secondary: #1a1a1a; /* Force black for headings - ignore admin setting */
             --text-main: #333333;
             --text-muted: #666666;
