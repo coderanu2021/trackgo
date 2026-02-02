@@ -161,6 +161,32 @@
                                 </div>
                             </div>
                         </div>`;
+                } else if (block.type === 'tabs') {
+                    const tabs = block.data.tabs || [];
+                    contentHtml = `<div class="block-label"><i class="fas fa-folder-tree"></i> Tabs Section</div>
+                        <div class="tabs-editor-container" style="background: var(--bg-light); padding: 1rem; border-radius: 8px;">
+                            ${tabs.map((tab, i) => `
+                                <div class="tab-item" style="border: 1px solid var(--border-soft); padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; background: white;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <span style="font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Tab ${i+1}</span>
+                                        </div>
+                                        ${tabs.length > 1 ? `<button type="button" onclick="window.removeTabItem('${blockId}', ${i})" class="btn-icon-sm text-red" style="width: 28px; height: 28px;" title="Remove Tab"><i class="fas fa-times"></i></button>` : ''}
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tab Title</label>
+                                        <input class="form-control" value="${tab.title || ''}" onchange="window.updateBlockById('${blockId}', 'data.tabs.${i}.title', this.value)" placeholder="e.g. Description">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tab Content</label>
+                                        <textarea class="form-control" rows="3" onchange="window.updateBlockById('${blockId}', 'data.tabs.${i}.content', this.value)" placeholder="Enter content for this tab...">${tab.content || ''}</textarea>
+                                    </div>
+                                </div>
+                            `).join('')}
+                            <button type="button" onclick="window.addTabItem('${blockId}')" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 0.5rem;">
+                                <i class="fas fa-plus"></i> Add Another Tab
+                            </button>
+                        </div>`;
                 } else if (block.type === 'columns') {
                     const columns = block.data.columns || [];
                     contentHtml = `<div class="block-label"><i class="fas fa-columns"></i> Multi-Column Layout</div>
@@ -440,6 +466,31 @@
                 block.data.columns.pop();
                 window.renderBlocks();
             }
+        };
+
+        // Tabs management functions
+        window.addTabItem = function(blockId) {
+            const block = allBlocks.get(blockId);
+            if (!block || !block.data.tabs) {
+                // Initialize if missing
+                if (block) {
+                    block.data.tabs = [];
+                } else {
+                    console.error('Block not found');
+                    return;
+                }
+            }
+            
+            block.data.tabs.push({ title: 'New Tab', content: 'Tab content...' });
+            window.renderBlocks();
+        };
+
+        window.removeTabItem = function(blockId, index) {
+            const block = allBlocks.get(blockId);
+            if (!block || !block.data.tabs) return;
+            
+            block.data.tabs.splice(index, 1);
+            window.renderBlocks();
         };
 
         // Image upload function for blocks
