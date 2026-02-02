@@ -146,16 +146,33 @@
             
             <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
-                    <label>Regular Price (₹)</label>
-                    <input type="number" name="price" class="form-control" step="0.01" placeholder="e.g. 2999.00">
+                    <label>Selling Price (₹)</label>
+                    <small class="form-text text-muted">Current price customers will pay</small>
+                    <input type="number" name="price" class="form-control" step="0.01" placeholder="e.g. 12500.00">
                 </div>
                 <div class="form-group">
                     <label>Discount Amount (₹)</label>
-                    <input type="number" name="discount" class="form-control" step="0.01" placeholder="e.g. 300.00">
+                    <small class="form-text text-muted">Amount off from original price (shows strikethrough)</small>
+                    <input type="number" name="discount" class="form-control" step="0.01" placeholder="e.g. 2500.00">
                 </div>
                 <div class="form-group">
                     <label>Stock Count</label>
                     <input type="number" name="stock" class="form-control" placeholder="e.g. 100">
+                </div>
+            </div>
+
+            <!-- Price Preview -->
+            <div class="form-group">
+                <label>Price Display Preview</label>
+                <div class="price-preview" style="padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                    <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">
+                        <span style="color: #6c757d;">Customer will see:</span>
+                    </div>
+                    <div id="price-display-preview" style="font-size: 1.3rem;">
+                        <span id="original-price" style="color: #ef4444; text-decoration: line-through; margin-right: 0.5rem; display: none;">₹0.00</span>
+                        <span id="selling-price" style="color: var(--primary); font-weight: 700;">₹0.00</span>
+                    </div>
+                    <small class="text-muted">Enter prices above to see preview</small>
                 </div>
             </div>
 
@@ -338,6 +355,47 @@
             alert('Gallery upload failed: ' + e.message);
         }
     }
+</script>
+
+<script>
+// Price Preview Functionality
+function updatePricePreview() {
+    const sellingPrice = parseFloat(document.querySelector('input[name="price"]').value) || 0;
+    const discountAmount = parseFloat(document.querySelector('input[name="discount"]').value) || 0;
+    const originalPrice = sellingPrice + discountAmount;
+    
+    const originalPriceEl = document.getElementById('original-price');
+    const sellingPriceEl = document.getElementById('selling-price');
+    
+    // Format prices in Indian format
+    const formatIndianPrice = (amount) => {
+        return new Intl.NumberFormat('en-IN', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(amount);
+    };
+    
+    if (discountAmount > 0) {
+        originalPriceEl.textContent = '₹' + formatIndianPrice(originalPrice);
+        originalPriceEl.style.display = 'inline';
+    } else {
+        originalPriceEl.style.display = 'none';
+    }
+    
+    sellingPriceEl.textContent = '₹' + formatIndianPrice(sellingPrice);
+}
+
+// Add event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const priceInput = document.querySelector('input[name="price"]');
+    const discountInput = document.querySelector('input[name="discount"]');
+    
+    if (priceInput) priceInput.addEventListener('input', updatePricePreview);
+    if (discountInput) discountInput.addEventListener('input', updatePricePreview);
+    
+    // Initial update
+    updatePricePreview();
+});
 </script>
 @include('admin.pages.script')
 <script>
