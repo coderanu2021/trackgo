@@ -144,7 +144,7 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0 30px;
+            padding: 0 10px;
             font-weight: 600;
             text-transform: uppercase;
             cursor: pointer;
