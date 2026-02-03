@@ -34,6 +34,13 @@
             else if (type === 'hero_stats') data = { title: '', description: '', image: '', stats: [{ value: '100+', label: 'Clients' }] };
             else if (type === 'timeline') data = { events: [{ year: '2024', title: 'New Event', badge: 'Milestone' }] };
             else if (type === 'split_content') data = { title: '', description: '', image: '', position: 'left', stats: [] };
+            else if (type === 'table') data = { 
+                headers: ['Column 1', 'Column 2'], 
+                rows: [
+                    ['Cell 1', 'Cell 2'],
+                    ['Cell 3', 'Cell 4']
+                ] 
+            };
             else data = { title: '', description: '' };
 
             window.blocks.push({ 
@@ -179,7 +186,8 @@
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tab Content</label>
-                                        <textarea class="form-control" rows="3" onchange="window.updateBlockById('${blockId}', 'data.tabs.${i}.content', this.value)" placeholder="Enter content for this tab...">${tab.content || ''}</textarea>
+                                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Tab Content</label>
+                                        <textarea id="tab-editor-${blockId}-${i}" class="form-control" rows="3" placeholder="Enter content for this tab...">${tab.content || ''}</textarea>
                                     </div>
                                 </div>
                             `).join('')}
@@ -221,14 +229,68 @@
                                 <i class="fas fa-minus"></i> Remove Column
                             </button>` : ''}
                         </div>`;
+                } else if (block.type === 'table') {
+                    const headers = block.data.headers || [];
+                    const rows = block.data.rows || [];
+                    
+                    // Helper to generate unique IDs for inputs to avoid focus issues
+                    const tId = blockId; // short alias
+                    
+                    let headerHtml = headers.map((h, i) => `
+                        <th>
+                            <div class="flex gap-1">
+                                <input type="text" class="form-control form-control-sm" value="${h}" onchange="window.updateTableData('${blockId}', 'header', ${i}, this.value)">
+                                <button type="button" onclick="window.removeTableCol('${blockId}', ${i})" class="btn-icon-xs text-red" title="Remove Column"><i class="fas fa-times"></i></button>
+                            </div>
+                        </th>
+                    `).join('');
+                    
+                    let rowsHtml = rows.map((row, rIndex) => {
+                        let cellsHtml = row.map((cell, cIndex) => `
+                            <td>
+                                <input type="text" class="form-control form-control-sm" value="${cell}" onchange="window.updateTableData('${blockId}', 'cell', ${rIndex}, ${cIndex}, this.value)">
+                            </td>
+                        `).join('');
+                        
+                        return `
+                            <tr>
+                                ${cellsHtml}
+                                <td style="width: 50px;">
+                                    <button type="button" onclick="window.removeTableRow('${blockId}', ${rIndex})" class="btn-icon-xs text-red" title="Remove Row"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                    contentHtml = `<div class="block-label"><i class="fas fa-table"></i> Table Block</div>
+                        <div class="table-responsive" style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-soft);">
+                            <table class="table table-bordered mb-3">
+                                <thead>
+                                    <tr>
+                                        ${headerHtml}
+                                        <th style="width: 50px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rowsHtml}
+                                </tbody>
+                            </table>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="window.addTableRow('${blockId}')" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Row</button>
+                                <button type="button" onclick="window.addTableCol('${blockId}')" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Column</button>
+                            </div>
+                        </div>`;
                 } else {
                     contentHtml = `<div class="block-label"><i class="fas fa-cubes"></i> ${block.type} Block</div><p style="color:var(--text-muted); font-size:0.8rem;">Click settings to configure this section.</p>`;
                 }
+                
+                // Hide Settings button for Table and Tabs as requested
+                const showSettings = !['table', 'tabs'].includes(block.type);
 
                 const controls = document.createElement('div');
                 controls.className = 'block-controls';
                 controls.innerHTML = `
-                    <button type="button" onclick="window.openSettings('${blockId}')" class="btn-icon-sm"><i class="fas fa-cog"></i></button>
+                    ${showSettings ? `<button type="button" onclick="window.openSettings('${blockId}')" class="btn-icon-sm"><i class="fas fa-cog"></i></button>` : ''}
                     <button type="button" onclick="window.removeBlockById('${blockId}')" class="btn-icon-sm text-red"><i class="fas fa-trash"></i></button>
                 `;
 
@@ -242,14 +304,40 @@
                     });
                 }
 
-                if (block.type === 'text' && typeof ClassicEditor !== 'undefined') {
-                    ClassicEditor.create(el.querySelector(`#editor-${blockId}`)).then(editor => {
-                        editors[blockId] = editor;
-                        editor.model.document.on('change:data', () => {
-                            window.updateBlockById(blockId, 'data.content', editor.getData());
-                        });
-                    }).catch(err => console.warn('CKEditor delay:', err));
-                }
+            });
+            
+            // Post-render initialization for Editors (Text and Tabs)
+            blockList.forEach(block => {
+                 if (!block) return;
+                 const blockId = block._id;
+                 const el = container.querySelector(`.block-item[data-id="${blockId}"]`);
+                 if (!el) return;
+
+                 if (block.type === 'text' && typeof ClassicEditor !== 'undefined') {
+                     ClassicEditor.create(el.querySelector(`#editor-${blockId}`)).then(editor => {
+                         editors[blockId] = editor;
+                         editor.model.document.on('change:data', () => {
+                             window.updateBlockById(blockId, 'data.content', editor.getData());
+                         });
+                     }).catch(err => console.warn('CKEditor delay:', err));
+                 }
+                 
+                 if (block.type === 'tabs' && typeof ClassicEditor !== 'undefined') {
+                     const tabs = block.data.tabs || [];
+                     tabs.forEach((tab, i) => {
+                         const textarea = el.querySelector(`#tab-editor-${blockId}-${i}`);
+                         if (textarea) {
+                             ClassicEditor.create(textarea).then(editor => {
+                                 // We need a unique key for each tab editor to track it
+                                 const editorKey = `${blockId}-tab-${i}`;
+                                 editors[editorKey] = editor;
+                                 editor.model.document.on('change:data', () => {
+                                     window.updateBlockById(blockId, `data.tabs.${i}.content`, editor.getData());
+                                 });
+                             }).catch(err => console.warn('CKEditor tab delay:', err));
+                         }
+                     });
+                 }
             });
 
             if (isTopLevel) {

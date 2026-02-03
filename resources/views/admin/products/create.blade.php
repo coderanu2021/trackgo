@@ -62,6 +62,9 @@
                 <button type="button" onclick="addBlock('tabs')" class="btn btn-secondary" title="Add Interactive Tabs">
                     <i class="fas fa-folder-tree"></i> Tabs
                 </button>
+                <button type="button" onclick="addBlock('table')" class="btn btn-secondary" title="Add Table">
+                    <i class="fas fa-table"></i> Table
+                </button>
             </div>
         </div>
 
