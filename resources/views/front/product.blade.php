@@ -719,59 +719,60 @@
 
             <div class="review-form-column">
                 <div class="review-form-card">
-                    @if($hasPurchased)
-                        <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">Verified Purchase Review</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">Share your experience as a verified customer.</p>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">Write a Review</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">
+                        @if($hasPurchased)
+                            Share your experience as a verified customer.
+                        @else
+                            Share your thoughts with other customers.
+                        @endif
+                    </p>
 
-                        <form action="{{ route('reviews.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="page_id" value="{{ $page->id }}">
-                            
+                    <form action="{{ route('reviews.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="page_id" value="{{ $page->id }}">
+                        
+                        @guest
                             <div class="form-group">
-                                <label>Overall Rating</label>
-                                <div class="rating-select">
-                                    <input type="radio" name="rating" value="5" id="star5" checked><label for="star5" class="fas fa-star"></label>
-                                    <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="fas fa-star"></label>
-                                    <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="fas fa-star"></label>
-                                    <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="fas fa-star"></label>
-                                    <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="fas fa-star"></label>
-                                </div>
+                                <label>Your Name</label>
+                                <input type="text" name="name" class="form-control" placeholder="John Doe" required>
                             </div>
-
                             <div class="form-group">
-                                <label>Your Review</label>
-                                <textarea name="comment" rows="4" class="form-control" placeholder="What did you think of this product?" required></textarea>
+                                <label>Email Address</label>
+                                <input type="email" name="email" class="form-control" placeholder="john@example.com" required>
                             </div>
+                        @endguest
 
-                            <div class="form-group">
-                                <label>Photos (Optional)</label>
-                                <label for="review_images" class="image-upload-wrapper">
-                                    <i class="fas fa-camera" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 0.5rem; display: block;"></i>
-                                    <span style="font-size: 0.85rem; font-weight: 700; color: var(--secondary);">Click to upload images</span>
-                                    <input type="file" id="review_images" name="review_images[]" multiple accept="image/*" style="display: none;" onchange="updateFileLabel(this)">
-                                </label>
-                                <div id="file-label" style="font-size: 0.8rem; color: var(--primary); margin-top: 0.5rem; font-weight: 600;"></div>
+                        <div class="form-group">
+                            <label>Overall Rating</label>
+                            <div class="rating-select">
+                                <input type="radio" name="rating" value="5" id="star5" checked><label for="star5" class="fas fa-star"></label>
+                                <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="fas fa-star"></label>
+                                <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="fas fa-star"></label>
+                                <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="fas fa-star"></label>
+                                <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="fas fa-star"></label>
                             </div>
-
-                            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem; border-radius: 12px; margin-top: 1rem;">
-                                SUBMIT VERIFIED REVIEW <i class="fas fa-check-circle" style="margin-left: 0.5rem; font-size: 0.8rem;"></i>
-                            </button>
-                        </form>
-                    @elseif(auth()->check())
-                        <div style="text-align: center; padding: 1rem 0;">
-                            <i class="fas fa-lock" style="font-size: 2.5rem; color: var(--border); margin-bottom: 1.5rem;"></i>
-                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">Verified Reviews Only</h3>
-                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">You must purchase this product before you can leave a review.</p>
-                            <button onclick="addToCartAjax({{ $page->id }})" class="btn btn-primary" style="width: 100%; justify-content: center; border-radius: 12px;">Get Started</button>
                         </div>
-                    @else
-                        <div style="text-align: center; padding: 1rem 0;">
-                            <i class="fas fa-user-lock" style="font-size: 2.5rem; color: var(--border); margin-bottom: 1.5rem;"></i>
-                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">Member Access Only</h3>
-                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">Please log in and purchase this product to share your feedback.</p>
-                            <a href="{{ route('login') }}" class="btn btn-primary" style="width: 100%; justify-content: center; border-radius: 12px;">Login to Account</a>
+
+                        <div class="form-group">
+                            <label>Your Review</label>
+                            <textarea name="comment" rows="4" class="form-control" placeholder="What did you think of this product?" required></textarea>
                         </div>
-                    @endif
+
+                        <div class="form-group">
+                            <label>Photos (Optional)</label>
+                            <label for="review_images" class="image-upload-wrapper">
+                                <i class="fas fa-camera" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 0.5rem; display: block;"></i>
+                                <span style="font-size: 0.85rem; font-weight: 700; color: var(--secondary);">Click to upload images</span>
+                                <input type="file" id="review_images" name="review_images[]" multiple accept="image/*" style="display: none;" onchange="updateFileLabel(this)">
+                            </label>
+                            <div id="file-label" style="font-size: 0.8rem; color: var(--primary); margin-top: 0.5rem; font-weight: 600;"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem; border-radius: 12px; margin-top: 1rem;">
+                            SUBMIT REVIEW <i class="fas fa-paper-plane" style="margin-left: 0.5rem; font-size: 0.8rem;"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

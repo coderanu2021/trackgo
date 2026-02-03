@@ -12,27 +12,24 @@ class ReviewController extends Controller
 {
     public function store(Request $request)
     {
-        if (!auth()->check()) {
-            return redirect()->back()->with('error', 'You must be logged in to leave a review.');
-        }
-
-        $request->validate([
+        $rules = [
             'page_id' => 'required|exists:pages,id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'required|string|max:1000',
             'review_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        ];
 
-        // Check if user has purchased this product
-        $hasPurchased = \App\Models\OrderItem::where('product_page_id', $request->page_id)
-            ->whereHas('order', function($q) {
-                $q->where('user_id', auth()->id());
-            })->exists();
-
-        if (!$hasPurchased) {
-            return redirect()->back()->with('error', 'Only customers who have purchased this product can leave a review.');
+        // Combine rules with conditional guest rules
+        if (!auth()->check()) {
+            $rules['name'] = 'required|string|max:255';
+            $rules['email'] = 'required|email|max:255';
         }
 
+        $request->validate($rules);
+
+        // Check if user has purchased this product (helper for "Verified" badge logic if we had it, but mostly just to tag user)
+        // We no longer block non-purchasers.
+        
         $user = auth()->user();
 
         $imagePaths = [];
@@ -45,16 +42,16 @@ class ReviewController extends Controller
 
         Review::create([
             'page_id' => $request->page_id,
-            'user_id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
+            'user_id' => $user ? $user->id : null,
+            'name' => $user ? $user->name : $request->name,
+            'email' => $user ? $user->email : $request->email,
             'rating' => $request->rating,
             'comment' => $request->comment,
             'images' => $imagePaths,
-            'is_approved' => true,
+            'is_approved' => false, // Guest reviews require approval.
         ]);
 
-        return redirect()->back()->with('success', 'Thank you for your verified purchase review!');
+        return redirect()->back()->with('success', 'Thank you! Your review has been submitted for approval.');
     }
 
     public function index()

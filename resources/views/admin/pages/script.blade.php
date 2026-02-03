@@ -613,6 +613,75 @@
             window.renderBlocks();
         };
 
+        // Table functions
+        window.updateTableData = function(blockId, type, ...args) {
+            const block = allBlocks.get(blockId);
+            if (!block) return;
+            
+            if (type === 'header') {
+                const [index, value] = args;
+                if (!block.data.headers) block.data.headers = [];
+                block.data.headers[index] = value;
+            } else if (type === 'cell') {
+                const [rowIndex, colIndex, value] = args;
+                if (!block.data.rows) block.data.rows = [];
+                if (!block.data.rows[rowIndex]) block.data.rows[rowIndex] = [];
+                block.data.rows[rowIndex][colIndex] = value;
+            }
+            
+            // Sync to input
+            if (document.getElementById('blocks-input')) {
+                document.getElementById('blocks-input').value = JSON.stringify(window.blocks);
+            }
+        };
+
+        window.addTableCol = function(blockId) {
+            const block = allBlocks.get(blockId);
+            if (!block) return;
+            
+            if (!block.data.headers) block.data.headers = [];
+            block.data.headers.push('New Column');
+            
+            if (!block.data.rows) block.data.rows = [];
+            block.data.rows.forEach(row => row.push(''));
+            
+            window.renderBlocks();
+        };
+
+        window.addTableRow = function(blockId) {
+            const block = allBlocks.get(blockId);
+            if (!block) return;
+            
+            const colCount = block.data.headers ? block.data.headers.length : 1;
+            if (!block.data.rows) block.data.rows = [];
+            block.data.rows.push(new Array(colCount).fill(''));
+            
+            window.renderBlocks();
+        };
+
+        window.removeTableCol = function(blockId, index) {
+            const block = allBlocks.get(blockId);
+            if (!block) return;
+            
+            if (block.data.headers && block.data.headers.length > 1) {
+                block.data.headers.splice(index, 1);
+                if (block.data.rows) {
+                    block.data.rows.forEach(row => row.splice(index, 1));
+                }
+                window.renderBlocks();
+            }
+        };
+
+        window.removeTableRow = function(blockId, index) {
+            const block = allBlocks.get(blockId);
+            if (!block) return;
+            
+            if (block.data.rows) {
+                block.data.rows.splice(index, 1);
+                window.renderBlocks();
+            }
+        };
+
         // Image upload function for blocks
         window.uploadImageForBlock = function(blockId, input) {
             if (input.files && input.files[0]) {
