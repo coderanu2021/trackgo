@@ -322,11 +322,23 @@
         }
         
         /* Enhanced subcategory positioning and visibility */
+        /* Enhanced subcategory positioning and visibility */
         .category-dropdown .subcategory-dropdown {
-            visibility: hidden !important;
-            opacity: 0 !important;
-            transition: all 0.2s ease !important;
-            pointer-events: auto !important;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            width: 200px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 10001 !important;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.2s ease;
         }
         
         /* Debug: Ensure hover areas are working */
@@ -339,27 +351,7 @@
             z-index: 1 !important;
         }
         
-        /* Ensure subcategory dropdown appears above everything */
-        .category-dropdown .subcategory-dropdown {
-            z-index: 10001 !important;
-        }
-        
-        /* Subcategory Dropdown - Exact copy from home page */
-        .subcategory-dropdown {
-            position: absolute;
-            left: 100%;
-            top: 0;
-            width: 200px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            z-index: 10000; /* Higher than parent dropdown */
-            max-height: 300px;
-            overflow-y: auto;
-            display: none !important; /* Initially hidden */
-        }
-        
+        /* Subcategory Dropdown styling */
         .subcategory-dropdown .cat-link {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border-soft);
@@ -1104,7 +1096,7 @@
                     <div class="cat-dropdown-list">
                         @foreach($categories_global as $category)
                             @if($category->parent_id == null)
-                                <!-- Parent Category - Using exact home page structure -->
+                                <!-- Parent Category -->
                                 <div class="category-item">
                                     <a href="{{ route('category.show', $category->slug) }}" class="cat-link">
                                         <span style="display:flex; align-items:center; gap:0.75rem;">
@@ -1117,7 +1109,7 @@
                                     </a>
                                     
                                     @if($category->children->count() > 0)
-                                        <div class="subcategory-dropdown" style="display: none; visibility: hidden; opacity: 0; position: absolute; left: 100%; top: 0; width: 200px; background: white; border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 10000; max-height: 300px; overflow-y: auto; transition: all 0.2s ease;">
+                                        <div class="subcategory-dropdown">
                                             @foreach($category->children as $child)
                                                 <a href="{{ route('category.show', $child->slug) }}" class="cat-link" style="border-bottom: 1px solid var(--border-soft); font-size: 0.85rem;">
                                                     <span style="display:flex; align-items:center; gap:0.75rem;">
