@@ -58,16 +58,16 @@
 
         <div class="form-group">
             <label>Category</label>
-            <select name="category_id" class="form-control">
+            <select name="gallery_category_id" class="form-control">
                 <option value="">Uncategorized</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" 
-                            {{ old('category_id', $gallery->category_id) == $category->id ? 'selected' : '' }}>
+                            {{ old('gallery_category_id', $gallery->gallery_category_id) == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
                     </option>
                 @endforeach
             </select>
-            <span class="form-help">Assign this image to a category for filtering</span>
+            <span class="form-help">Assign this image to a gallery category for filtering</span>
         </div>
 
         <div class="form-group">

@@ -396,6 +396,9 @@
                 <a href="{{ route('admin.gallery.index') }}" class="nav-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
                     <i class="fas fa-images"></i> <span>Gallery</span>
                 </a>
+                <a href="{{ route('admin.gallery-categories.index') }}" class="nav-link {{ request()->routeIs('admin.gallery-categories.*') ? 'active' : '' }}">
+                    <i class="fas fa-folder-tree"></i> <span>Gallery Categories</span>
+                </a>
 
                 <div class="sidebar-label"><span>Management</span></div>
                 

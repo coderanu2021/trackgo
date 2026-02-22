@@ -191,6 +191,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('gallery/{id}/edit', [\App\Http\Controllers\GalleryController::class, 'edit'])->name('gallery.edit');
     Route::put('gallery/{id}', [\App\Http\Controllers\GalleryController::class, 'update'])->name('gallery.update');
     Route::delete('gallery/{id}', [\App\Http\Controllers\GalleryController::class, 'destroy'])->name('gallery.destroy');
+    
+    // Gallery Categories Management
+    Route::get('gallery-categories', [\App\Http\Controllers\Admin\GalleryCategoryController::class, 'index'])->name('gallery-categories.index');
+    Route::get('gallery-categories/create', [\App\Http\Controllers\Admin\GalleryCategoryController::class, 'create'])->name('gallery-categories.create');
+    Route::post('gallery-categories', [\App\Http\Controllers\Admin\GalleryCategoryController::class, 'store'])->name('gallery-categories.store');
+    Route::get('gallery-categories/{id}/edit', [\App\Http\Controllers\Admin\GalleryCategoryController::class, 'edit'])->name('gallery-categories.edit');
+    Route::put('gallery-categories/{id}', [\App\Http\Controllers\Admin\GalleryCategoryController::class, 'update'])->name('gallery-categories.update');
+    Route::delete('gallery-categories/{id}', [\App\Http\Controllers\Admin\GalleryCategoryController::class, 'destroy'])->name('gallery-categories.destroy');
 });
 
 // Test route for debugging

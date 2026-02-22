@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
-use App\Models\Category;
+use App\Models\GalleryCategory;
 use Illuminate\Http\Request;
 
 class GalleryController extends Controller
@@ -15,14 +15,14 @@ class GalleryController extends Controller
         
         // Filter by category if provided
         if ($request->filled('category')) {
-            $category = Category::where('slug', $request->category)->first();
+            $category = GalleryCategory::where('slug', $request->category)->first();
             if ($category) {
-                $query->where('category_id', $category->id);
+                $query->where('gallery_category_id', $category->id);
             }
         }
         
         $galleries = $query->orderBy('order')->latest()->paginate(12);
-        $categories = Category::where('is_active', true)->whereNull('parent_id')->get();
+        $categories = GalleryCategory::where('is_active', true)->get();
         
         return view('front.gallery', compact('galleries', 'categories'));
     }
@@ -37,7 +37,7 @@ class GalleryController extends Controller
     // Admin: Create gallery form
     public function create()
     {
-        $categories = Category::where('is_active', true)->get();
+        $categories = GalleryCategory::where('is_active', true)->get();
         return view('admin.gallery.create', compact('categories'));
     }
 
@@ -48,7 +48,7 @@ class GalleryController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'category_id' => 'nullable|exists:categories,id',
+            'gallery_category_id' => 'nullable|exists:gallery_categories,id',
             'order' => 'nullable|integer',
         ]);
 
@@ -64,7 +64,7 @@ class GalleryController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'image' => $imagePath,
-            'category_id' => $request->category_id,
+            'gallery_category_id' => $request->gallery_category_id,
             'order' => $request->order ?? 0,
             'is_active' => $request->has('is_active'),
         ]);
@@ -76,7 +76,7 @@ class GalleryController extends Controller
     public function edit($id)
     {
         $gallery = Gallery::findOrFail($id);
-        $categories = Category::where('is_active', true)->get();
+        $categories = GalleryCategory::where('is_active', true)->get();
         return view('admin.gallery.edit', compact('gallery', 'categories'));
     }
 
@@ -89,7 +89,7 @@ class GalleryController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'category_id' => 'nullable|exists:categories,id',
+            'gallery_category_id' => 'nullable|exists:gallery_categories,id',
             'order' => 'nullable|integer',
         ]);
 
@@ -110,7 +110,7 @@ class GalleryController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'image' => $imagePath,
-            'category_id' => $request->category_id,
+            'gallery_category_id' => $request->gallery_category_id,
             'order' => $request->order ?? 0,
             'is_active' => $request->has('is_active'),
         ]);
