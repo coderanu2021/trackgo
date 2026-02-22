@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0/css/all.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-forms.css') }}">
     
     <style>
         /* Ensure Font Awesome icons display properly */

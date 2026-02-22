@@ -119,7 +119,7 @@
                 </div>
                 @if($blog->image)
                     <div id="image-preview" style="border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-soft); box-shadow: var(--shadow-soft);">
-                        <img src="{{ $blog->image }}" style="width: 100%; height: auto; display: block;">
+                        <img src="{{ $blog->image_url }}" style="width: 100%; height: auto; display: block;">
                     </div>
                 @endif
             </div>
@@ -127,66 +127,7 @@
     </div>
 </form>
 
-<!-- Settings Modal -->
-<div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content" style="border-radius: 20px; border: none; box-shadow: var(--shadow-lg);">
-    <div class="modal-header" style="border-bottom: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
-        <h5 class="modal-title" style="font-weight: 700; color: var(--text-main);">Block Settings</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
-    <div class="modal-body" style="padding: 2rem;">
-        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-                <label>Background Color</label>
-                <input type="color" id="set-bg-color" class="form-control" style="height: 50px; padding: 5px;">
-            </div>
-            <div class="form-group">
-                <label>Text Color</label>
-                <input type="color" id="set-text-color" class="form-control" style="height: 50px; padding: 5px;">
-            </div>
-        </div>
-        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-                <label>Padding Top (rem)</label>
-                <input type="number" id="set-padding-top" class="form-control" min="0" max="20" step="0.5">
-            </div>
-            <div class="form-group">
-                <label>Padding Bottom (rem)</label>
-                <input type="number" id="set-padding-bottom" class="form-control" min="0" max="20" step="0.5">
-            </div>
-        </div>
-        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-                <label>Margin Top (rem)</label>
-                <input type="number" id="set-margin-top" class="form-control" min="0" max="20" step="0.5">
-            </div>
-            <div class="form-group">
-                <label>Margin Bottom (rem)</label>
-                <input type="number" id="set-margin-bottom" class="form-control" min="0" max="20" step="0.5">
-            </div>
-        </div>
-        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-                <label>Font Size (px)</label>
-                <input type="number" id="set-font-size" class="form-control" min="8" max="100">
-            </div>
-            <div class="form-group">
-                <label>Border Radius (px)</label>
-                <input type="number" id="set-border-radius" class="form-control" min="0" max="100">
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-</div>
-            <div class="modal-footer" style="border-top: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="saveSettings()">Apply Settings</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
     let blocks = {!! json_encode($blog->content) !!} || [];
@@ -211,6 +152,9 @@
             }
         } catch(e) { console.error(e); alert('Upload failed'); }
     }
+</script>
+<script>
+    window.enableBlockSettings = false;
 </script>
 @include('admin.pages.script')
 <script>

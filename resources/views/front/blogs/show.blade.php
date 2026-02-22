@@ -283,7 +283,7 @@
 
             @if($blog->image)
             <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.12); border: 1px solid var(--border);">
-                <img src="{{ $blog->image }}" alt="{{ $blog->title }}" style="width: 100%; height: auto; display: block;">
+                <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}" style="width: 100%; height: auto; display: block;">
             </div>
             @endif
         </div>
@@ -293,7 +293,7 @@
     <div style="padding: 6rem 0;">
         <div class="container" style="max-width: 800px;">
             <div class="blog-content" style="font-size: 1.15rem; line-height: 1.9; color: #374151;">
-                @if($blog->content && is_array($blog->content))
+                @if(is_array($blog->content))
                     @php
                         if (!function_exists('renderBlogBlocks')) {
                             function renderBlogBlocks($blocks, $blogId) {
@@ -454,7 +454,7 @@
                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                 @if($rb->image)
                     <div style="height: 200px; overflow: hidden;">
-                        <img src="{{ $rb->image }}" alt="{{ $rb->title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="{{ $rb->image_url }}" alt="{{ $rb->title }}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                 @endif
                 <div style="padding: 2.5rem;">

@@ -194,22 +194,17 @@ class PageBuilderController extends Controller
             // Generate unique filename
             $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             
-            // Store file
-            $path = $file->storeAs('uploads', $filename, 'public');
+            // Move file to public/uploads directory directly
+            $file->move(public_path('uploads'), $filename);
             
-            if (!$path) {
-                \Log::error('Failed to store file');
-                return response()->json(['error' => 'Failed to store file'], 500);
-            }
+            $url = asset('uploads/' . $filename);
             
-            $url = asset('storage/' . $path);
-            
-            \Log::info('File uploaded successfully', ['path' => $path, 'url' => $url]);
+            \Log::info('File uploaded successfully', ['path' => 'uploads/' . $filename, 'url' => $url]);
             
             return response()->json([
                 'success' => true,
                 'url' => $url,
-                'path' => $path
+                'path' => 'uploads/' . $filename
             ]);
             
         } catch (\Exception $e) {

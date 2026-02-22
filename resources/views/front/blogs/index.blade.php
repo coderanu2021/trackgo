@@ -28,7 +28,7 @@
                  onclick="window.location.href='{{ route('blogs.show', $blog->slug) }}'" style="cursor: pointer;">
             @if($blog->image)
                 <div style="height: 240px; overflow: hidden; position: relative;">
-                    <img src="{{ $blog->image }}" alt="{{ $blog->title }}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.6s;">
+                    <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.6s;">
                     <div style="position: absolute; top: 1.5rem; left: 1.5rem; background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: 30px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
                         Article
                     </div>

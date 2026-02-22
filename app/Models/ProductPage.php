@@ -12,6 +12,7 @@ class ProductPage extends Model
     protected $fillable = [
         'title',
         'slug',
+        'summary',
         'content',
         'hero_image',
         'thumbnail',
@@ -21,6 +22,7 @@ class ProductPage extends Model
         'price',
         'discount',
         'stock',
+        'external_link',
         'meta_title',
         'meta_description',
         'meta_keywords',

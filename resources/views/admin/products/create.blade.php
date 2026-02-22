@@ -6,9 +6,6 @@
         <h1>Product Page Builder</h1>
         <p style="color: var(--text-muted);">Design custom product detail pages with drag-and-drop sections.</p>
     </div>
-    <button form="page-form" type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem;">
-        <i class="fas fa-check"></i> Save Product Page
-    </button>
 </div>
 
 <form id="page-form" action="{{ route('admin.products.store') }}" method="POST">
@@ -76,33 +73,15 @@
         </div>
     </div>
 
-    <!-- Row 2: SEO and Settings (2 Columns) -->
-    <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <!-- SEO Card -->
-        <div class="card">
-            <h3 style="margin-top: 0; margin-bottom: 1.5rem;"><i class="fas fa-search" style="color:var(--primary); margin-right: 0.5rem;"></i> SEO Meta Data</h3>
-            <div class="form-group">
-                <label>Meta Title</label>
-                <input type="text" name="meta_title" class="form-control" placeholder="SEO Page Title">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Meta Keywords</label>
-                    <input type="text" name="meta_keywords" class="form-control" placeholder="e.g. tracking, logistics, about us">
-                </div>
-            </div>
-            <div class="form-group mb-0">
-                <label>Meta Description</label>
-                <textarea name="meta_description" rows="3" class="form-control" placeholder="A short summary of the page for search engines..."></textarea>
-            </div>
-        </div>
-
-        <!-- Product Media Card -->
+    <!-- Row 2: Product Details (Single Column) -->
+    <div class="form-row" style="grid-template-columns: 1fr; gap: 2rem;">
+        <!-- Product Media & Details Card -->
         <div class="card">
             <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Media Assets</h2>
             
             <div class="form-group">
                 <label>Main Product Image (Thumbnail)</label>
+                <span class="image-size-hint">1200x900px, 4:3 ratio, max 2MB</span>
                 <div class="flex gap-2">
                     <input type="url" name="hero_image" id="thumbnail-input" class="form-control" placeholder="https://...">
                     <label class="btn btn-secondary" style="margin:0; cursor:pointer; padding:0 1rem; height:48px; display:flex; align-items:center; border-radius:12px;">
@@ -116,6 +95,7 @@
                     Product Gallery
                     <button type="button" onclick="addGalleryItem()" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Image</button>
                 </label>
+                <span class="image-size-hint">1200x900px, 4:3 ratio, max 2MB each</span>
                 <div id="gallery-container" class="flex flex-col gap-2 mt-2">
                     <!-- Gallery items will be added here -->
                 </div>
@@ -156,17 +136,29 @@
                 </div>
                 <small style="color: var(--text-light);">Select multiple categories for this product (optional)</small>
             </div>
+
+            <div class="form-group">
+                <label>Product Summary</label>
+                <textarea name="summary" rows="3" class="form-control" placeholder="Brief product description for listings and previews..."></textarea>
+                <small style="color: var(--text-light);">Short summary shown on shop page and category listings</small>
+            </div>
+
+            <div class="form-group">
+                <label>External Product Link (Optional)</label>
+                <input type="url" name="external_link" class="form-control" placeholder="https://external-site.com/product">
+                <small style="color: var(--text-light);">If provided, "Buy Now" button will redirect to this URL instead of cart</small>
+            </div>
             
             <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
                     <label>Selling Price (₹)</label>
-                    <small class="form-text text-muted">Current price customers will pay</small>
                     <input type="number" name="price" class="form-control" step="0.01" placeholder="e.g. 12500.00">
+                    <small class="form-text text-muted">Leave empty to show "Enquire Now" button</small>
                 </div>
                 <div class="form-group">
                     <label>Discount Amount (₹)</label>
-                    <small class="form-text text-muted">Amount off from original price (shows strikethrough)</small>
                     <input type="number" name="discount" class="form-control" step="0.01" placeholder="e.g. 2500.00">
+                    <small class="form-text text-muted">Amount off from original price</small>
                 </div>
                 <div class="form-group">
                     <label>Stock Count</label>
@@ -207,6 +199,13 @@
 
     <input type="hidden" name="blocks" id="blocks-input" value="[]">
 </form>
+
+@include('admin.components.form-actions', [
+    'formId' => 'page-form',
+    'submitText' => 'Save Product Page',
+    'cancelRoute' => route('admin.products.index'),
+    'showPreview' => false
+])
 
 <!-- Settings Modal -->
 <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">

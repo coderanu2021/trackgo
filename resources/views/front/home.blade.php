@@ -1111,7 +1111,7 @@
                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
             @if($blog->image)
                 <div style="height: 200px; overflow: hidden;">
-                    <img src="{{ $blog->image }}" alt="{{ $blog->title }}" style="width: 100%; height: 100%; object-fit: cover;" 
+                    <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}" style="width: 100%; height: 100%; object-fit: cover;" 
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div style="display: none; height: 200px; background: #f5f5f5; align-items: center; justify-content: center; color: #999;">
                         <i class="fas fa-image" style="font-size: 2rem;"></i>

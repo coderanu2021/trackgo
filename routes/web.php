@@ -183,6 +183,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
     Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->only(['index', 'create', 'store', 'destroy']);
     Route::post('reviews/{review}/toggle', [\App\Http\Controllers\Admin\ReviewController::class, 'toggleStatus'])->name('reviews.toggle');
+    
+    // Gallery Management
+    Route::get('gallery', [\App\Http\Controllers\GalleryController::class, 'adminIndex'])->name('gallery.index');
+    Route::get('gallery/create', [\App\Http\Controllers\GalleryController::class, 'create'])->name('gallery.create');
+    Route::post('gallery', [\App\Http\Controllers\GalleryController::class, 'store'])->name('gallery.store');
+    Route::get('gallery/{id}/edit', [\App\Http\Controllers\GalleryController::class, 'edit'])->name('gallery.edit');
+    Route::put('gallery/{id}', [\App\Http\Controllers\GalleryController::class, 'update'])->name('gallery.update');
+    Route::delete('gallery/{id}', [\App\Http\Controllers\GalleryController::class, 'destroy'])->name('gallery.destroy');
 });
 
 // Test route for debugging
@@ -212,7 +220,9 @@ Route::get('/home-simple', function() {
 
 // Front Routes
 Route::get('shop', [\App\Http\Controllers\ProductController::class, 'shop'])->name('shop');
-Route::get('category/{slug}', [CategoryController::class, 'show'])->name('category.show');
+Route::get('gallery', [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery');
+Route::get('categories', [\App\Http\Controllers\CategoriesController::class, 'index'])->name('categories');
+Route::get('category/{slug}', [\App\Http\Controllers\CategoriesController::class, 'show'])->name('category.show');
 Route::get('products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 Route::get('about', [PageBuilderController::class, 'showBySlug'])->name('about');
 Route::get('contact', [\App\Http\Controllers\HomeController::class, 'contact'])->name('contact');

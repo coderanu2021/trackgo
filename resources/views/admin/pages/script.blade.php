@@ -284,8 +284,8 @@
                     contentHtml = `<div class="block-label"><i class="fas fa-cubes"></i> ${block.type} Block</div><p style="color:var(--text-muted); font-size:0.8rem;">Click settings to configure this section.</p>`;
                 }
                 
-                // Hide Settings button for Table and Tabs as requested
-                const showSettings = !['table', 'tabs'].includes(block.type);
+                // Hide Settings button for Table and Tabs as requested, or if globally disabled
+                const showSettings = (typeof window.enableBlockSettings === 'undefined' || window.enableBlockSettings) && !['table', 'tabs'].includes(block.type);
 
                 const controls = document.createElement('div');
                 controls.className = 'block-controls';

@@ -30,6 +30,7 @@ class CategoryController extends Controller
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'image' => $request->image,
+            'banner' => $request->banner,
             'icon' => $request->icon,
             'is_active' => $request->has('is_active'),
             'parent_id' => $request->parent_id
@@ -50,6 +51,7 @@ class CategoryController extends Controller
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'image' => $request->image,
+            'banner' => $request->banner,
             'icon' => $request->icon,
             'is_active' => $request->has('is_active'),
             'parent_id' => $request->parent_id
