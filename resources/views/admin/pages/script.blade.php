@@ -284,13 +284,9 @@
                     contentHtml = `<div class="block-label"><i class="fas fa-cubes"></i> ${block.type} Block</div><p style="color:var(--text-muted); font-size:0.8rem;">Click settings to configure this section.</p>`;
                 }
                 
-                // Hide Settings button for Table and Tabs as requested, or if globally disabled
-                const showSettings = (typeof window.enableBlockSettings === 'undefined' || window.enableBlockSettings) && !['table', 'tabs'].includes(block.type);
-
                 const controls = document.createElement('div');
                 controls.className = 'block-controls';
                 controls.innerHTML = `
-                    ${showSettings ? `<button type="button" onclick="window.openSettings('${blockId}')" class="btn-icon-sm"><i class="fas fa-cog"></i></button>` : ''}
                     <button type="button" onclick="window.removeBlockById('${blockId}')" class="btn-icon-sm text-red"><i class="fas fa-trash"></i></button>
                 `;
 
@@ -435,76 +431,6 @@
             if (!block) {
                 console.error('Block not found:', id);
                 return;
-            }
-            
-            window.activeBlockId = id;
-            const s = block.settings || {};
-            
-            const fieldMap = {
-                'set-bg-color': s.bg_color || '#ffffff',
-                'set-text-color': s.text_color || '#334155',
-                'set-padding-top': s.padding_top || '2',
-                'set-padding-bottom': s.padding_bottom || '2',
-                'set-margin-top': s.margin_top || '0',
-                'set-margin-bottom': s.margin_bottom || '0',
-                'set-font-size': s.font_size || '16',
-                'set-border-radius': s.border_radius || '12'
-            };
-
-            Object.entries(fieldMap).forEach(([id, val]) => {
-                const el = document.getElementById(id);
-                if (el) el.value = val;
-            });
-
-            const modalEl = document.getElementById('settingsModal');
-            if (modalEl) {
-                // Destroy existing modal instance if any
-                const existingModal = bootstrap.Modal.getInstance(modalEl);
-                if (existingModal) {
-                    existingModal.dispose();
-                }
-                
-                // Create new modal instance with proper options
-                const modal = new bootstrap.Modal(modalEl, {
-                    backdrop: true,
-                    keyboard: true,
-                    focus: true
-                });
-                
-                // Prevent page scrolling when modal opens
-                modalEl.addEventListener('shown.bs.modal', function () {
-                    document.body.style.overflow = 'hidden';
-                });
-                
-                modalEl.addEventListener('hidden.bs.modal', function () {
-                    document.body.style.overflow = 'auto';
-                });
-                
-                modal.show();
-            } else {
-                console.error('Settings modal not found');
-            }
-        };
-
-        window.saveSettings = function() {
-            const block = allBlocks.get(window.activeBlockId);
-            if (block) {
-                block.settings = {
-                    bg_color: document.getElementById('set-bg-color')?.value,
-                    text_color: document.getElementById('set-text-color')?.value,
-                    padding_top: document.getElementById('set-padding-top')?.value,
-                    padding_bottom: document.getElementById('set-padding-bottom')?.value,
-                    margin_top: document.getElementById('set-margin-top')?.value,
-                    margin_bottom: document.getElementById('set-margin-bottom')?.value,
-                    font_size: document.getElementById('set-font-size')?.value,
-                    border_radius: document.getElementById('set-border-radius')?.value
-                };
-                window.renderBlocks();
-                const modalEl = document.getElementById('settingsModal');
-                if (modalEl) {
-                    const modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) modal.hide();
-                }
             }
         };
 
