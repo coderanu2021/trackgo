@@ -1146,6 +1146,7 @@
                 <li><a href="{{ route('shop') }}" class="menu-link">Shop</a></li>
                 <li><a href="{{ route('pricing') }}" class="menu-link">Pricing</a></li>
                 <li><a href="{{ route('blogs.index') }}" class="menu-link">Blog</a></li>
+                <li><a href="{{ route('gallery') }}" class="menu-link">Gallery</a></li>
                 <li><a href="{{ route('about') }}" class="menu-link">About Us</a></li>
                 <li><a href="{{ route('contact') }}" class="menu-link">Contact</a></li>
                 <li><a href="{{ route('faqs') }}" class="menu-link">FAQ</a></li>
@@ -1196,6 +1197,12 @@
                 <a href="{{ route('blogs.index') }}" class="mobile-nav-link">
                     <i class="fas fa-blog"></i>
                     Blog
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{{ route('gallery') }}" class="mobile-nav-link">
+                    <i class="fas fa-images"></i>
+                    Gallery
                 </a>
             </li>
             <li class="mobile-nav-item">

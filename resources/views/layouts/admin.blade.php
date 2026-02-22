@@ -393,6 +393,9 @@
                 <a href="{{ route('admin.reviews.index') }}" class="nav-link {{ request()->routeIs('admin.reviews.index') ? 'active' : '' }}">
                     <i class="fas fa-star"></i> <span>Product Reviews</span>
                 </a>
+                <a href="{{ route('admin.gallery.index') }}" class="nav-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
+                    <i class="fas fa-images"></i> <span>Gallery</span>
+                </a>
 
                 <div class="sidebar-label"><span>Management</span></div>
                 
