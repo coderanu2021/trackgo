@@ -784,36 +784,7 @@
         <div class="category-sidebar" style="border-top-left-radius: 0; border-top-right-radius: 0; border-top: none;">
             <div class="cat-list">
                 @if(isset($categories))
-                    @foreach($categories as $cat)
-                        <div class="category-item">
-                            <a href="{{ route('category.show', $cat->slug) }}" class="cat-link">
-                                <span style="display:flex; align-items:center; gap:0.75rem;">
-                                    @if($cat->icon) <i class="{{ $cat->icon }}" style="width:20px; text-align:center;"></i> @endif
-                                    {{ $cat->name }}
-                                </span>
-                                @if($cat->children->count() > 0)
-                                    <i class="fas fa-chevron-right category-arrow" style="font-size: 0.7rem; color: #ccc; transition: all 0.3s ease;"></i>
-                                @endif
-                            </a>
-                            
-                            @if($cat->children->count() > 0)
-                                <div class="subcategory-dropdown" style="display: none; position: absolute; left: 100%; top: 0; width: 200px; background: white; border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 1000;">
-                                    @foreach($cat->children as $child)
-                                        <a href="{{ route('category.show', $child->slug) }}" class="cat-link" style="border-bottom: 1px solid var(--border-soft); font-size: 0.85rem;">
-                                            <span style="display:flex; align-items:center; gap:0.75rem;">
-                                                @if($child->icon)
-                                                    <i class="{{ $child->icon }}" style="width:16px; text-align:center; color: var(--primary);"></i>
-                                                @else
-                                                    <i class="fas fa-arrow-right" style="width:16px; text-align:center; color: var(--text-muted); font-size: 0.6rem;"></i>
-                                                @endif
-                                                {{ $child->name }}
-                                            </span>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-                    @endforeach
+                    @include('components.category-dropdown', ['categories' => $categories])
                 @endif
             </div>
         </div>

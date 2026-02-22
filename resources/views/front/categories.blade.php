@@ -197,6 +197,11 @@
                                 </div>
                             @endif
                             <h3 class="category-name">{{ $category->name }}</h3>
+                            @if($category->summary)
+                                <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem; line-height: 1.5;">
+                                    {{ Str::limit($category->summary, 100) }}
+                                </p>
+                            @endif
                             <div class="category-count">
                                 <i class="fas fa-box"></i>
                                 {{ $category->product_pages_count }} {{ Str::plural('Product', $category->product_pages_count) }}

@@ -45,9 +45,9 @@
                         </td>
                         <td>
                             <div style="display: flex; gap: 0.5rem;">
-                                <a href="{{ route('admin.gallery-categories.edit', $category->id) }}" class="btn btn-sm btn-secondary">
+                                <button onclick='showEditForm(@json($category->id), @json($category->name), @json($category->description), @json($category->order), @json($category->is_active))' class="btn btn-sm btn-secondary">
                                     <i class="fas fa-edit"></i>
-                                </a>
+                                </button>
                                 <form action="{{ route('admin.gallery-categories.destroy', $category->id) }}" method="POST" 
                                       onsubmit="return confirm('Are you sure? This will unassign all images from this category.');">
                                     @csrf
@@ -69,6 +69,54 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Edit Form Section (Hidden by default) -->
+<div id="edit-section" style="display: none; margin-top: 2rem;">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="margin: 0;">Edit Category</h2>
+            <button onclick="hideEditForm()" class="btn btn-sm btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+        
+        <form id="edit-form" method="POST">
+            @csrf
+            @method('PUT')
+            
+            <div class="form-group">
+                <label class="required">Category Name</label>
+                <input type="text" name="name" id="edit-name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" id="edit-description" rows="3" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Display Order</label>
+                <input type="number" name="order" id="edit-order" class="form-control" min="0">
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input type="checkbox" name="is_active" id="edit-is-active" value="1">
+                    <label for="edit-is-active">Active (visible on frontend)</label>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <button type="button" onclick="hideEditForm()" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -101,5 +149,42 @@
         border-radius: 4px;
         font-size: 0.85rem;
     }
+    #edit-section {
+        animation: slideDown 0.3s ease-out;
+    }
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 </style>
+
+<script>
+function showEditForm(id, name, description, order, isActive) {
+    // Set form action
+    document.getElementById('edit-form').action = '{{ url("admin/gallery-categories") }}/' + id;
+    
+    // Fill form fields
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-description').value = description || '';
+    document.getElementById('edit-order').value = order;
+    document.getElementById('edit-is-active').checked = isActive;
+    
+    // Show edit section
+    document.getElementById('edit-section').style.display = 'block';
+    
+    // Scroll to edit section
+    document.getElementById('edit-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function hideEditForm() {
+    document.getElementById('edit-section').style.display = 'none';
+    document.getElementById('edit-form').reset();
+}
+</script>
 @endsection

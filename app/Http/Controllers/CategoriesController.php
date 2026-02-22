@@ -13,9 +13,20 @@ class CategoriesController extends Controller
         // Get only root categories (parent_id = null)
         $categories = Category::where('is_active', true)
             ->whereNull('parent_id')
-            ->withCount('productPages')
             ->orderBy('name')
             ->get();
+        
+        // Count products for each category (including products with this category as additional)
+        foreach ($categories as $category) {
+            $category->product_pages_count = \App\Models\ProductPage::where('is_published', true)
+                ->where(function($query) use ($category) {
+                    $query->where('category_id', $category->id)
+                          ->orWhereHas('categories', function($subQuery) use ($category) {
+                              $subQuery->where('categories.id', $category->id);
+                          });
+                })
+                ->count();
+        }
         
         return view('front.categories', compact('categories'));
     }

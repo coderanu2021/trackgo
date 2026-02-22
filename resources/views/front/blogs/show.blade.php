@@ -254,7 +254,7 @@
 @section('content')
 <article>
     <!-- Post Header -->
-    <header style="background: var(--bg-light); padding: 8rem 0; border-bottom: 1px solid var(--border);">
+    <header style="background: var(--bg-light); padding:10px; border-bottom: 1px solid var(--border);">
         <div class="container" style="max-width: 900px;">
             <div style="text-align: center; margin-bottom: 3rem;">
                 <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 0.5rem 1.25rem; border-radius: 30px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 2rem;">

@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<form id="category-form" action="{{ route('admin.categories.update', $category->id) }}" method="POST">
+<form id="category-form" action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     
@@ -25,6 +25,12 @@
         </div>
 
         <div class="form-group">
+            <label>Summary</label>
+            <textarea name="summary" class="form-control" rows="3" placeholder="Brief description of this category">{{ $category->summary }}</textarea>
+            <span class="form-help">Short description shown on category pages</span>
+        </div>
+
+        <div class="form-group">
             <label>Parent Category</label>
             <select name="parent_id" class="form-control" id="parent-category">
                 <option value="">None (Root Category)</option>
@@ -36,17 +42,29 @@
         </div>
 
         <div class="form-group">
-            <label>Category Icon (Optional)</label>
-            <input type="text" name="image" class="form-control" value="{{ $category->image }}" placeholder="https://...">
+            <label>Category Image</label>
+            @if($category->image)
+                <div style="margin-bottom: 1rem;">
+                    <img src="{{ asset($category->image) }}" alt="Current image" style="max-width: 200px; border-radius: 8px; border: 1px solid var(--border);">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">Current image</p>
+                </div>
+            @endif
+            <input type="file" name="image" class="form-control" accept="image/*">
             <span class="image-size-hint">400x400px, 1:1 ratio, max 512KB</span>
-            <span class="form-help">Small icon image for category display</span>
+            <span class="form-help">Upload a new image or leave empty to keep current</span>
         </div>
 
         <div class="form-group" id="banner-field" style="display: none;">
             <label>Category Banner (Root Categories Only)</label>
-            <input type="text" name="banner" class="form-control" value="{{ $category->banner }}" placeholder="https://...">
-            <span class="image-size-hint">1920x400px, 16:3.5 ratio, max 2MB</span>
-            <span class="form-help">Large banner image shown on category page</span>
+            @if($category->banner)
+                <div style="margin-bottom: 1rem;">
+                    <img src="{{ asset($category->banner) }}" alt="Current banner" style="max-width: 100%; max-height: 150px; border-radius: 8px; border: 1px solid var(--border);">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">Current banner</p>
+                </div>
+            @endif
+            <input type="file" name="banner" class="form-control" accept="image/*">
+            <span class="image-size-hint">1920x200px recommended, max 2MB</span>
+            <span class="form-help">Upload a new banner or leave empty to keep current</span>
         </div>
 
         <div class="form-group">

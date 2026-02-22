@@ -243,8 +243,6 @@
             border-radius: 0 0 var(--radius-md) var(--radius-md);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             z-index: 9999; /* Increased z-index to appear above everything */
-            max-height: 500px;
-            overflow-y: auto;
             overflow-x: visible; /* Allow subcategories to show outside */
         }
         
@@ -288,80 +286,71 @@
             transform: scale(1.1);
         }
         
-        /* Category hover effects - Enhanced for better reliability */
-        .category-dropdown .category-item:hover .cat-link {
+        /* Category hover effects - Simple and working like home page */
+        .category-item:hover .cat-link {
             background: #f9f9f9 !important;
             color: var(--primary) !important;
             padding-left: 1.25rem !important;
         }
         
-        .category-dropdown .category-item:hover .category-arrow {
+        .category-item:hover .category-arrow {
             color: var(--primary) !important;
             transform: rotate(90deg) !important;
         }
         
-        .category-dropdown .category-item:hover > .subcategory-dropdown {
+        .category-item:hover .subcategory-dropdown {
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
         }
         
         /* Ensure subcategory dropdown stays visible when hovering over it */
-        .category-dropdown .subcategory-dropdown:hover {
+        .subcategory-dropdown:hover {
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
         }
         
-        /* Keep parent category highlighted when hovering over subcategories */
-        .category-dropdown .category-item:hover .subcategory-dropdown:hover ~ .cat-link,
-        .category-dropdown .category-item .subcategory-dropdown:hover + .cat-link {
-            background: #f9f9f9 !important;
-            color: var(--primary) !important;
-            padding-left: 1.25rem !important;
-        }
-        
         /* Enhanced subcategory positioning and visibility */
-        /* Enhanced subcategory positioning and visibility */
-        .category-dropdown .subcategory-dropdown {
-            position: absolute;
-            left: 100%;
-            top: 0;
-            width: 200px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
+        .subcategory-dropdown {
+            position: absolute !important;
+            left: 100% !important;
+            top: 0 !important;
+            width: 200px !important;
+            background: white !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius-md) !important;
+            box-shadow: var(--shadow-lg) !important;
             z-index: 10001 !important;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.2s ease;
+            max-height: 300px !important;
+            overflow-y: auto !important;
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            transition: all 0.2s ease !important;
         }
         
-        /* Debug: Ensure hover areas are working */
-        .category-dropdown .category-item {
+        /* Ensure hover areas are working */
+        .category-item {
             position: relative !important;
         }
         
-        .category-dropdown .category-item .cat-link {
+        .category-item .cat-link {
             position: relative !important;
             z-index: 1 !important;
         }
         
         /* Subcategory Dropdown styling */
         .subcategory-dropdown .cat-link {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--border-soft);
-            font-size: 0.85rem;
+            padding: 0.75rem 1rem !important;
+            border-bottom: 1px solid var(--border-soft) !important;
+            font-size: 0.85rem !important;
         }
         
         .subcategory-dropdown .cat-link:hover {
-            background: var(--primary-soft);
-            color: var(--primary);
-            padding-left: 1.25rem;
+            background: var(--primary-soft) !important;
+            color: var(--primary) !important;
+            padding-left: 1.25rem !important;
         }
         
         .subcategory-dropdown .cat-link:last-child {
@@ -1093,41 +1082,7 @@
                 <!-- Category Dropdown (Hidden on Home Page) -->
                 @if(!Request::is('/'))
                 <div class="category-dropdown" id="category-dropdown" style="display: none;">
-                    <div class="cat-dropdown-list">
-                        @foreach($categories_global as $category)
-                            @if($category->parent_id == null)
-                                <!-- Parent Category -->
-                                <div class="category-item">
-                                    <a href="{{ route('category.show', $category->slug) }}" class="cat-link">
-                                        <span style="display:flex; align-items:center; gap:0.75rem;">
-                                            @if($category->icon) <i class="{{ $category->icon }}" style="width:20px; text-align:center;"></i> @endif
-                                            {{ $category->name }}
-                                        </span>
-                                        @if($category->children->count() > 0)
-                                            <i class="fas fa-chevron-right category-arrow" style="font-size: 0.7rem; color: #ccc; transition: all 0.3s ease;"></i>
-                                        @endif
-                                    </a>
-                                    
-                                    @if($category->children->count() > 0)
-                                        <div class="subcategory-dropdown">
-                                            @foreach($category->children as $child)
-                                                <a href="{{ route('category.show', $child->slug) }}" class="cat-link" style="border-bottom: 1px solid var(--border-soft); font-size: 0.85rem;">
-                                                    <span style="display:flex; align-items:center; gap:0.75rem;">
-                                                        @if($child->icon)
-                                                            <i class="{{ $child->icon }}" style="width:16px; text-align:center; color: var(--primary);"></i>
-                                                        @else
-                                                            <i class="fas fa-arrow-right" style="width:16px; text-align:center; color: var(--text-muted); font-size: 0.6rem;"></i>
-                                                        @endif
-                                                        {{ $child->name }}
-                                                    </span>
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
+                    @include('components.category-dropdown', ['categories' => $categories_global])
                 </div>
                 @endif
             </div>
@@ -1136,6 +1091,7 @@
             <ul class="main-menu">
                 <li><a href="{{ url('/') }}" class="menu-link">Home</a></li>
                 <li><a href="{{ route('shop') }}" class="menu-link">Shop</a></li>
+                <li><a href="{{ route('categories') }}" class="menu-link">Categories</a></li>
                 <li><a href="{{ route('pricing') }}" class="menu-link">Pricing</a></li>
                 <li><a href="{{ route('blogs.index') }}" class="menu-link">Blog</a></li>
                 <li><a href="{{ route('gallery') }}" class="menu-link">Gallery</a></li>
@@ -1177,6 +1133,12 @@
                 <a href="{{ route('shop') }}" class="mobile-nav-link">
                     <i class="fas fa-shopping-bag"></i>
                     Shop
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{{ route('categories') }}" class="mobile-nav-link">
+                    <i class="fas fa-folder-tree"></i>
+                    Categories
                 </a>
             </li>
             <li class="mobile-nav-item">
@@ -1457,7 +1419,9 @@
                     }
                 );
 
-                // Enhanced subcategory hover functionality for header dropdown
+                // Enhanced subcategory hover functionality - DISABLED (using pure CSS instead)
+                // jQuery was setting inline styles that override CSS
+                /*
                 $('.category-dropdown .category-item').each(function() {
                     const $categoryItem = $(this);
                     const $subcategoryDropdown = $categoryItem.find('.subcategory-dropdown');
@@ -1527,6 +1491,7 @@
                         });
                     });
                 });
+                */
 
             } catch (error) {
                 console.warn('Script initialization error:', error);
@@ -1726,6 +1691,105 @@
             }, 3000);
         }
     </script>
+    
+    <!-- Product Enquire Modal -->
+    <div id="enquireModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <div style="padding: 2rem; border-bottom: 1px solid #e5e7eb;">
+                <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700; color: #1f2937;">Product Enquiry</h3>
+                <button onclick="closeEnquireModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; font-size: 1.5rem; color: #6b7280; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="enquireForm" style="padding: 2rem;">
+                <input type="hidden" id="enquire_product_id" name="product_id">
+                
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f3f4f6; border-radius: 8px;">
+                    <p style="margin: 0; font-size: 0.9rem; color: #6b7280;">Enquiring about:</p>
+                    <p id="enquire_product_name" style="margin: 0.25rem 0 0 0; font-weight: 600; color: #1f2937;"></p>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #374151;">Your Name *</label>
+                    <input type="text" name="name" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #374151;">Email *</label>
+                    <input type="email" name="email" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #374151;">Phone *</label>
+                    <input type="tel" name="phone" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #374151;">Message</label>
+                    <textarea name="message" rows="4" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; resize: vertical;" placeholder="Tell us about your requirements..."></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" onclick="closeEnquireModal()" style="flex: 1; padding: 0.875rem; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        Cancel
+                    </button>
+                    <button type="submit" style="flex: 1; padding: 0.875rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        <i class="fas fa-paper-plane"></i> Send Enquiry
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+    function openEnquireModal(productId, productName) {
+        document.getElementById('enquire_product_id').value = productId;
+        document.getElementById('enquire_product_name').textContent = productName;
+        document.getElementById('enquireModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeEnquireModal() {
+        document.getElementById('enquireModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.getElementById('enquireForm').reset();
+    }
+    
+    // Close modal on outside click
+    document.getElementById('enquireModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeEnquireModal();
+        }
+    });
+    
+    // Handle form submission
+    document.getElementById('enquireForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+        
+        // Here you can send the enquiry via AJAX
+        fetch('/api/product-enquiry', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Thank you! Your enquiry has been submitted successfully. We will contact you soon.');
+            closeEnquireModal();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Sorry, there was an error submitting your enquiry. Please try again or contact us directly.');
+        });
+    });
+    </script>
+    
     @stack('scripts')
 </body>
 </html>

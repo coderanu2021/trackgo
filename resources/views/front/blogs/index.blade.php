@@ -10,7 +10,7 @@
         .blog-grid { grid-template-columns: 1fr !important; }
     }
 </style>
-<div class="blog-header" style="background: var(--bg-light); padding: 6rem 0; border-bottom: 1px solid var(--border);">
+<div class="blog-header" style="background: var(--bg-light); padding: 10px; border-bottom: 1px solid var(--border);">
     <div class="container" style="text-align: center;">
         <h1 style="font-size: 3.5rem; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 1rem; color: var(--secondary);">Insights & Articles</h1>
         <p style="color: var(--text-muted); font-size: 1.25rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">

@@ -2,13 +2,96 @@
 
 @section('title', $category->name . ' - Zenis')
 
-@section('content')
-<div class="container" style="padding: 4rem 0;">
-    <div style="margin-bottom: 2rem;">
-        <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">{{ $category->name }}</h1>
-        <p style="color: var(--text);">Browse all products in {{ $category->name }}</p>
-    </div>
+@push('styles')
+<style>
+    .category-hero {
+        position: relative;
+        padding: 2rem 0;
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+        color: white;
+        overflow: hidden;
+    }
 
+    .category-hero.has-banner {
+        padding: 0;
+        height: 200px;
+        display: flex;
+        align-items: center;
+    }
+
+    .category-banner-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+    }
+
+    .category-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+        z-index: 2;
+    }
+
+    .category-hero-content {
+        position: relative;
+        z-index: 3;
+        padding: 0;
+    }
+
+    .category-hero h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .category-hero p {
+        font-size: 1rem;
+        opacity: 0.95;
+        max-width: 600px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .category-hero h1 {
+            font-size: 1.5rem;
+        }
+        .category-hero p {
+            font-size: 0.9rem;
+        }
+        .category-hero.has-banner {
+            height: 150px;
+        }
+    }
+</style>
+@endpush
+
+@section('content')
+<div class="category-hero {{ $category->banner ? 'has-banner' : '' }}">
+    @if($category->banner)
+        <img src="{{ asset($category->banner) }}" alt="{{ $category->name }}" class="category-banner-image">
+        <div class="category-hero-overlay"></div>
+    @endif
+    <div class="container category-hero-content">
+        <h1>{{ $category->name }}</h1>
+        @if($category->summary)
+            <p>{{ $category->summary }}</p>
+        @else
+            <p>Browse all products in {{ $category->name }}</p>
+        @endif
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0 4rem;">
     <div class="product-grid">
         @forelse($products as $product)
         <div class="product-card">

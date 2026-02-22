@@ -41,15 +41,10 @@
                 </td>
                 <td style="text-align: right;">
                     <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
-                        <button type="button" class="btn edit-category-btn" 
-                                data-id="{{ $category->id }}"
-                                data-name="{{ $category->name }}"
-                                data-image="{{ $category->image }}"
-                                data-icon="{{ $category->icon }}"
-                                data-active="{{ $category->is_active }}"
-                                style="background: var(--bg-main); color: var(--primary); width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px;">
+                        <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn" 
+                                style="background: var(--bg-main); color: var(--primary); width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: 10px; display: flex; align-items: center;">
                             <i class="fas fa-pen-to-square"></i>
-                        </button>
+                        </a>
                         <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Remove this category?')" style="display: inline-block;">
                             @csrf
                             @method('DELETE')
@@ -63,50 +58,6 @@
             @endforeach
         </tbody>
     </table>
-</div>
-
-<!-- Edit Category Modal -->
-<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: var(--shadow-base);">
-            <div class="modal-header" style="border-bottom: 1px solid var(--border-soft); padding: 1.5rem 2rem;">
-                <h5 class="modal-title" style="font-weight: 800; color: var(--text-main);">Modify Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="editCategoryForm" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-body" style="padding: 2rem;">
-                    <div class="form-group">
-                        <label>Category Name</label>
-                        <input type="text" name="name" id="edit_name" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Image URL</label>
-                            <input type="text" name="image" id="edit_image" class="form-control" placeholder="https://...">
-                        </div>
-                        <div class="form-group">
-                            <label>Icon Class</label>
-                            <input type="text" name="icon" id="edit_icon" class="form-control" placeholder="fas fa-tag">
-                        </div>
-                    </div>
-
-                    <div class="form-check">
-                        <input type="checkbox" name="is_active" id="edit_is_active" value="1">
-                        <label for="edit_is_active">Category is Active</label>
-                    </div>
-                </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--border-soft); padding: 1.5rem 2rem; gap: 1rem;">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 12px; padding: 0.75rem 1.5rem;">Cancel</button>
-                    <button type="submit" class="btn btn-primary" style="border-radius: 12px; padding: 0.75rem 2rem;">
-                        <i class="fas fa-save"></i> Update Changes
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -123,23 +74,6 @@ $(document).ready(function() {
                 "next": "<i class='fas fa-chevron-right'></i>"
             }
         }
-    });
-
-    $(document).on('click', '.edit-category-btn', function() {
-        const id = $(this).data('id');
-        const name = $(this).data('name');
-        const image = $(this).data('image');
-        const icon = $(this).data('icon');
-        const active = $(this).data('active');
-
-        $('#editCategoryForm').attr('action', `{{ url('admin/categories') }}/${id}`);
-        $('#edit_name').val(name);
-        $('#edit_image').val(image);
-        $('#edit_icon').val(icon);
-        $('#edit_is_active').prop('checked', active == 1);
-
-        const editModal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
-        editModal.show();
     });
 });
 </script>

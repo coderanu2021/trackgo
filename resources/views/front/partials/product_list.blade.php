@@ -26,15 +26,19 @@
         @endif
         
         <div class="product-overlay">
-            <button onclick="addToCartAjax({{ $product->id }})" class="btn-icon" title="Add to Cart">
-                <i class="fas fa-shopping-cart"></i>
-            </button>
+            @if($product->price)
+                <button onclick="addToCartAjax({{ $product->id }})" class="btn-icon" title="Add to Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                </button>
+            @endif
             <a href="{{ route('products.show', $product->slug) }}" class="btn-icon" title="Quick View">
                 <i class="fas fa-eye"></i>
             </a>
-            <button onclick="addToWishlistAjax({{ $product->id }})" class="btn-icon" title="Add to Wishlist">
-                <i class="far fa-heart"></i>
-            </button>
+            @if($product->price)
+                <button onclick="addToWishlistAjax({{ $product->id }})" class="btn-icon" title="Add to Wishlist">
+                    <i class="far fa-heart"></i>
+                </button>
+            @endif
         </div>
     </div>
     
@@ -82,19 +86,29 @@
         </div>
         
         <div class="product-price-minimal">
-            @if($product->discount && $product->discount > 0)
-                <span class="price-old" style="color: #ef4444; text-decoration: line-through; font-size: 0.9rem;">₹{{ formatIndianPrice($product->price + $product->discount, 2) }}</span>
+            @if($product->price)
+                @if($product->discount && $product->discount > 0)
+                    <span class="price-old" style="color: #ef4444; text-decoration: line-through; font-size: 0.9rem;">₹{{ formatIndianPrice($product->price + $product->discount, 2) }}</span>
+                @endif
+                <span class="price-current" style="color: var(--primary); font-weight: 700;">₹{{ formatIndianPrice($product->price, 2) }}</span>
+            @else
+                <span class="price-current" style="color: var(--primary); font-weight: 700; font-size: 0.95rem;">Price on Request</span>
             @endif
-            <span class="price-current" style="color: var(--primary); font-weight: 700;">₹{{ formatIndianPrice($product->price, 2) }}</span>
         </div>
 
         <div class="product-actions-inline">
-            <button type="button" onclick="addToCartAjax({{ $product->id }})" class="btn-icon-action cart" title="Add to Cart">
-                <i class="fas fa-shopping-cart"></i>
-            </button>
-            <button type="button" onclick="addToWishlistAjax({{ $product->id }})" class="btn-icon-action" title="Add to Wishlist">
-                <i class="far fa-heart"></i>
-            </button>
+            @if($product->price)
+                <button type="button" onclick="addToCartAjax({{ $product->id }})" class="btn-icon-action cart" title="Add to Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                </button>
+                <button type="button" onclick="addToWishlistAjax({{ $product->id }})" class="btn-icon-action" title="Add to Wishlist">
+                    <i class="far fa-heart"></i>
+                </button>
+            @else
+                <button type="button" onclick="openEnquireModal({{ $product->id }}, '{{ addslashes($product->title) }}')" class="btn-icon-action" style="background: var(--primary); color: white; flex: 1; width: auto; padding: 0 1rem;" title="Enquire Now">
+                    <i class="fas fa-envelope"></i> Enquire Now
+                </button>
+            @endif
             <a href="{{ route('products.show', $product->slug) }}" class="btn-icon-action view" title="View Product">
                 <i class="fas fa-eye"></i>
             </a>

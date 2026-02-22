@@ -555,6 +555,29 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Embedded Map Section -->
+        <div style="margin-top: 4rem;">
+            <h2 style="text-align: center; font-size: 2rem; font-weight: 800; color: #1a1a1a; margin-bottom: 2rem;">
+                <i class="fas fa-map-marked-alt" style="color: var(--primary);"></i>
+                Find Us on Map
+            </h2>
+            <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3445.123456789!2d75.84!3d30.25!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDE1JzAwLjAiTiA3NcKwNTAnMjQuMCJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin" 
+                    width="100%" 
+                    height="450" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <p style="text-align: center; color: #6b7280; margin-top: 1rem; font-size: 0.9rem;">
+                <i class="fas fa-info-circle"></i> 
+                Click on the map to get directions
+            </p>
+        </div>
     </div>
 </section>
 @endsection
