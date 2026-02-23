@@ -12,7 +12,7 @@
     }
     .product-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 40% 1fr;
         gap: 4rem;
         align-items: start;
     }
@@ -139,7 +139,6 @@
         margin-top: 2rem;
     }
     .btn-large {
-        flex: 1;
         padding: 1.25rem;
         border-radius: 16px;
         font-weight: 700;
@@ -148,6 +147,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: 0.75rem;
+        transition: all 0.3s;
+    }
         gap: 0.75rem;
         transition: all 0.3s;
     }
@@ -495,40 +497,48 @@
                     <div class="stock-status stock-out"><i class="fas fa-times"></i> Out of Stock</div>
                 @endif
 
-                @if($page->discount > 0)
+                @if($page->discount > 0 && $page->price)
                     <div class="discount-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);">
                         <i class="fas fa-tag"></i>
                         {{ round(($page->discount / ($page->price + $page->discount)) * 100) }}% OFF - Save ₹{{ formatIndianPrice($page->discount, 2) }}
                     </div>
                 @endif
 
-                <div class="price-tag">
-                    @if($page->discount > 0)
-                        <span class="price-old" style="color: #ef4444; text-decoration: line-through; font-size: 1.1rem; margin-right: 0.5rem;">₹{{ formatIndianPrice($page->price + $page->discount, 2) }}</span>
-                    @endif
-                    <span style="color: var(--primary); font-weight: 700; font-size: 1.3rem;">₹{{ formatIndianPrice($page->price, 2) }}</span>
-                </div>
+                @if($page->price)
+                    <div class="price-tag">
+                        @if($page->discount > 0)
+                            <span class="price-old" style="color: #ef4444; text-decoration: line-through; font-size: 1.1rem; margin-right: 0.5rem;">₹{{ formatIndianPrice($page->price + $page->discount, 2) }}</span>
+                        @endif
+                        <span style="color: var(--primary); font-weight: 700; font-size: 1.3rem;">₹{{ formatIndianPrice($page->price, 2) }}</span>
+                    </div>
+                @else
+                    <div class="price-tag">
+                        <span style="color: var(--primary); font-weight: 700; font-size: 1.1rem;">Price on Request</span>
+                    </div>
+                @endif
 
                 <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">
                     {{ $page->meta_description ?? 'This premium product is designed to meet all your needs with high quality and reliability.' }}
                 </p>
 
-                @if($page->price > 0 || $page->is_enquiry)
-                    <div class="action-buttons">
-                        @if($page->is_enquiry)
-                            <button onclick="openEnquiryModal()" class="btn-large btn-buy" style="background: var(--secondary); justify-content: center; cursor: pointer;">
-                                <i class="fas fa-envelope"></i> Enquire Now
-                            </button>
-                        @else
-                            <button onclick="addToCartAjax({{ $page->id }})" class="btn-large btn-cart">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                            <a href="{{ route('cart.add', $page->id) }}?redirect=checkout" class="btn-large btn-buy">
-                                <i class="fas fa-bolt"></i> Buy Now
-                            </a>
-                        @endif
-                    </div>
-                @endif
+                <div class="action-buttons">
+                    @if(!$page->price)
+                        <button onclick="openEnquireModal({{ $page->id }}, '{{ addslashes($page->title) }}')" class="btn-large btn-buy" style="background: var(--primary); justify-content: center; cursor: pointer; width: auto; min-width: 250px;">
+                            <i class="fas fa-envelope"></i> Enquire Now
+                        </button>
+                    @elseif($page->is_enquiry)
+                        <button onclick="openEnquireModal({{ $page->id }}, '{{ addslashes($page->title) }}')" class="btn-large btn-buy" style="background: var(--secondary); justify-content: center; cursor: pointer; width: auto; min-width: 250px;">
+                            <i class="fas fa-envelope"></i> Enquire Now
+                        </button>
+                    @else
+                        <button onclick="addToCartAjax({{ $page->id }})" class="btn-large btn-cart">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                        <a href="{{ route('cart.add', $page->id) }}?redirect=checkout" class="btn-large btn-buy">
+                            <i class="fas fa-bolt"></i> Buy Now
+                        </a>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

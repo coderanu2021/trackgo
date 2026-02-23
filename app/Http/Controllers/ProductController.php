@@ -84,8 +84,8 @@ class ProductController extends Controller
             'categories.*' => 'exists:categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:product_pages',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            'price' => 'nullable|numeric|min:0',
+            'stock' => 'nullable|integer|min:0',
             'blocks' => 'required|json',
         ]);
 
@@ -95,7 +95,7 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
             'title' => $request->title,
             'slug' => $slug,
-            'price' => $request->price ?? 0,
+            'price' => $request->price,
             'discount' => $request->discount ?? 0,
             'stock' => $request->stock ?? 0,
             'hero_image' => $request->hero_image,
@@ -136,8 +136,8 @@ class ProductController extends Controller
             'categories.*' => 'exists:categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:product_pages,slug,' . $id,
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            'price' => 'nullable|numeric|min:0',
+            'stock' => 'nullable|integer|min:0',
             'blocks' => 'required|json',
         ]);
 
@@ -147,7 +147,7 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
             'title' => $request->title,
             'slug' => $slug,
-            'price' => $request->price ?? 0,
+            'price' => $request->price,
             'discount' => $request->discount ?? 0,
             'stock' => $request->stock ?? 0,
             'hero_image' => $request->hero_image,
