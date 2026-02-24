@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<form id="category-form" action="{{ route('admin.categories.store') }}" method="POST">
+<form id="category-form" action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     
     <div class="card" style="max-width: 800px;">
@@ -36,16 +36,22 @@
 
         <div class="form-group">
             <label>Category Icon (Optional)</label>
-            <input type="text" name="image" class="form-control" placeholder="https://...">
+            <input type="file" name="image" class="form-control" accept="image/*">
             <span class="image-size-hint">400x400px, 1:1 ratio, max 512KB</span>
             <span class="form-help">Small icon image for category display</span>
         </div>
 
         <div class="form-group" id="banner-field" style="display: none;">
             <label>Category Banner (Root Categories Only)</label>
-            <input type="text" name="banner" class="form-control" placeholder="https://...">
-            <span class="image-size-hint">1920x400px, 16:3.5 ratio, max 2MB</span>
+            <input type="file" name="banner" class="form-control" accept="image/*">
+            <span class="image-size-hint">1920x200px recommended, max 2MB</span>
             <span class="form-help">Large banner image shown on category page</span>
+        </div>
+
+        <div class="form-group">
+            <label>Summary (Optional)</label>
+            <textarea name="summary" class="form-control" rows="3" placeholder="Brief description of this category"></textarea>
+            <span class="form-help">Short description displayed on category page</span>
         </div>
 
         <div class="form-group">

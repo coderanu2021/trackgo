@@ -24,17 +24,37 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'summary' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:512',
+            'banner' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        Category::create([
+        $data = [
             'name' => $request->name,
             'slug' => Str::slug($request->name),
-            'image' => $request->image,
-            'banner' => $request->banner,
+            'summary' => $request->summary,
             'icon' => $request->icon,
             'is_active' => $request->has('is_active'),
             'parent_id' => $request->parent_id
-        ]);
+        ];
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('uploads/categories'), $imageName);
+            $data['image'] = 'uploads/categories/' . $imageName;
+        }
+
+        // Handle banner upload
+        if ($request->hasFile('banner')) {
+            $banner = $request->file('banner');
+            $bannerName = time() . '_banner_' . $banner->getClientOriginalName();
+            $banner->move(public_path('uploads/categories'), $bannerName);
+            $data['banner'] = 'uploads/categories/' . $bannerName;
+        }
+
+        Category::create($data);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
     }
